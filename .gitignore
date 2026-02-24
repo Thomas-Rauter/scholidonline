@@ -1,0 +1,11 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+renv.lock
+scholidonline.Rcheck/
+renv/
+dev/
+docs/
+scholidonline.Rproj

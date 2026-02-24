@@ -1,0 +1,45 @@
+template:
+  bootstrap: 5
+
+url: https://thomas-rauter.github.io/scholidonline/
+
+pkgdown:
+  title: scholidonline
+
+navbar:
+  structure:
+    left:
+      - home
+      - get-started
+      - reference
+      - scholid-definitions
+      - news
+
+  components:
+    get-started:
+      text: "Get started"
+      href: articles/get_started.html
+    
+    scholid-definitions:
+      text: "About identifiers"
+      href: articles/scholid_definitions.html
+
+    news:
+      text: "News"
+      href: news/index.html
+
+reference:
+  - title: User Available Functions
+    desc: >
+      Documentation for all user-facing functions (for internal functions,
+      see GitHub).
+    contents:
+      - id_convert
+      - id_exists
+      - id_links
+      - id_metadata
+      
+development:
+  mode: auto
+
+

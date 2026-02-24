@@ -1,0 +1,34 @@
+Package: scholidonline
+Type: Package
+Title: Online Resolution, Conversion, and Metadata for Scholarly Identifiers
+Version: 0.1.0
+Language: en-US
+Authors@R:
+    person("Thomas", "Rauter",
+           email = "rauterthomas0@gmail.com",
+           role = c("aut", "cre", "fnd"),
+           comment = c(ORCID = "0009-0004-5578-3628"))
+Description: Provides online utilities for scholarly and academic identifiers,
+    building on 'scholid' for identifier detection and normalization. Includes
+    functions to check whether identifiers exist in external registries, convert
+    identifiers across systems, retrieve basic bibliographic metadata, and
+    discover linked identifiers. Designed as a small, stable building block with
+    minimal dependencies and CRAN-friendly network usage.
+License: MIT + file LICENSE
+URL: https://thomas-rauter.github.io/scholidonline/
+BugReports: https://github.com/Thomas-Rauter/scholidonline/issues
+Depends: R (>= 3.6.0)
+Imports:
+    scholid,
+    httr2,
+    jsonlite
+Suggests:
+    testthat (>= 3.0.0),
+    knitr (>= 1.30),
+    rmarkdown
+Encoding: UTF-8
+LazyData: false
+RoxygenNote: 7.3.3
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
