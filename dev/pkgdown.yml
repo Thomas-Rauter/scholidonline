@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   get_started: get_started.html
   online-resolution: online-resolution.html
-last_built: 2026-02-24T15:43Z
+last_built: 2026-02-25T16:28Z
 urls:
   reference: https://thomas-rauter.github.io/scholidonline/reference
   article: https://thomas-rauter.github.io/scholidonline/articles
