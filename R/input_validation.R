@@ -46,21 +46,23 @@
 #' Lookup allowed providers for a conversion
 #' @noRd
 .scholidonline_conversion_providers <- function(
-        from,
-        to
-        ) {
-    key <- paste(from, to, sep = "_to_")
-    switch(
-        key,
-        pmid_to_doi   = c("auto", "ncbi", "epmc"),
-        pmcid_to_pmid = c("auto", "ncbi"),
-        doi_to_pmid   = c("auto", "epmc"),
-        # default
-        stop(
-            "Unsupported conversion: ", from, " -> ", to, ".",
-            call. = FALSE
-        )
-    )
+    from,
+    to
+) {
+  key <- paste(from, to, sep = "->")
+  
+  providers <- switch(
+    key,
+    "pmid->doi"   = c("auto", "ncbi", "epmc", "mock"),
+    "doi->pmid"   = c("auto", "ncbi", "epmc", "mock"),
+    "doi->pmcid"  = c("auto", "ncbi", "epmc", "mock"),
+    "pmcid->pmid" = c("auto", "ncbi", "epmc", "mock"),
+    "pmcid->doi"  = c("auto", "ncbi", "epmc", "mock"),
+    "pmid->pmcid" = c("auto", "ncbi", "epmc", "mock"),
+    stop("Unsupported conversion: ", from, " -> ", to, ".", call. = FALSE)
+  )
+  
+  providers
 }
 
 

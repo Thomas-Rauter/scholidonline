@@ -54,6 +54,8 @@ id_convert <- function(
     # Determine source types per element (if needed)
     if (is.null(from)) {
         from_vec <- scholid::detect_scholid_type(x)
+        supported_types <- c("arxiv", "doi", "orcid", "pmcid", "pmid")
+        from_vec[!from_vec %in% supported_types] <- NA_character_
         for (i in seq_along(x)) {
             if (is.na(x[i]) || is.na(from_vec[i])) {
                 next
@@ -194,7 +196,7 @@ id_convert <- function(
 .scholidonline_match_provider <- function(
         provider,
         choices
-        ) {
+) {
     if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
         stop(
             "`provider` must be a single, non-missing character string.",
@@ -340,6 +342,65 @@ id_convert <- function(
 }
 
 
+#' Convert a PMID to a PMCID
+#'
+#' Provider-specific implementations live in helpers named
+#' `.convert_pmid_to_pmcid_<provider>()`.
+#'
+#' @param x A single, normalized PMID string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single PMCID string, or `NA_character_` if unconvertible.
+#'
+#' @noRd
+.convert_pmid_to_pmcid <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  stopifnot(is.character(x), length(x) == 1L)
+  
+  switch(
+    provider,
+    ncbi = .convert_pmid_to_pmcid_ncbi(x = x, ..., quiet = quiet),
+    epmc = .convert_pmid_to_pmcid_epmc(x = x, ..., quiet = quiet),
+    mock = .convert_pmid_to_pmcid_mock(x = x, ..., quiet = quiet),
+    stop("Unknown provider: ", provider, call. = FALSE)
+  )
+}
+
+
+#' Convert a DOI to a PMCID
+#'
+#' Provider-specific implementations live in helpers named
+#' `convert_doi_to_pmcid_<provider>()` (e.g., `convert_doi_to_pmcid_ncbi()`).
+#'
+#' @param x A single, normalized DOI string.
+#' @param provider A single provider string (e.g. "ncbi", "epmc", "mock").
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single PMCID string, or `NA_character_` if unconvertible.
+#'
+#' @noRd
+.convert_doi_to_pmcid <- function(x, provider, ..., quiet = FALSE) {
+  stopifnot(is.character(x), length(x) == 1L)
+  
+  switch(
+    provider,
+    ncbi = .convert_doi_to_pmcid_ncbi(x = x, ..., quiet = quiet),
+    epmc = .convert_doi_to_pmcid_epmc(x = x, ..., quiet = quiet),
+    mock = .convert_doi_to_pmcid_mock(x = x, ..., quiet = quiet),
+    stop("Unknown provider: ", provider, call. = FALSE)
+  )
+}
+
+
 # Level 2 functions (functions called by level 1 functions) definitions --------
 
 
@@ -404,8 +465,8 @@ id_convert <- function(
 #'
 #' @noRd
 .convert_pmid_to_doi_mock <- function(x, ..., quiet = FALSE) {
-    .scholidonline_check_scalar_chr(x)
-    paste0("10.1234/mockdoi.", x)
+  .scholidonline_check_scalar_chr(x)
+  paste0("10.1000/", x)
 }
 
 
@@ -630,6 +691,145 @@ id_convert <- function(
     paste0("10.1234/mockpmc.", digits)
 }
 
+
+#' NCBI: PMID -> PMCID
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_ncbi <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  
+  js <- .scholidonline_pmc_idconv(ids = x, ..., quiet = quiet)
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  .scholidonline_extract_idconv(js, field = "pmcid")
+}
+
+
+#' Europe PMC: PMID -> PMCID
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to Europe PMC search (e.g. `pageSize`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_epmc <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("EXT_ID:", x, " AND SRC:MED")
+  js <- .scholidonline_epmc_search(query = q, ..., quiet = quiet)
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmcid <- rec$pmcid %||% NA_character_
+  
+  if (is.na(pmcid) || !nzchar(pmcid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmcid)
+}
+
+
+#' MOCK: PMID -> PMCID
+#'
+#' @param x A single PMID string.
+#' @param ... Unused.
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_mock <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  paste0("PMC", x)
+}
+
+
+#' NCBI: DOI -> PMCID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmcid_ncbi <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  
+  js <- .scholidonline_pmc_idconv(ids = x, ..., quiet = quiet)
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  .scholidonline_extract_idconv(js, field = "pmcid")
+}
+
+
+#' Europe PMC: DOI -> PMCID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to Europe PMC search (e.g. `pageSize`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmcid_epmc <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("DOI:\"", x, "\"")
+  js <- .scholidonline_epmc_search(query = q, ..., quiet = quiet)
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmcid <- rec$pmcid %||% NA_character_
+  
+  if (is.na(pmcid) || !nzchar(pmcid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmcid)
+}
+
+
+#' MOCK: DOI -> PMCID
+#'
+#' @param x A single DOI string.
+#' @param ... Unused.
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string.
+#'
+#' @noRd
+.convert_doi_to_pmcid_mock <- function(x, ..., quiet = FALSE) {
+  .scholidonline_check_scalar_chr(x)
+  
+  digits <- gsub("[^0-9]", "", x)
+  
+  if (!nzchar(digits)) {
+    return(NA_character_)
+  }
+  
+  paste0("PMC", substr(digits, 1L, 8L))
+}
 
 # Level 3 functions (functions called by level 2 functions) definitions --------
 

@@ -1,7 +1,6 @@
 testthat::test_that(
   "id_convert (online): PMID -> DOI returns a DOI-like string or NA",
   {
-
     testthat::skip_on_cran()
     testthat::skip_if_offline()
 
