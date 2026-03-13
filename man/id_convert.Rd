@@ -10,7 +10,7 @@ id_convert(x, to, from = NULL, provider = "auto", ..., quiet = FALSE)
 \item{x}{A character vector of identifiers.}
 
 \item{to}{A single string giving the target identifier type. See
-\code{scholid::scholid_types()} for supported values.}
+\code{scholidonline::scholidonline_types()} for supported values.}
 
 \item{from}{A single string giving the source identifier type, or \code{NULL} to
 infer per element.}

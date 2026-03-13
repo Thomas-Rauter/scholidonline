@@ -1,3 +1,20 @@
+#' Input validation helpers for scholidonline
+#'
+#' @description
+#' Internal helper functions used to validate and normalize user inputs
+#' across scholidonline front-end functions.
+#'
+#' These helpers enforce consistent argument checking for identifier
+#' vectors, identifier types, logical flags, and scalar inputs.
+#'
+#' The functions in this file are intentionally generic and independent
+#' of registry metadata, making them reusable across multiple exported
+#' functions (e.g. `id_exists()`, `id_convert()`).
+#'
+#' @keywords internal
+NULL
+
+
 # Level 1 function (functions called by exported functions) definitions --------
 
 
@@ -70,52 +87,102 @@
 #'
 #' @description
 #' Internal helper that validates a user-supplied identifier type against
-#' the set of types supported by \code{scholidonline_types()}.
+#' a set of supported identifier types.
 #'
-#' Ensures that \code{type} is a single, non-empty character string and
-#' corresponds to a supported online identifier type. If validation fails,
+#' Ensures that `type` is a single, non-empty character string and
+#' corresponds to one of the allowed identifier types. If validation fails,
 #' a descriptive error is raised.
 #'
 #' This function centralizes type validation logic for exported helpers
-#' such as \code{id_exists()}, \code{id_convert()},
-#' \code{id_metadata()}, and \code{id_links()}.
+#' such as `id_exists()`, `id_convert()`, `id_metadata()`, and `id_links()`.
 #'
 #' @param type A candidate identifier type.
 #' @param arg A single string giving the argument name to use in error
-#'   messages (e.g., \code{"type"}, \code{"from"}, \code{"to"}).
+#'   messages (e.g. `"type"`, `"from"`, `"to"`).
+#' @param choices Optional character vector of allowed identifier types.
+#'   If `NULL`, defaults to `scholidonline_types()`.
 #'
 #' @return A validated identifier type string.
 #'
 #' @noRd
 .scholidonline_match_type <- function(
-        type,
-        arg = "type"
+    type,
+    arg = "type",
+    choices = NULL
 ) {
-    type_chr <- .scholidonline_as_scalar_character(
-        x   = type,
-        arg = arg
+  type_chr <- .scholidonline_as_scalar_character(
+    x = type,
+    arg = arg
+  )
+  
+  if (is.na(type_chr)) {
+    stop(
+      "`",
+      arg,
+      "` must be a non-empty string.",
+      call. = FALSE
     )
-    if (is.na(type_chr)) {
-        stop("`", arg, "` must be a non-empty string.", call. = FALSE)
-    }
-
+  }
+  
+  if (is.null(choices)) {
     choices <- scholidonline_types()
-    out <- match.arg(
-        type_chr,
-        choices = choices,
-        several.ok = FALSE
+  }
+  
+  if (!is.character(choices) || !length(choices) || anyNA(choices)) {
+    stop(
+      "`choices` must be a non-empty character vector without NA.",
+      call. = FALSE
     )
-
-    if (!identical(type_chr, out)) {
-        stop(
-            "`", arg, "` must match exactly; abbreviations are not allowed.",
-            call. = FALSE
-        )
-    }
-
-    out
+  }
+  
+  out <- match.arg(
+    arg = type_chr,
+    choices = choices,
+    several.ok = FALSE
+  )
+  
+  if (!identical(type_chr, out)) {
+    stop(
+      "`",
+      arg,
+      "` must match exactly; abbreviations are not allowed.",
+      call. = FALSE
+    )
+  }
+  
+  out
 }
 
+
+#' Validate a quiet flag
+#'
+#' Internal helper used to validate `quiet` arguments in front-end
+#' functions.
+#'
+#' @param quiet Logical flag indicating whether warnings/messages should
+#'   be suppressed.
+#' @param arg Name of the calling argument.
+#'
+#' @return A single logical value.
+#'
+#' @details
+#' Ensures that the `quiet` argument is a single logical value.
+#'
+#' @noRd
+.scholidonline_check_quiet <- function(
+    quiet,
+    arg = "quiet"
+) {
+  
+  if (!is.logical(quiet) || length(quiet) != 1L || is.na(quiet)) {
+    stop(
+      "`", arg, "` must be a single TRUE or FALSE value.",
+      call. = FALSE
+    )
+  }
+  
+  quiet
+}
 
 # Level 2 function (functions called by lvl 1 functions) definitions -----------
 

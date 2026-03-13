@@ -181,59 +181,6 @@ id_convert <- function(
 # Level 1 functions (functions called by exported functions) definitions -------
 
 
-#' Match and validate a conversion provider
-#'
-#' Internal helper used by `id_convert()` to validate a user-supplied provider
-#' against a set of providers supported for a given conversion. If `provider`
-#' is `"auto"`, the first element of `choices` is selected.
-#'
-#' @param provider A single provider string (e.g. "auto", "ncbi", "epmc").
-#' @param choices A character vector of valid providers for this conversion.
-#'
-#' @return A single provider string.
-#'
-#' @noRd
-.scholidonline_match_provider <- function(
-        provider,
-        choices
-) {
-    if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
-        stop(
-            "`provider` must be a single, non-missing character string.",
-            call. = FALSE
-        )
-    }
-
-    if (!is.character(choices) || length(choices) < 1L || anyNA(choices)) {
-        stop(
-            "`choices` must be a non-empty character vector without NA.",
-            call. = FALSE
-        )
-    }
-
-    choices <- unique(choices)
-    choices <- choices[choices != "auto"]
-
-    if (length(choices) < 1L) {
-        stop("No concrete providers available.", call. = FALSE)
-    }
-
-    if (identical(provider, "auto")) {
-        return(choices[[1L]])
-    }
-
-    if (!provider %in% choices) {
-        stop(
-            "Unknown provider: `", provider, "`. Must be one of: ",
-            paste0("`", choices, "`", collapse = ", "),
-            call. = FALSE
-        )
-    }
-
-    provider
-}
-
-
 #' Convert a PMID to a DOI
 #'
 #' Provider-specific implementations live in helpers named
@@ -248,7 +195,12 @@ id_convert <- function(
 #' @return A single DOI string, or `NA_character_` if unconvertible.
 #'
 #' @noRd
-.convert_pmid_to_doi <- function(x, provider, ..., quiet = FALSE) {
+.convert_pmid_to_doi <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
     stopifnot(is.character(x), length(x) == 1L)
 
     switch(
@@ -275,7 +227,12 @@ id_convert <- function(
 #' @return A single PMID string, or `NA_character_` if unconvertible.
 #'
 #' @noRd
-.convert_doi_to_pmid <- function(x, provider, ..., quiet = FALSE) {
+.convert_doi_to_pmid <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
     stopifnot(is.character(x), length(x) == 1L)
 
     switch(
@@ -302,7 +259,12 @@ id_convert <- function(
 #' @return A single PMID string, or `NA_character_` if unconvertible.
 #'
 #' @noRd
-.convert_pmcid_to_pmid <- function(x, provider, ..., quiet = FALSE) {
+.convert_pmcid_to_pmid <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
     stopifnot(is.character(x), length(x) == 1L)
 
     switch(
@@ -329,7 +291,12 @@ id_convert <- function(
 #' @return A single DOI string, or `NA_character_` if unconvertible.
 #'
 #' @noRd
-.convert_pmcid_to_doi <- function(x, provider, ..., quiet = FALSE) {
+.convert_pmcid_to_doi <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
     stopifnot(is.character(x), length(x) == 1L)
 
     switch(
@@ -388,7 +355,12 @@ id_convert <- function(
 #' @return A single PMCID string, or `NA_character_` if unconvertible.
 #'
 #' @noRd
-.convert_doi_to_pmcid <- function(x, provider, ..., quiet = FALSE) {
+.convert_doi_to_pmcid <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
   stopifnot(is.character(x), length(x) == 1L)
   
   switch(
@@ -413,7 +385,11 @@ id_convert <- function(
 #' @return A single DOI string or `NA_character_`.
 #'
 #' @noRd
-.convert_pmid_to_doi_ncbi <- function(x, ..., quiet = FALSE) {
+.convert_pmid_to_doi_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
     .scholidonline_check_scalar_chr(x)
 
     js <- .scholidonline_esummary_pubmed(id = x, ..., quiet = quiet)
@@ -434,7 +410,11 @@ id_convert <- function(
 #' @return A single DOI string or `NA_character_`.
 #'
 #' @noRd
-.convert_pmid_to_doi_epmc <- function(x, ..., quiet = FALSE) {
+.convert_pmid_to_doi_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
     .scholidonline_check_scalar_chr(x)
 
     q <- paste0("EXT_ID:", x, " AND SRC:MED")
@@ -464,7 +444,11 @@ id_convert <- function(
 #' @return A single DOI string.
 #'
 #' @noRd
-.convert_pmid_to_doi_mock <- function(x, ..., quiet = FALSE) {
+.convert_pmid_to_doi_mock <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x)
   paste0("10.1000/", x)
 }
@@ -848,7 +832,10 @@ id_convert <- function(
 .scholidonline_req_json <- function(url, query, quiet) {
     req <- httr2::request(url)
     req <- httr2::req_url_query(req, !!!query)
-    req <- httr2::req_error(req, is_error = function(resp) FALSE)
+    req <- httr2::req_error(
+      req,
+      is_error = function(resp) FALSE
+      )
 
     resp <- httr2::req_perform(req)
 

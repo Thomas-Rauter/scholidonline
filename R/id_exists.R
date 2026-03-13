@@ -5,26 +5,26 @@
 #' registries.
 #'
 #' `id_exists()` is vectorized over `x`. If `type` is `NULL`, the identifier
-#' type is inferred per element using `scholid::detect_scholid_type()` after
-#' normalization (where possible). Inputs that cannot be classified or
-#' normalized yield `NA`.
+#' type is inferred per element using `scholid::detect_scholid_type()`.
+#' Inputs that cannot be classified or normalized yield `NA`.
 #'
 #' Provider-/ID-specific logic lives in internal helpers named
-#' `exists_<type>()` (e.g., `exists_doi()`), which are dispatched to from this
-#' front-door function.
+#' `.exists_<type>()` (e.g., `.exists_doi()`), which are dispatched to from
+#' this front-door function.
 #'
 #' @param x A character vector of identifiers.
 #' @param type A single string giving the identifier type, or `NULL` to infer
-#'   per element. See `scholid::scholid_types()` for supported values.
-#' @param provider Provider to use (e.g. "auto", "doi.org", "crossref",
-#'   "ncbi", "epmc", "orcid", "arxiv").
+#'   per element. See `scholidonline::scholidonline_types()` for supported
+#'   values.
+#' @param provider Provider to use (e.g. `"auto"`, `"doi.org"`, `"crossref"`,
+#'   `"ncbi"`, `"epmc"`, `"orcid"`, `"arxiv"`).
 #' @param ... Passed to provider-specific implementations.
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
 #' @return A logical vector. `TRUE` if the identifier exists, `FALSE` if it is
-#'   confirmed not found, and `NA` if the input cannot be classified or
-#'   normalized.
+#'   confirmed not found, and `NA` if the input cannot be classified,
+#'   normalized, or checked reliably.
 #'
 #' @examples
 #' \dontrun{
@@ -34,79 +34,89 @@
 #'
 #' @export
 id_exists <- function(
-        x,
-        type = NULL,
-        provider = "auto",
-        ...,
-        quiet = FALSE
+    x,
+    type = NULL,
+    provider = "auto",
+    ...,
+    quiet = FALSE
 ) {
-    .scholid_online_check_x(x, arg = "x")
-
-    x <- as.character(x)
-    out <- rep(NA, length(x))
-
-    # If type is inferred per element
-    if (is.null(type)) {
-
-        type_vec <- scholid::detect_scholid_type(x)
-
-        for (i in seq_along(x)) {
-
-            if (is.na(x[i]) || is.na(type_vec[i])) {
-                next
-            }
-
-            xi <- scholid::normalize_scholid(x[i], type = type_vec[i])
-            if (is.na(xi)) {
-                next
-            }
-
-            fun_name <- paste0("exists_", type_vec[i])
-            fun <- get0(fun_name, mode = "function", inherits = TRUE)
-
-            # nocov start
-            if (is.null(fun)) {
-                stop("Missing implementation: ", fun_name, "().", call. = FALSE)
-            }
-            # nocov end
-
-            out[i] <- fun(
-                x = xi,
-                provider = provider,
-                ...,
-                quiet = quiet
-            )
-        }
-
-        return(out)
+  
+  .scholidonline_check_x(
+    x = x,
+    arg = "x"
+  )
+  
+  quiet <- .scholidonline_check_quiet(
+    quiet = quiet,
+    arg = "quiet"
+  )
+  
+  x <- as.character(x)
+  out <- rep(
+    x = NA,
+    times = length(x)
+  )
+  
+  supported_types <- scholidonline::scholidonline_types()
+  
+  if (is.null(type)) {
+    
+    type_vec <- scholid::detect_scholid_type(
+      x = x
+    )
+    
+    type_vec[!type_vec %in% supported_types] <- NA_character_
+    
+  } else {
+    
+    type <- .scholidonline_match_type(
+      type = type,
+      arg = "type",
+      choices = supported_types
+    )
+    
+    type_vec <- rep(
+      x = type,
+      times = length(x)
+    )
+  }
+  
+  x_norm <- rep(
+    x = NA_character_,
+    times = length(x)
+  )
+  
+  for (i in seq_along(x)) {
+    
+    if (is.na(x[i]) || is.na(type_vec[i])) {
+      next
     }
-
-    # Single declared type for all elements
-    type <- .scholid_online_match_type(type, arg = "type")
-
-    x_norm <- scholid::normalize_scholid(x, type = type)
-
-    fun_name <- paste0("exists_", type)
-    fun <- get0(fun_name, mode = "function", inherits = TRUE)
-
-    # nocov start
-    if (is.null(fun)) {
-        stop("Missing implementation: ", fun_name, "().", call. = FALSE)
-    }
-    # nocov end
-
-    for (i in seq_along(x_norm)) {
-        if (is.na(x_norm[i])) {
-            next
-        }
-
-        out[i] <- fun(
-            x = x_norm[i],
-            provider = provider,
-            ...,
-            quiet = quiet
-        )
-    }
-
-    out
+    
+    x_norm[i] <- scholid::normalize_scholid(
+      x = x[i],
+      type = type_vec[i]
+    )
+  }
+  
+  ok <- !is.na(x_norm) & !is.na(type_vec)
+  
+  if (!any(ok)) {
+    return(out)
+  }
+  
+  res <- .scholidonline_run_unary(
+    x = x_norm[ok],
+    operation = "exists",
+    type = type_vec[ok],
+    provider = provider,
+    ...,
+    quiet = quiet
+  )
+  
+  out[ok] <- unlist(
+    x = res,
+    use.names = FALSE
+  )
+  
+  out
 }

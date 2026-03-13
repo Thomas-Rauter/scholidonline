@@ -10,10 +10,11 @@ id_exists(x, type = NULL, provider = "auto", ..., quiet = FALSE)
 \item{x}{A character vector of identifiers.}
 
 \item{type}{A single string giving the identifier type, or \code{NULL} to infer
-per element. See \code{scholid::scholid_types()} for supported values.}
+per element. See \code{scholidonline::scholidonline_types()} for supported
+values.}
 
-\item{provider}{Provider to use (e.g. "auto", "doi.org", "crossref",
-"ncbi", "epmc", "orcid", "arxiv").}
+\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"doi.org"}, \code{"crossref"},
+\code{"ncbi"}, \code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
 
 \item{...}{Passed to provider-specific implementations.}
 
@@ -22,21 +23,20 @@ possible.}
 }
 \value{
 A logical vector. \code{TRUE} if the identifier exists, \code{FALSE} if it is
-confirmed not found, and \code{NA} if the input cannot be classified or
-normalized.
+confirmed not found, and \code{NA} if the input cannot be classified,
+normalized, or checked reliably.
 }
 \description{
 Check whether identifiers resolve or are found in their respective
 registries.
 
 \code{id_exists()} is vectorized over \code{x}. If \code{type} is \code{NULL}, the identifier
-type is inferred per element using \code{scholid::detect_scholid_type()} after
-normalization (where possible). Inputs that cannot be classified or
-normalized yield \code{NA}.
+type is inferred per element using \code{scholid::detect_scholid_type()}.
+Inputs that cannot be classified or normalized yield \code{NA}.
 
 Provider-/ID-specific logic lives in internal helpers named
-\verb{exists_<type>()} (e.g., \code{exists_doi()}), which are dispatched to from this
-front-door function.
+\verb{.exists_<type>()} (e.g., \code{.exists_doi()}), which are dispatched to from
+this front-door function.
 }
 \examples{
 \dontrun{
