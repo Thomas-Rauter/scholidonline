@@ -35,46 +35,31 @@
 #' @export
 id_exists <- function(
     x,
-    type = NULL,
-    provider = "auto",
+    type = c("auto", scholidonline_types()),
+    provider = c("auto", .scholidonline_providers()),
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_x(
-    x = x,
-    arg = "x"
+  .scholidonline_check_x(x)
+  type <- match.arg(type)
+  provider <- match.arg(provider)
+  .scholidonline_check_type_provider(
+    type     = type,
+    provider = provider
   )
+  .scholidonline_check_quiet(quiet)
   
-  quiet <- .scholidonline_check_quiet(
-    quiet = quiet,
-    arg = "quiet"
-  )
-  
-  x <- as.character(x)
   out <- rep(
     x = NA,
     times = length(x)
   )
   
-  supported_types <- scholidonline::scholidonline_types()
-  
-  if (is.null(type)) {
-    
+  if (identical(type, "auto")) {
     type_vec <- scholid::detect_scholid_type(
       x = x
     )
-    
-    type_vec[!type_vec %in% supported_types] <- NA_character_
-    
+    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
   } else {
-    
-    type <- .scholidonline_match_type(
-      type = type,
-      arg = "type",
-      choices = supported_types
-    )
-    
     type_vec <- rep(
       x = type,
       times = length(x)

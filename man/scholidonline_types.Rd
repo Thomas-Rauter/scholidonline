@@ -2,7 +2,7 @@
 % Please edit documentation in R/registry.R
 \name{scholidonline_types}
 \alias{scholidonline_types}
-\title{Supported scholidonline identifier types}
+\title{scholidonline identifier registry}
 \usage{
 scholidonline_types()
 }
@@ -10,6 +10,22 @@ scholidonline_types()
 A character vector of supported identifier type strings.
 }
 \description{
+Internal registry defining the identifier types supported by the
+scholidonline package and their associated metadata.
+
+The registry is the single source of truth for identifier capabilities,
+including:
+\itemize{
+\item existence-check providers
+\item default providers
+\item supported identifier conversions
+\item conversion providers
+}
+
+Helper functions in this file expose registry metadata used by the
+exported front-end functions (e.g. \code{id_exists()}, \code{id_convert()}).
+Supported scholidonline identifier types
+
 Returns the set of identifier types supported by the scholidonline package.
 
 This is the set of identifiers for which scholidonline provides registry-

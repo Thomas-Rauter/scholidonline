@@ -1,76 +1,222 @@
+.online_ok <- function() {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+}
+
 testthat::test_that(
-  "id_exists (online): DOI exists via registry",
+  "id_exists (online): DOI existence works via doi.org and crossref",
   {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
+    .online_ok()
+    
+    doi_valid <- "10.1038/s41586-020-2649-2"
+    doi_invalid <- "10.9999/this-does-not-exist"
+    
+    out_doi_org_valid <- scholidonline::id_exists(
+      x = doi_valid,
+      type = "doi",
+      provider = "doi.org",
+      quiet = TRUE
     )
+    
+    out_crossref_valid <- scholidonline::id_exists(
+      x = doi_valid,
+      type = "doi",
+      provider = "crossref",
+      quiet = TRUE
+    )
+    
+    out_doi_org_invalid <- scholidonline::id_exists(
+      x = doi_invalid,
+      type = "doi",
+      provider = "doi.org",
+      quiet = TRUE
+    )
+    
+    out_crossref_invalid <- scholidonline::id_exists(
+      x = doi_invalid,
+      type = "doi",
+      provider = "crossref",
+      quiet = TRUE
+    )
+    
+    testthat::expect_identical(out_doi_org_valid, TRUE)
+    testthat::expect_identical(out_crossref_valid, TRUE)
+    testthat::expect_identical(out_doi_org_invalid, FALSE)
+    testthat::expect_identical(out_crossref_invalid, FALSE)
+  }
+)
 
+testthat::test_that(
+  "id_exists (online): DOI normalization works against live providers",
+  {
+    .online_ok()
+    
     out <- scholidonline::id_exists(
-      x        = "10.1038/s41586-020-2649-2",
-      type     = "doi",
-      provider = "auto"
+      x = "https://doi.org/10.1038/s41586-021-03819-2",
+      type = "doi",
+      provider = "doi.org",
+      quiet = TRUE
     )
-
-    testthat::expect_type(out, "logical")
-    testthat::expect_length(out, 1L)
+    
     testthat::expect_identical(out, TRUE)
   }
 )
 
 testthat::test_that(
-  "id_exists (online): DOI non-existence returns FALSE",
+  "id_exists (online): PMID existence works via Europe PMC",
   {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
+    .online_ok()
+    
+    out_valid <- scholidonline::id_exists(
+      x = "31452104",
+      type = "pmid",
+      provider = "epmc",
+      quiet = TRUE
     )
-
-    out <- scholidonline::id_exists(
-      x        = "10.9999/this-doi-should-not-exist-xyz",
-      type     = "doi",
-      provider = "doi.org"
+    
+    out_invalid <- scholidonline::id_exists(
+      x = "999999999999",
+      type = "pmid",
+      provider = "epmc",
+      quiet = TRUE
     )
-
-    testthat::expect_type(out, "logical")
-    testthat::expect_length(out, 1L)
-
-    # If the network errors, your implementation might return NA.
-    # For a true registry "not found", expect FALSE.
-    testthat::expect_true(isFALSE(out) || is.na(out))
+    
+    testthat::expect_identical(out_valid, TRUE)
+    testthat::expect_identical(out_invalid, FALSE)
   }
 )
 
 testthat::test_that(
-  "id_exists (online): ORCID exists",
+  "id_exists (online): PMCID existence works via Europe PMC",
   {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
+    .online_ok()
+    
+    out_valid <- scholidonline::id_exists(
+      x = "PMC6784763",
+      type = "pmcid",
+      provider = "epmc",
+      quiet = TRUE
     )
+    
+    out_invalid <- scholidonline::id_exists(
+      x = "PMC0000000",
+      type = "pmcid",
+      provider = "epmc",
+      quiet = TRUE
+    )
+    
+    testthat::expect_identical(out_valid, TRUE)
+    testthat::expect_identical(out_invalid, FALSE)
+  }
+)
 
+testthat::test_that(
+  "id_exists (online): auto fallback works for PMID existence",
+  {
+    .online_ok()
+    
     out <- scholidonline::id_exists(
-      x        = "0000-0002-1825-0097",
-      type     = "orcid",
-      provider = "orcid"
+      x = c("31452104", "999999999999"),
+      type = "pmid",
+      provider = "auto",
+      quiet = TRUE
     )
-
+    
     testthat::expect_type(out, "logical")
-    testthat::expect_length(out, 1L)
+    testthat::expect_identical(length(out), 2L)
+    testthat::expect_identical(out[[1]], TRUE)
+    testthat::expect_identical(out[[2]], FALSE)
+  }
+)
 
-    # This ORCID is commonly used in examples; it should exist.
-    testthat::expect_identical(out, TRUE)
+testthat::test_that(
+  "id_exists (online): auto fallback works for PMCID existence",
+  {
+    .online_ok()
+    
+    out <- scholidonline::id_exists(
+      x = c("PMC6784763", "PMC0000000"),
+      type = "pmcid",
+      provider = "auto",
+      quiet = TRUE
+    )
+    
+    testthat::expect_type(out, "logical")
+    testthat::expect_identical(length(out), 2L)
+    testthat::expect_identical(out[[1]], TRUE)
+    testthat::expect_identical(out[[2]], FALSE)
+  }
+)
+
+testthat::test_that(
+  "id_exists (online): ORCID existence works",
+  {
+    .online_ok()
+    
+    out_valid <- scholidonline::id_exists(
+      x = "0000-0002-1825-0097",
+      type = "orcid",
+      provider = "orcid",
+      quiet = TRUE
+    )
+    
+    out_invalid <- scholidonline::id_exists(
+      x = "0000-0000-0000-0000",
+      type = "orcid",
+      provider = "orcid",
+      quiet = TRUE
+    )
+    
+    testthat::expect_identical(out_valid, TRUE)
+    testthat::expect_identical(out_invalid, FALSE)
+  }
+)
+
+testthat::test_that(
+  "id_exists (online): arXiv existence works",
+  {
+    .online_ok()
+    
+    out_valid <- scholidonline::id_exists(
+      x = "2203.00001",
+      type = "arxiv",
+      provider = "arxiv",
+      quiet = TRUE
+    )
+    
+    out_invalid <- scholidonline::id_exists(
+      x = "9999.99999",
+      type = "arxiv",
+      provider = "arxiv",
+      quiet = TRUE
+    )
+    
+    testthat::expect_identical(out_valid, TRUE)
+    testthat::expect_identical(out_invalid, FALSE)
+  }
+)
+
+testthat::test_that(
+  "id_exists (online): mixed type inference works against live services",
+  {
+    .online_ok()
+    
+    out <- scholidonline::id_exists(
+      x = c(
+        "10.1038/s41586-020-2649-2",
+        "31452104",
+        "PMC6784763",
+        "0000-0002-1825-0097",
+        "2203.00001"
+      ),
+      type = NULL,
+      quiet = TRUE
+    )
+    
+    testthat::expect_type(out, "logical")
+    testthat::expect_identical(
+      out,
+      c(TRUE, TRUE, TRUE, TRUE, TRUE)
+    )
   }
 )

@@ -1,10 +1,13 @@
-#' Check whether an arXiv identifier exists
+# Level 1 function (functions called by exported functions) definitions --------
+
+
+#' Return linked identifiers for an arXiv record
 #'
 #' @description
-#' Internal dispatcher for arXiv existence checks.
+#' Internal dispatcher for retrieving identifiers linked to an arXiv record.
 #'
 #' Provider-specific implementations live in helpers named
-#' `.exists_arxiv_<provider>()`.
+#' `.links_arxiv_<provider>()`.
 #'
 #' @param x A single, normalized arXiv identifier.
 #' @param provider A single provider string.
@@ -12,19 +15,17 @@
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
-#' @return A single logical value.
+#' @return A data.frame describing linked identifiers.
 #'
 #' @noRd
-.exists_arxiv <- function(
+.links_arxiv <- function(
     x,
     provider,
     ...,
     quiet = FALSE
 ) {
   
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
     provider <- "arxiv"
@@ -32,29 +33,28 @@
   
   switch(
     provider,
-    arxiv = .exists_arxiv_arxiv(
+    arxiv = .links_arxiv_arxiv(
       x = x,
       ...,
       quiet = quiet
     ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown provider: ", provider)
     )
   )
 }
 
 
-#' Check whether a DOI exists
+
+#' Return linked identifiers for a DOI
 #'
 #' @description
-#' Internal dispatcher for DOI existence checks.
+#' Internal dispatcher for retrieving identifiers linked to a DOI.
 #'
 #' Provider-specific implementations live in helpers named
-#' `.exists_doi_<provider>()`.
+#' `.links_doi_<provider>()`.
 #'
-#' If `provider = "auto"`, the dispatcher uses DOI.org.
+#' If `provider = "auto"`, the dispatcher uses Crossref.
 #'
 #' @param x A single, normalized DOI string.
 #' @param provider A single provider string.
@@ -62,52 +62,44 @@
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
-#' @return A single logical value.
+#' @return A data.frame describing linked identifiers.
 #'
 #' @noRd
-.exists_doi <- function(
+.links_doi <- function(
     x,
     provider,
     ...,
     quiet = FALSE
 ) {
   
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
-    provider <- "doi.org"
+    provider <- "crossref"
   }
   
   switch(
     provider,
-    "doi.org" = .exists_doi_doi_org(
+    crossref = .links_doi_crossref(
       x = x,
       ...,
       quiet = quiet
     ),
-    crossref = .exists_doi_crossref(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown provider: ", provider)
     )
   )
 }
 
 
-#' Check whether an ORCID exists
+
+#' Return linked identifiers for an ORCID record
 #'
 #' @description
-#' Internal dispatcher for ORCID existence checks.
+#' Internal dispatcher for retrieving identifiers linked to an ORCID record.
 #'
 #' Provider-specific implementations live in helpers named
-#' `.exists_orcid_<provider>()`.
+#' `.links_orcid_<provider>()`.
 #'
 #' @param x A single, normalized ORCID string.
 #' @param provider A single provider string.
@@ -115,19 +107,17 @@
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
-#' @return A single logical value.
+#' @return A data.frame describing linked identifiers.
 #'
 #' @noRd
-.exists_orcid <- function(
+.links_orcid <- function(
     x,
     provider,
     ...,
     quiet = FALSE
 ) {
   
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
     provider <- "orcid"
@@ -135,30 +125,29 @@
   
   switch(
     provider,
-    orcid = .exists_orcid_orcid(
+    orcid = .links_orcid_orcid(
       x = x,
       ...,
       quiet = quiet
     ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown provider: ", provider)
     )
   )
 }
 
 
-#' Check whether a PMCID exists
+
+#' Return linked identifiers for a PMCID
 #'
 #' @description
-#' Internal dispatcher for PMCID existence checks.
-#'
-#' Provider-specific implementations live in helpers named
-#' `.exists_pmcid_<provider>()`.
+#' Internal dispatcher for retrieving identifiers linked to a PMCID.
 #'
 #' If `provider = "auto"`, the dispatcher first tries NCBI and falls back to
-#' Europe PMC if the NCBI result is `NA`.
+#' Europe PMC if the NCBI result is `NULL` or empty.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.links_pmcid_<provider>()`.
 #'
 #' @param x A single, normalized PMCID string.
 #' @param provider A single provider string.
@@ -166,83 +155,79 @@
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
-#' @return A single logical value.
+#' @return A data.frame describing linked identifiers.
 #'
 #' @noRd
-.exists_pmcid <- function(
+.links_pmcid <- function(
     x,
     provider,
     ...,
     quiet = FALSE
 ) {
   
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
     
-    out_ncbi <- .exists_pmcid_ncbi(
+    out_ncbi <- .links_pmcid_ncbi(
       x = x,
       ...,
       quiet = TRUE
     )
     
-    if (!is.na(out_ncbi)) {
+    if (!is.null(out_ncbi) && nrow(out_ncbi) > 0L) {
       return(out_ncbi)
     }
     
-    out_epmc <- .exists_pmcid_epmc(
+    out_epmc <- .links_pmcid_epmc(
       x = x,
       ...,
       quiet = TRUE
     )
     
-    if (!is.na(out_epmc)) {
+    if (!is.null(out_epmc) && nrow(out_epmc) > 0L) {
       return(out_epmc)
     }
     
     if (!isTRUE(quiet)) {
-      warning(
-        "PMCID existence could not be determined via NCBI or Europe PMC.",
-        call. = FALSE
+      rlang::warn(
+        "Linked identifiers for this PMCID could not be determined via NCBI or Europe PMC."
       )
     }
     
-    return(NA)
+    return(data.frame())
   }
   
   switch(
     provider,
-    ncbi = .exists_pmcid_ncbi(
+    ncbi = .links_pmcid_ncbi(
       x = x,
       ...,
       quiet = quiet
     ),
-    epmc = .exists_pmcid_epmc(
+    epmc = .links_pmcid_epmc(
       x = x,
       ...,
       quiet = quiet
     ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown provider: ", provider)
     )
   )
 }
 
 
-#' Check whether a PMID exists
+
+#' Return linked identifiers for a PMID
 #'
 #' @description
-#' Internal dispatcher for PMID existence checks.
-#'
-#' Provider-specific implementations live in helpers named
-#' `.exists_pmid_<provider>()`.
+#' Internal dispatcher for retrieving identifiers linked to a PMID.
 #'
 #' If `provider = "auto"`, the dispatcher first tries NCBI and falls back to
-#' Europe PMC if the NCBI result is `NA`.
+#' Europe PMC if the NCBI result is `NULL` or empty.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.links_pmid_<provider>()`.
 #'
 #' @param x A single, normalized PMID string.
 #' @param provider A single provider string.
@@ -250,68 +235,63 @@
 #' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
 #'   possible.
 #'
-#' @return A single logical value.
+#' @return A data.frame describing linked identifiers.
 #'
 #' @noRd
-.exists_pmid <- function(
+.links_pmid <- function(
     x,
     provider,
     ...,
     quiet = FALSE
 ) {
   
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
     
-    out_ncbi <- .exists_pmid_ncbi(
+    out_ncbi <- .links_pmid_ncbi(
       x = x,
       ...,
       quiet = TRUE
     )
     
-    if (!is.na(out_ncbi)) {
+    if (!is.null(out_ncbi) && nrow(out_ncbi) > 0L) {
       return(out_ncbi)
     }
     
-    out_epmc <- .exists_pmid_epmc(
+    out_epmc <- .links_pmid_epmc(
       x = x,
       ...,
       quiet = TRUE
     )
     
-    if (!is.na(out_epmc)) {
+    if (!is.null(out_epmc) && nrow(out_epmc) > 0L) {
       return(out_epmc)
     }
     
     if (!isTRUE(quiet)) {
-      warning(
-        "PMID existence could not be determined via NCBI or Europe PMC.",
-        call. = FALSE
+      rlang::warn(
+        "Linked identifiers for this PMID could not be determined via NCBI or Europe PMC."
       )
     }
     
-    return(NA)
+    return(data.frame())
   }
   
   switch(
     provider,
-    ncbi = .exists_pmid_ncbi(
+    ncbi = .links_pmid_ncbi(
       x = x,
       ...,
       quiet = quiet
     ),
-    epmc = .exists_pmid_epmc(
+    epmc = .links_pmid_epmc(
       x = x,
       ...,
       quiet = quiet
     ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown provider: ", provider)
     )
   )
 }

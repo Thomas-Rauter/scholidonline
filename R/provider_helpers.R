@@ -10,9 +10,6 @@
 #'
 #' They are used by front-end functions such as `id_exists()` and
 #' `id_convert()` to dispatch work to provider-specific implementations.
-#'
-#' @keywords internal
-NULL
 
 
 # Level 1 function (functions called by exported functions) definitions --------

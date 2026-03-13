@@ -13,9 +13,6 @@
 #'
 #' Helper functions in this file expose registry metadata used by the
 #' exported front-end functions (e.g. `id_exists()`, `id_convert()`).
-#'
-#' @keywords internal
-NULL
 
 
 #' Supported scholidonline identifier types
@@ -40,7 +37,6 @@ scholidonline_types <- function() {
 
 
 .scholidonline_registry <- function() {
-  
   reg <- list(
     
     arxiv = list(
@@ -48,6 +44,11 @@ scholidonline_types <- function() {
         providers = c("auto", "arxiv"),
         default_provider = "arxiv",
         dispatcher = ".exists_arxiv"
+      ),
+      links = list(
+        providers = c("auto", "arxiv"),
+        default_provider = "arxiv",
+        dispatcher = ".links_arxiv"
       ),
       convert = list()
     ),
@@ -57,6 +58,11 @@ scholidonline_types <- function() {
         providers = c("auto", "doi.org", "crossref"),
         default_provider = "doi.org",
         dispatcher = ".exists_doi"
+      ),
+      links = list(
+        providers = c("auto", "crossref"),
+        default_provider = "crossref",
+        dispatcher = ".links_doi"
       ),
       convert = list(
         pmid = list(
@@ -76,6 +82,11 @@ scholidonline_types <- function() {
         default_provider = "orcid",
         dispatcher = ".exists_orcid"
       ),
+      links = list(
+        providers = c("auto", "orcid"),
+        default_provider = "orcid",
+        dispatcher = ".links_orcid"
+      ),
       convert = list()
     ),
     
@@ -84,6 +95,11 @@ scholidonline_types <- function() {
         providers = c("auto", "ncbi", "epmc"),
         default_provider = "ncbi",
         dispatcher = ".exists_pmcid"
+      ),
+      links = list(
+        providers = c("auto", "ncbi", "epmc"),
+        default_provider = "ncbi",
+        dispatcher = ".links_pmcid"
       ),
       convert = list(
         pmid = list(
@@ -102,6 +118,11 @@ scholidonline_types <- function() {
         providers = c("auto", "ncbi", "epmc"),
         default_provider = "ncbi",
         dispatcher = ".exists_pmid"
+      ),
+      links = list(
+        providers = c("auto", "ncbi", "epmc"),
+        default_provider = "ncbi",
+        dispatcher = ".links_pmid"
       ),
       convert = list(
         doi = list(
@@ -129,16 +150,13 @@ scholidonline_types <- function() {
 #'
 #' @noRd
 .scholidonline_exists_meta <- function(type) {
-  
   type <- .scholidonline_match_type(type, arg = "type")
-  
   reg <- .scholidonline_registry()
   meta <- reg[[type]]$exists
   
   if (is.null(meta)) {
-    stop(
-      "Existence checking is not supported for `", type, "`.",
-      call. = FALSE
+    rlang::abort(
+      paste0("Existence checking is not supported for `", type, "`.")
     )
   }
   
@@ -158,21 +176,14 @@ scholidonline_types <- function() {
     from,
     to
 ) {
-  
   from <- .scholidonline_match_type(from, arg = "from")
   to   <- .scholidonline_match_type(to, arg = "to")
-  
   reg <- .scholidonline_registry()
   meta <- reg[[from]]$convert[[to]]
   
   if (is.null(meta)) {
-    stop(
-      "Unsupported conversion: ",
-      from,
-      " -> ",
-      to,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0("Unsupported conversion: ", from, " -> ", to, ".")
     )
   }
   

@@ -10,10 +10,11 @@ id_links(x, type = NULL, provider = "auto", ..., quiet = FALSE)
 \item{x}{A character vector of identifiers.}
 
 \item{type}{A single string giving the identifier type, or \code{NULL} to infer
-per element. See \code{scholid::scholid_types()} for supported values.}
+per element. See \code{scholidonline::scholidonline_types()} for supported
+values.}
 
-\item{provider}{Provider to use (e.g. "auto", "crossref", "ncbi", "epmc",
-"orcid", "arxiv").}
+\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"crossref"}, \code{"ncbi"},
+\code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
 
 \item{...}{Passed to provider-specific implementations.}
 
@@ -25,23 +26,39 @@ A data.frame with columns:
 \code{input}, \code{input_type}, \code{linked_type}, \code{linked_value}, \code{provider}.
 }
 \description{
-Return “all linked identifiers we can find” for each input identifier.
+Return identifier links that external registries associate with the same
+scholarly object or a directly corresponding manifestation.
 
 \code{id_links()} is vectorized over \code{x} and returns a long data.frame with one
-row per (input, linked_type, linked_value).
+row per discovered identifier link.
+
+The function is intended to expose cross-registry identifier links such as:
+\itemize{
+\item DOI ↔ PMID
+\item DOI ↔ PMCID
+\item PMID ↔ PMCID
+\item arXiv ID ↔ DOI
+\item ORCID → DOI for works recorded in ORCID
+}
+
+Only identifier links explicitly exposed by the queried provider are
+returned. \code{id_links()} is not a general metadata retrieval function and does
+not attempt to return broader related records unless the provider represents
+them as direct identifier links for the same object or directly corresponding
+manifestation.
 
 If \code{type} is \code{NULL}, the identifier type is inferred per element using
-\code{scholid::detect_scholid_type()} after normalization (where possible).
-Inputs that cannot be classified or normalized yield zero rows.
+\code{scholid::detect_scholid_type()}. Inputs that cannot be classified or
+normalized yield zero rows.
 
-Provider-/ID-specific logic lives in internal helpers named \verb{links_<type>()}
-(e.g., \code{links_pmid()}), which are dispatched to from this front-door
-function.
+Provider-/ID-specific logic lives in internal helpers named
+\verb{.links_<type>()} (e.g. \code{.links_pmid()}), which are dispatched to from this
+front-end function.
 }
 \examples{
 \dontrun{
 id_links("10.1000/182", type = "doi")
-id_links(c("12345678", "PMC12345"))  # infer type
+id_links(c("12345678", "PMC12345"))
 }
 
 }

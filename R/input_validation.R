@@ -10,53 +10,53 @@
 #' The functions in this file are intentionally generic and independent
 #' of registry metadata, making them reusable across multiple exported
 #' functions (e.g. `id_exists()`, `id_convert()`).
-#'
-#' @keywords internal
-NULL
 
 
 # Level 1 function (functions called by exported functions) definitions --------
 
 
-#' Validate vector-like inputs
+#' Validate identifier input vector
 #'
 #' @description
-#' Internal helper for validating inputs expected to be vector-like. The
-#' function checks that the argument is present, not `NULL`, and is an
-#' atomic vector. Errors are thrown for invalid inputs.
+#' Internal helper for validating inputs expected to be character vectors of
+#' identifiers.
 #'
-#' @param x An input expected to be an atomic vector.
+#' @param x An input expected to be a character vector.
 #' @param arg Name of the argument, used in error messages.
 #'
-#' @return Invisibly returns `TRUE` if validation succeeds.
+#' @return Invisibly returns `NULL` if validation succeeds.
 #'
 #' @noRd
 .scholidonline_check_x <- function(
-        x,
-        arg
+    x,
+    arg = "x"
 ) {
-    if (missing(x)) {
-        stop("`", arg, "` is required.", call. = FALSE)
-    }
-
-    if (is.null(x)) {
-        stop("`", arg, "` must not be NULL.", call. = FALSE)
-    }
-
-    if (is.data.frame(x)) {
-        stop("`", arg, "` must not be a data frame.", call. = FALSE)
-    }
-
-    if (!is.atomic(x)) {
-        cls <- paste(class(x), collapse = "/")
-        stop(
-            "`", arg, "` must be an atomic vector, not ",
-            cls, ".",
-            call. = FALSE
-        )
-    }
-
-    invisible(TRUE)
+  if (missing(x)) {
+    rlang::abort(
+      paste0("`", arg, "` is required.")
+    )
+  }
+  
+  if (is.null(x)) {
+    rlang::abort(
+      paste0("`", arg, "` must not be NULL.")
+    )
+  }
+  
+  if (is.data.frame(x)) {
+    rlang::abort(
+      paste0("`", arg, "` must not be a data frame.")
+    )
+  }
+  
+  if (!is.atomic(x) || !is.character(x)) {
+    cls <- paste(class(x), collapse = "/")
+    rlang::abort(
+      paste0("`", arg, "` must be a character vector, not ", cls, ".")
+    )
+  }
+  
+  invisible(NULL)
 }
 
 
@@ -83,74 +83,54 @@ NULL
 }
 
 
-#' Match and validate scholidonline identifier type
+#' Validate provider argument
 #'
 #' @description
-#' Internal helper that validates a user-supplied identifier type against
-#' a set of supported identifier types.
+#' Internal helper that validates a provider argument against a set of
+#' allowed providers.
 #'
-#' Ensures that `type` is a single, non-empty character string and
-#' corresponds to one of the allowed identifier types. If validation fails,
-#' a descriptive error is raised.
+#' This function performs strict validation only. It does not modify or
+#' normalize the input.
 #'
-#' This function centralizes type validation logic for exported helpers
-#' such as `id_exists()`, `id_convert()`, `id_metadata()`, and `id_links()`.
+#' @param provider A candidate provider string.
+#' @param arg Name of the argument used in error messages.
+#' @param choices Character vector of allowed providers.
 #'
-#' @param type A candidate identifier type.
-#' @param arg A single string giving the argument name to use in error
-#'   messages (e.g. `"type"`, `"from"`, `"to"`).
-#' @param choices Optional character vector of allowed identifier types.
-#'   If `NULL`, defaults to `scholidonline_types()`.
-#'
-#' @return A validated identifier type string.
+#' @return Invisibly returns `NULL` if validation succeeds.
 #'
 #' @noRd
-.scholidonline_match_type <- function(
-    type,
-    arg = "type",
-    choices = NULL
+.scholidonline_check_provider <- function(
+    provider,
+    arg = "provider",
+    choices
 ) {
-  type_chr <- .scholidonline_as_scalar_character(
-    x = type,
-    arg = arg
-  )
   
-  if (is.na(type_chr)) {
-    stop(
-      "`",
-      arg,
-      "` must be a non-empty string.",
-      call. = FALSE
+  if (!is.character(provider) || length(provider) != 1L ||
+      is.na(provider) || !nzchar(provider)) {
+    rlang::abort(
+      paste0("`", arg, "` must be a single, non-empty character string.")
     )
   }
   
-  if (is.null(choices)) {
-    choices <- scholidonline_types()
-  }
-  
-  if (!is.character(choices) || !length(choices) || anyNA(choices)) {
-    stop(
-      "`choices` must be a non-empty character vector without NA.",
-      call. = FALSE
+  if (!is.character(choices) || length(choices) == 0L ||
+      anyNA(choices) || any(!nzchar(choices))) {
+    rlang::abort(
+      "`choices` must be a non-empty character vector ",
+      "without missing or empty values."
     )
   }
   
-  out <- match.arg(
-    arg = type_chr,
-    choices = choices,
-    several.ok = FALSE
-  )
-  
-  if (!identical(type_chr, out)) {
-    stop(
-      "`",
-      arg,
-      "` must match exactly; abbreviations are not allowed.",
-      call. = FALSE
+  if (!provider %in% choices) {
+    rlang::abort(
+      paste0(
+        "`", arg, "` must be one of: ",
+        paste0("`", choices, "`", collapse = ", "),
+        "."
+      )
     )
   }
   
-  out
+  invisible(NULL)
 }
 
 
@@ -163,7 +143,7 @@ NULL
 #'   be suppressed.
 #' @param arg Name of the calling argument.
 #'
-#' @return A single logical value.
+#' @return Invisibly returns `NULL` if validation succeeds.
 #'
 #' @details
 #' Ensures that the `quiet` argument is a single logical value.
@@ -173,16 +153,111 @@ NULL
     quiet,
     arg = "quiet"
 ) {
-  
   if (!is.logical(quiet) || length(quiet) != 1L || is.na(quiet)) {
-    stop(
-      "`", arg, "` must be a single TRUE or FALSE value.",
-      call. = FALSE
+    rlang::abort(
+      paste0("`", arg, "` must be a single TRUE or FALSE value.")
     )
   }
   
-  quiet
+  invisible(NULL)
 }
+
+
+#' Check whether `type` and `provider` are compatible
+#'
+#' Validates that a given identifier `type` can be used with a given
+#' `provider`, according to the internal Scholidonline registry returned
+#' by [`.scholidonline_registry()`].
+#'
+#' This function assumes that `type` and `provider` have already passed
+#' general input validation (for example via `match.arg()`). It only checks
+#' whether the combination is allowed by the registry.
+#'
+#' The special value `"auto"` is treated like any other provider value and
+#' is valid only if it appears in the registry for the given `type`.
+#'
+#' @param type A length-1 character string giving the identifier type.
+#' @param provider A length-1 character string giving the provider.
+#'
+#' @return `TRUE` invisibly if the combination is valid.
+#'
+#' @noRd
+.scholidonline_check_type_provider <- function(
+    type,
+    provider
+) {
+  reg <- .scholidonline_registry()
+  
+  if (identical(type, "auto")) {
+    invisible(NULL)
+    return()
+  }
+  
+  allowed_providers <- unique(c(
+    reg[[type]][["exists"]][["providers"]],
+    reg[[type]][["links"]][["providers"]],
+    unlist(
+      lapply(
+        reg[[type]][["convert"]],
+        function(x) x[["providers"]]
+      ),
+      use.names = FALSE
+    )
+  ))
+  
+  if (!provider %in% allowed_providers) {
+    rlang::abort(
+      paste0(
+        "Provider '", provider, "' is not supported for type '",
+        type, "'. Allowed providers are: ",
+        paste(allowed_providers, collapse = ", "),
+        "."
+      )
+    )
+  }
+  
+  invisible(NULL)
+}
+
+
+#' Return all providers defined in the registry
+#'
+#' Extracts all providers from the internal Scholidonline registry returned
+#' by [`.scholidonline_registry()`].
+#'
+#' Providers are collected across `exists`, `links`, and all `convert`
+#' entries, deduplicated, sorted, and returned. The value `"auto"` is
+#' always removed because it represents a dispatch mode rather than a
+#' real provider.
+#'
+#' @return A character vector of provider names.
+#'
+#' @noRd
+.scholidonline_providers <- function() {
+  reg <- .scholidonline_registry()
+  providers <- unlist(
+    lapply(reg, function(type_entry) {
+      c(
+        type_entry[["exists"]][["providers"]],
+        type_entry[["links"]][["providers"]],
+        unlist(
+          lapply(
+            type_entry[["convert"]],
+            function(convert_entry) convert_entry[["providers"]]
+          ),
+          use.names = FALSE
+        )
+      )
+    }),
+    use.names = FALSE
+  )
+  
+  providers <- sort(unique(providers))
+  providers <- setdiff(providers, "auto")
+  
+  providers
+}
+
 
 # Level 2 function (functions called by lvl 1 functions) definitions -----------
 

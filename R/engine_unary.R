@@ -207,20 +207,16 @@
 #' Resolve a provider for a unary scholidonline operation
 #'
 #' @description
-#' Internal helper used by the unary dispatch engine to resolve the provider
-#' for a unary operation from registry metadata.
+#' Internal helper used by the unary dispatch engine to validate the provider
+#' argument for a unary operation.
 #'
-#' This helper wraps `.scholidonline_match_provider()` and applies the provider
-#' choices and default provider declared in the unary operation metadata.
-#'
-#' It assumes that `meta` was produced by
-#' `.scholidonline_get_unary_meta()` and therefore contains valid
-#' `providers` and `default_provider` fields.
+#' For unary operations, `"auto"` is preserved so that dispatchers can
+#' implement operation-specific fallback behavior.
 #'
 #' @param provider A single provider string or `"auto"`.
 #' @param meta A named list of unary operation metadata.
 #'
-#' @return A single resolved provider string.
+#' @return A single validated provider string.
 #'
 #' @noRd
 .scholidonline_resolve_unary_provider <- function(
@@ -242,18 +238,26 @@
     )
   }
   
-  if (is.null(meta$default_provider)) {
+  choices <- unique(meta$providers)
+  
+  if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
     stop(
-      "`meta` must contain `default_provider`.",
+      "`provider` must be a single, non-missing character string.",
       call. = FALSE
     )
   }
   
-  .scholidonline_match_provider(
-    provider = provider,
-    choices = meta$providers,
-    default_provider = meta$default_provider
-  )
+  if (!provider %in% choices) {
+    stop(
+      "Unknown provider: `",
+      provider,
+      "`. Must be one of: ",
+      paste0("`", choices, "`", collapse = ", "),
+      call. = FALSE
+    )
+  }
+  
+  provider
 }
 
 
@@ -344,8 +348,9 @@
 .scholidonline_unary_return_mode <- function(
     operation
 ) {
-  
-  if (!is.character(operation) || length(operation) != 1L || is.na(operation)) {
+  if (!is.character(operation) 
+      || length(operation) != 1L 
+      || is.na(operation)) {
     stop(
       "`operation` must be a single, non-missing character string.",
       call. = FALSE
@@ -398,14 +403,42 @@
   
   switch(
     return_mode,
-    logical_scalar = .scholidonline_as_logical_scalar(
-      x = x
-    ),
+    logical_scalar = .scholidonline_as_logical_scalar(x),
+    list_scalar = .scholidonline_as_list_scalar(x),
     stop(
       "Unknown unary `return_mode`: `",
       return_mode,
       "`.",
       call. = FALSE
     )
+  )
+}
+
+
+# Level 4 function (functions called by level 3 functions) definitions ---------
+
+
+#' Coerce value to a list-like scalar result
+#'
+#' @param x An object returned by a unary dispatcher.
+#'
+#' @return A validated scalar list-like object.
+#'
+#' @noRd
+.scholidonline_as_list_scalar <- function(x) {
+  if (is.null(x)) {
+    return(data.frame())
+  }
+  
+  if (is.data.frame(x)) {
+    return(x)
+  }
+  
+  if (is.list(x) && !is.data.frame(x) && length(x) == 1L) {
+    return(x)
+  }
+  
+  rlang::abort(
+    "`x` must be a data.frame, NULL, or a scalar list object."
   )
 }
