@@ -27,8 +27,8 @@
 #' @param x A character vector of normalized identifiers.
 #' @param operation A single string giving the unary operation
 #'   (e.g. `"exists"`).
-#' @param type A character vector of identifier types. Must be either length 1
-#'   or the same length as `x`.
+#' @param type A character vector of identifier types. Must be either
+#'   length 1 or the same length as `x`.
 #' @param provider Provider choice or `"auto"`.
 #' @param ... Passed to provider implementations.
 #' @param quiet Logical flag forwarded to provider implementations.
@@ -56,10 +56,7 @@
   } else if (length(type) == n) {
     type_vec <- type
   } else {
-    stop(
-      "`type` must have length 1 or length(x).",
-      call. = FALSE
-    )
+    rlang::abort("`type` must have length 1 or length(x).")
   }
   
   out <- vector(
@@ -138,24 +135,20 @@
   type_block <- reg[[type]]
   
   if (is.null(type_block)) {
-    stop(
-      "Unknown identifier type: ",
-      type,
-      ".",
-      call. = FALSE
-    )
+    rlang::abort(paste0("Unknown identifier type: ", type, "."))
   }
   
   op_block <- type_block[[operation]]
   
   if (is.null(op_block)) {
-    stop(
-      "Operation `",
-      operation,
-      "` not supported for type `",
-      type,
-      "`.",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Operation `",
+        operation,
+        "` not supported for type `",
+        type,
+        "`."
+      )
     )
   }
   
@@ -164,35 +157,38 @@
   dispatcher <- op_block$dispatcher
   
   if (is.null(providers) || !length(providers)) {
-    stop(
-      "Registry error: missing `providers` for ",
-      type,
-      " -> ",
-      operation,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `providers` for ",
+        type,
+        " -> ",
+        operation,
+        "."
+      )
     )
   }
   
   if (is.null(default_provider)) {
-    stop(
-      "Registry error: missing `default_provider` for ",
-      type,
-      " -> ",
-      operation,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `default_provider` for ",
+        type,
+        " -> ",
+        operation,
+        "."
+      )
     )
   }
   
   if (is.null(dispatcher)) {
-    stop(
-      "Registry error: missing `dispatcher` for ",
-      type,
-      " -> ",
-      operation,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `dispatcher` for ",
+        type,
+        " -> ",
+        operation,
+        "."
+      )
     )
   }
   
@@ -207,8 +203,8 @@
 #' Resolve a provider for a unary scholidonline operation
 #'
 #' @description
-#' Internal helper used by the unary dispatch engine to validate the provider
-#' argument for a unary operation.
+#' Internal helper used by the unary dispatch engine to validate the
+#' provider argument for a unary operation.
 #'
 #' For unary operations, `"auto"` is preserved so that dispatchers can
 #' implement operation-specific fallback behavior.
@@ -225,35 +221,29 @@
 ) {
   
   if (!is.list(meta)) {
-    stop(
-      "`meta` must be a list.",
-      call. = FALSE
-    )
+    rlang::abort("`meta` must be a list.")
   }
   
   if (is.null(meta$providers)) {
-    stop(
-      "`meta` must contain `providers`.",
-      call. = FALSE
-    )
+    rlang::abort("`meta` must contain `providers`.")
   }
   
   choices <- unique(meta$providers)
   
   if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
-    stop(
-      "`provider` must be a single, non-missing character string.",
-      call. = FALSE
+    rlang::abort(
+      "`provider` must be a single, non-missing character string."
     )
   }
   
   if (!provider %in% choices) {
-    stop(
-      "Unknown provider: `",
-      provider,
-      "`. Must be one of: ",
-      paste0("`", choices, "`", collapse = ", "),
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Unknown provider: `",
+        provider,
+        "`. Must be one of: ",
+        paste0("`", choices, "`", collapse = ", ")
+      )
     )
   }
   
@@ -300,10 +290,7 @@
 ) {
   
   if (!is.function(dispatcher)) {
-    stop(
-      "`dispatcher` must be a function.",
-      call. = FALSE
-    )
+    rlang::abort("`dispatcher` must be a function.")
   }
   
   return_mode <- .scholidonline_unary_return_mode(
@@ -327,12 +314,12 @@
 #' Get the return mode for a unary scholidonline operation
 #'
 #' @description
-#' Internal helper used by the unary dispatch engine to determine the expected
-#' return mode for a unary operation.
+#' Internal helper used by the unary dispatch engine to determine the
+#' expected return mode for a unary operation.
 #'
-#' The return mode defines the value shape that provider implementations must
-#' satisfy after dispatch. It is used by the engine to validate and standardize
-#' provider results.
+#' The return mode defines the value shape that provider implementations
+#' must satisfy after dispatch. It is used by the engine to validate and
+#' standardize provider results.
 #'
 #' Current unary return modes are:
 #'
@@ -348,12 +335,10 @@
 .scholidonline_unary_return_mode <- function(
     operation
 ) {
-  if (!is.character(operation) 
-      || length(operation) != 1L 
-      || is.na(operation)) {
-    stop(
-      "`operation` must be a single, non-missing character string.",
-      call. = FALSE
+  if (!is.character(operation) || length(operation) != 1L ||
+      is.na(operation)) {
+    rlang::abort(
+      "`operation` must be a single, non-missing character string."
     )
   }
   
@@ -362,12 +347,7 @@
     exists = "logical_scalar",
     meta = "list_scalar",
     links = "list_scalar",
-    stop(
-      "Unknown unary operation: `",
-      operation,
-      "`.",
-      call. = FALSE
-    )
+    rlang::abort(paste0("Unknown unary operation: `", operation, "`."))
   )
 }
 
@@ -392,12 +372,10 @@
     return_mode
 ) {
   
-  if (!is.character(return_mode) 
-      || length(return_mode) != 1L 
-      || is.na(return_mode)) {
-    stop(
-      "`return_mode` must be a single, non-missing character string.",
-      call. = FALSE
+  if (!is.character(return_mode) || length(return_mode) != 1L ||
+      is.na(return_mode)) {
+    rlang::abort(
+      "`return_mode` must be a single, non-missing character string."
     )
   }
   
@@ -405,11 +383,8 @@
     return_mode,
     logical_scalar = .scholidonline_as_logical_scalar(x),
     list_scalar = .scholidonline_as_list_scalar(x),
-    stop(
-      "Unknown unary `return_mode`: `",
-      return_mode,
-      "`.",
-      call. = FALSE
+    rlang::abort(
+      paste0("Unknown unary `return_mode`: `", return_mode, "`.")
     )
   )
 }
@@ -438,7 +413,5 @@
     return(x)
   }
   
-  rlang::abort(
-    "`x` must be a data.frame, NULL, or a scalar list object."
-  )
+  rlang::abort("`x` must be a data.frame, NULL, or a scalar list object.")
 }

@@ -55,10 +55,7 @@
   } else if (length(from) == n) {
     from_vec <- from
   } else {
-    stop(
-      "`from` must have length 1 or length(x).",
-      call. = FALSE
-    )
+    rlang::abort("`from` must have length 1 or length(x).")
   }
   
   out <- rep(
@@ -143,35 +140,22 @@
   from_block <- reg[[from]]
   
   if (is.null(from_block)) {
-    stop(
-      "Unknown source identifier type: ",
-      from,
-      ".",
-      call. = FALSE
-    )
+    rlang::abort(paste0("Unknown source identifier type: ", from, "."))
   }
   
   conv_block <- from_block$convert
   
   if (is.null(conv_block)) {
-    stop(
-      "No binary operations supported for type `",
-      from,
-      "`.",
-      call. = FALSE
+    rlang::abort(
+      paste0("No binary operations supported for type `", from, "`.")
     )
   }
   
   pair_block <- conv_block[[to]]
   
   if (is.null(pair_block)) {
-    stop(
-      "Unsupported conversion: `",
-      from,
-      "` -> `",
-      to,
-      "`.",
-      call. = FALSE
+    rlang::abort(
+      paste0("Unsupported conversion: `", from, "` -> `", to, "`.")
     )
   }
   
@@ -180,35 +164,38 @@
   dispatcher <- pair_block$dispatcher
   
   if (is.null(providers) || !length(providers)) {
-    stop(
-      "Registry error: missing `providers` for ",
-      from,
-      " -> ",
-      to,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `providers` for ",
+        from,
+        " -> ",
+        to,
+        "."
+      )
     )
   }
   
   if (is.null(default_provider)) {
-    stop(
-      "Registry error: missing `default_provider` for ",
-      from,
-      " -> ",
-      to,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `default_provider` for ",
+        from,
+        " -> ",
+        to,
+        "."
+      )
     )
   }
   
   if (is.null(dispatcher)) {
-    stop(
-      "Registry error: missing `dispatcher` for ",
-      from,
-      " -> ",
-      to,
-      ".",
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Registry error: missing `dispatcher` for ",
+        from,
+        " -> ",
+        to,
+        "."
+      )
     )
   }
   
@@ -223,8 +210,8 @@
 #' Resolve a provider for a binary scholidonline operation
 #'
 #' @description
-#' Internal helper used by the binary dispatch engine to validate the provider
-#' argument for a binary operation.
+#' Internal helper used by the binary dispatch engine to validate the
+#' provider argument for a binary operation.
 #'
 #' For binary operations, `"auto"` is preserved so that dispatchers can
 #' implement pair-specific fallback behavior.
@@ -241,35 +228,29 @@
 ) {
   
   if (!is.list(meta)) {
-    stop(
-      "`meta` must be a list.",
-      call. = FALSE
-    )
+    rlang::abort("`meta` must be a list.")
   }
   
   if (is.null(meta$providers)) {
-    stop(
-      "`meta` must contain `providers`.",
-      call. = FALSE
-    )
+    rlang::abort("`meta` must contain `providers`.")
   }
   
   choices <- unique(meta$providers)
   
   if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
-    stop(
-      "`provider` must be a single, non-missing character string.",
-      call. = FALSE
+    rlang::abort(
+      "`provider` must be a single, non-missing character string."
     )
   }
   
   if (!provider %in% choices) {
-    stop(
-      "Unknown provider: `",
-      provider,
-      "`. Must be one of: ",
-      paste0("`", choices, "`", collapse = ", "),
-      call. = FALSE
+    rlang::abort(
+      paste0(
+        "Unknown provider: `",
+        provider,
+        "`. Must be one of: ",
+        paste0("`", choices, "`", collapse = ", ")
+      )
     )
   }
   
@@ -281,8 +262,8 @@
 #'
 #' @description
 #' Internal helper used by the binary engine to determine whether a binary
-#' operation is an identity mapping, i.e. source and target identifier types
-#' are the same.
+#' operation is an identity mapping, i.e. source and target identifier
+#' types are the same.
 #'
 #' @param from A single source identifier type string.
 #' @param to A single target identifier type string.
@@ -296,17 +277,11 @@
 ) {
   
   if (!is.character(from) || length(from) != 1L || is.na(from)) {
-    stop(
-      "`from` must be a single, non-missing character string.",
-      call. = FALSE
-    )
+    rlang::abort("`from` must be a single, non-missing character string.")
   }
   
   if (!is.character(to) || length(to) != 1L || is.na(to)) {
-    stop(
-      "`to` must be a single, non-missing character string.",
-      call. = FALSE
-    )
+    rlang::abort("`to` must be a single, non-missing character string.")
   }
   
   identical(from, to)
@@ -316,8 +291,8 @@
 #' Run one binary scholidonline operation
 #'
 #' @description
-#' Internal helper used by `.scholidonline_run_binary()` to execute a binary
-#' operation for a single normalized identifier.
+#' Internal helper used by `.scholidonline_run_binary()` to execute a
+#' binary operation for a single normalized identifier.
 #'
 #' This helper:
 #'
@@ -354,10 +329,7 @@
 ) {
   
   if (!is.function(dispatcher)) {
-    stop(
-      "`dispatcher` must be a function.",
-      call. = FALSE
-    )
+    rlang::abort("`dispatcher` must be a function.")
   }
   
   result <- dispatcher(
@@ -369,28 +341,5 @@
     quiet = quiet
   )
   
-  .scholidonline_validate_binary_result(
-    x = result
-  )
-}
-
-
-#' Validate the result of a binary scholidonline operation
-#'
-#' @description
-#' Internal helper used by the binary engine to validate and standardize the
-#' return value of a binary operation.
-#'
-#' Binary provider implementations must return a single character value,
-#' typically the converted identifier or `NA_character_`.
-#'
-#' @param x The value returned by a binary dispatcher.
-#'
-#' @return A validated character scalar.
-#'
-#' @noRd
-.scholidonline_validate_binary_result <- function(
-    x
-) {
-  .scholidonline_as_character_scalar(x)
+  .scholidonline_as_character_scalar(result)
 }
