@@ -302,3 +302,201 @@
   
   do.call(rbind, rows)
 }
+
+
+#' Europe PMC: retrieve metadata for a PMID
+#'
+#' @description
+#' Provider implementation for retrieving metadata for a PMID using the
+#' Europe PMC REST API.
+#'
+#' @param x A single, normalized PMID string.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the PMID.
+#'
+#' @noRd
+.meta_pmid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  url <- paste0(
+    "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+    "?query=EXT_ID:",
+    utils::URLencode(x, reserved = TRUE),
+    "%20AND%20SRC:MED&format=json"
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("Europe PMC request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "Europe PMC request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(data.frame())
+  }
+  
+  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  
+  recs <- obj$resultList$result
+  
+  if (is.null(recs) || length(recs) == 0L) {
+    return(data.frame())
+  }
+  
+  rec <- if (is.data.frame(recs)) {
+    recs[1, ]
+  } else if (is.list(recs) && !is.null(recs[[1]]) && is.list(recs[[1]])) {
+    recs[[1]]
+  } else {
+    recs
+  }
+  
+  data.frame(
+    title = rec[["title"]] %||% NA_character_,
+    year = if (!is.null(rec[["pubYear"]])) {
+      as.integer(rec[["pubYear"]])
+    } else {
+      NA_integer_
+    },
+    container = rec[["journalTitle"]] %||% NA_character_,
+    doi = rec[["doi"]] %||% NA_character_,
+    pmid = x,
+    pmcid = rec[["pmcid"]] %||% NA_character_,
+    url = paste0(
+      "https://europepmc.org/article/MED/",
+      x
+    ),
+    provider = "epmc",
+    stringsAsFactors = FALSE
+  )
+}
+
+
+#' Europe PMC: retrieve metadata for a PMCID
+#'
+#' @description
+#' Provider implementation for retrieving metadata for a PMCID using the
+#' Europe PMC REST API.
+#'
+#' @param x A single, normalized PMCID string.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the PMCID.
+#'
+#' @noRd
+.meta_pmcid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  pmcid_clean <- gsub("^PMC", "", x)
+  
+  url <- paste0(
+    "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+    "?query=PMCID:PMC",
+    utils::URLencode(pmcid_clean, reserved = TRUE),
+    "&format=json"
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("Europe PMC request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "Europe PMC request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(data.frame())
+  }
+  
+  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  
+  recs <- obj$resultList$result
+  
+  if (is.null(recs) || length(recs) == 0L) {
+    return(data.frame())
+  }
+  
+  rec <- if (is.data.frame(recs)) {
+    recs[1, ]
+  } else if (is.list(recs) && !is.null(recs[[1]]) && is.list(recs[[1]])) {
+    recs[[1]]
+  } else {
+    recs
+  }
+  
+  data.frame(
+    title = rec[["title"]] %||% NA_character_,
+    year = if (!is.null(rec[["pubYear"]])) {
+      as.integer(rec[["pubYear"]])
+    } else {
+      NA_integer_
+    },
+    container = rec[["journalTitle"]] %||% NA_character_,
+    doi = rec[["doi"]] %||% NA_character_,
+    pmid = rec[["pmid"]] %||% NA_character_,
+    pmcid = x,
+    url = paste0(
+      "https://europepmc.org/article/PMC/",
+      pmcid_clean
+    ),
+    provider = "epmc",
+    stringsAsFactors = FALSE
+  )
+}

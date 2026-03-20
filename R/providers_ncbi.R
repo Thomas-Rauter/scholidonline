@@ -305,3 +305,190 @@
   
   do.call(rbind, rows)
 }
+
+
+#' NCBI: retrieve metadata for a PMID
+#'
+#' @description
+#' Provider implementation for retrieving metadata for a PMID using the
+#' NCBI E-utilities (esummary) API.
+#'
+#' @param x A single, normalized PMID string.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the PMID.
+#'
+#' @noRd
+.meta_pmid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  url <- paste0(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+    "?db=pubmed&id=", utils::URLencode(x, reserved = TRUE),
+    "&retmode=json"
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request returned HTTP ", status, ".", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  
+  rec <- obj$result[[x]]
+  
+  if (is.null(rec)) {
+    return(data.frame())
+  }
+  
+  data.frame(
+    title = rec$title %||% NA_character_,
+    year = if (!is.null(rec$pubdate)) {
+      as.integer(substr(rec$pubdate, 1, 4))
+    } else {
+      NA_integer_
+    },
+    container = rec$source %||% NA_character_,
+    doi = if (!is.null(rec$elocationid) &&
+              grepl("^10\\.", rec$elocationid)) {
+      rec$elocationid
+    } else {
+      NA_character_
+    },
+    pmid = x,
+    pmcid = NA_character_,
+    url = paste0(
+      "https://pubmed.ncbi.nlm.nih.gov/",
+      x,
+      "/"
+    ),
+    provider = "ncbi",
+    stringsAsFactors = FALSE
+  )
+}
+
+
+#' NCBI: retrieve metadata for a PMCID
+#'
+#' @description
+#' Provider implementation for retrieving metadata for a PMCID using the
+#' NCBI E-utilities (esummary) API.
+#'
+#' @param x A single, normalized PMCID string.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the PMCID.
+#'
+#' @noRd
+.meta_pmcid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  url <- paste0(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+    "?db=pmc&id=",
+    utils::URLencode(gsub("^PMC", "", x), reserved = TRUE),
+    "&retmode=json"
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(data.frame())
+  }
+  
+  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  
+  key <- gsub("^PMC", "", x)
+  rec <- obj$result[[key]]
+  
+  if (is.null(rec)) {
+    return(data.frame())
+  }
+  
+  data.frame(
+    title = rec$title %||% NA_character_,
+    year = if (!is.null(rec$pubdate)) {
+      as.integer(substr(rec$pubdate, 1, 4))
+    } else {
+      NA_integer_
+    },
+    container = rec$source %||% NA_character_,
+    doi = if (!is.null(rec$elocationid) &&
+              grepl("^10\\.", rec$elocationid)) {
+      rec$elocationid
+    } else {
+      NA_character_
+    },
+    pmid = rec$pmid %||% NA_character_,
+    pmcid = x,
+    url = paste0(
+      "https://www.ncbi.nlm.nih.gov/pmc/articles/",
+      x,
+      "/"
+    ),
+    provider = "ncbi",
+    stringsAsFactors = FALSE
+  )
+}

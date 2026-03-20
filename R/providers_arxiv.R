@@ -180,3 +180,100 @@
     stringsAsFactors = FALSE
   )
 }
+
+
+#' arXiv: retrieve metadata for an arXiv identifier
+#'
+#' @description
+#' Provider implementation for retrieving metadata for an arXiv identifier
+#' using the arXiv API.
+#'
+#' @param x A single, normalized arXiv identifier.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the arXiv record.
+#'
+#' @noRd
+.meta_arxiv_arxiv <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  url <- paste0(
+    "http://export.arxiv.org/api/query?id_list=",
+    utils::URLencode(x, reserved = TRUE)
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("arXiv request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "arXiv request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(data.frame())
+  }
+  
+  txt <- httr2::resp_body_string(resp)
+  
+  entry_title <- sub(
+    ".*<entry>.*?<title>(.*?)</title>.*",
+    "\\1",
+    txt
+  )
+  
+  entry_year <- sub(
+    ".*<entry>.*?<published>([0-9]{4})-.*",
+    "\\1",
+    txt
+  )
+  
+  entry_url <- sub(
+    ".*<entry>.*?<id>(.*?)</id>.*",
+    "\\1",
+    txt
+  )
+  
+  if (identical(entry_title, txt)) {
+    return(data.frame())
+  }
+  
+  data.frame(
+    title = entry_title,
+    year = suppressWarnings(as.integer(entry_year)),
+    container = "arXiv",
+    doi = NA_character_,
+    pmid = NA_character_,
+    pmcid = NA_character_,
+    url = entry_url,
+    provider = "arxiv",
+    stringsAsFactors = FALSE
+  )
+}

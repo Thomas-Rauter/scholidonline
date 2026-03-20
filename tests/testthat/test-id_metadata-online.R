@@ -1,112 +1,193 @@
-testthat::test_that(
-  "id_metadata (online): DOI returns structured data",
-  {
+testthat::test_that("id_metadata() retrieves DOI metadata online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "10.1038/nature12373",
+    type = "doi"
+  )
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "10.1038/nature12373")
+  testthat::expect_equal(out$type, "doi")
+  testthat::expect_false(is.na(out$provider))
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_true(
+    nzchar(out$title)
+  )
+})
 
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
+testthat::test_that("id_metadata() retrieves PMID metadata online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "31452104",
+    type = "pmid"
+  )
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "31452104")
+  testthat::expect_equal(out$type, "pmid")
+  testthat::expect_false(is.na(out$provider))
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_true(
+    nzchar(out$title)
+  )
+})
 
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
+testthat::test_that("id_metadata() retrieves PMCID metadata online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "PMC6821181",
+    type = "pmcid"
+  )
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "PMC6821181")
+  testthat::expect_equal(out$type, "pmcid")
+  testthat::expect_false(is.na(out$provider))
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_true(
+    nzchar(out$title)
+  )
+})
 
-    df <- scholidonline::id_metadata(
-      x        = "10.1038/s41586-020-2649-2",
-      type     = "doi",
-      provider = "auto"
-    )
+testthat::test_that("id_metadata() retrieves arXiv metadata online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "2101.00001",
+    type = "arxiv"
+  )
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "2101.00001")
+  testthat::expect_equal(out$type, "arxiv")
+  testthat::expect_false(is.na(out$provider))
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_true(
+    nzchar(out$title)
+  )
+})
 
-    testthat::expect_s3_class(df, "data.frame")
-    testthat::expect_equal(nrow(df), 1L)
+testthat::test_that("id_metadata() retrieves ORCID metadata online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "0000-0002-1825-0097",
+    type = "orcid"
+  )
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "0000-0002-1825-0097")
+  testthat::expect_equal(out$type, "orcid")
+  testthat::expect_false(is.na(out$provider))
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_true(
+    nzchar(out$title)
+  )
+})
 
-    testthat::expect_true(
-      all(
-        c(
-          "input",
-          "type",
-          "provider",
-          "title",
-          "year"
-        ) %in% names(df)
-      )
-    )
+testthat::test_that("id_metadata() supports auto type detection online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(c(
+    "10.1038/nature12373",
+    "31452104",
+    "PMC6821181",
+    "2101.00001",
+    "0000-0002-1825-0097"
+  ))
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 5L)
+  testthat::expect_equal(
+    out$type,
+    c("doi", "pmid", "pmcid", "arxiv", "orcid")
+  )
+  testthat::expect_true(
+    all(!is.na(out$provider))
+  )
+  testthat::expect_true(
+    all(!is.na(out$title))
+  )
+})
 
-    testthat::expect_identical(
-      df$input[1],
-      "10.1038/s41586-020-2649-2"
-    )
+testthat::test_that("id_metadata() supports provider selection online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out_crossref <- id_metadata(
+    x = "10.1038/nature12373",
+    type = "doi",
+    provider = "crossref"
+  )
+  
+  out_doiorg <- id_metadata(
+    x = "10.1038/nature12373",
+    type = "doi",
+    provider = "doi.org"
+  )
+  
+  out_ncbi <- id_metadata(
+    x = "31452104",
+    type = "pmid",
+    provider = "ncbi"
+  )
+  
+  out_epmc <- id_metadata(
+    x = "31452104",
+    type = "pmid",
+    provider = "epmc"
+  )
+  
+  testthat::expect_equal(out_crossref$provider, "crossref")
+  testthat::expect_equal(out_doiorg$provider, "doi.org")
+  testthat::expect_equal(out_ncbi$provider, "ncbi")
+  testthat::expect_equal(out_epmc$provider, "epmc")
+})
 
-    testthat::expect_identical(df$type[1], "doi")
+testthat::test_that("id_metadata() returns NA metadata for bad input online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata("not_an_identifier")
+  
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_equal(nrow(out), 1L)
+  testthat::expect_equal(out$input, "not_an_identifier")
+  testthat::expect_true(is.na(out$type))
+  testthat::expect_true(is.na(out$provider))
+  testthat::expect_true(is.na(out$title))
+})
 
-    testthat::expect_true(
-      is.na(df$title[1]) || nzchar(df$title[1])
-    )
-  }
-)
-
-testthat::test_that(
-  "id_metadata (online): PMID returns structured data",
-  {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
-
-    df <- scholidonline::id_metadata(
-      x        = "31452104",
-      type     = "pmid",
-      provider = "auto"
-    )
-
-    testthat::expect_s3_class(df, "data.frame")
-    testthat::expect_equal(nrow(df), 1L)
-
-    testthat::expect_true(
-      all(
-        c(
-          "input",
-          "type",
-          "provider"
-        ) %in% names(df)
-      )
-    )
-
-    testthat::expect_identical(df$type[1], "pmid")
-  }
-)
-
-testthat::test_that(
-  "id_metadata (online): vectorized input binds rows",
-  {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
-
-    x <- c(
-      "10.1038/s41586-020-2649-2",
-      "10.1126/science.169.3946.635"
-    )
-
-    df <- scholidonline::id_metadata(
-      x        = x,
-      type     = "doi",
-      provider = "auto"
-    )
-
-    testthat::expect_s3_class(df, "data.frame")
-    testthat::expect_equal(nrow(df), length(x))
-
-    testthat::expect_true(
-      all(df$input %in% x)
-    )
-  }
-)
+testthat::test_that("id_metadata() supports field selection online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_metadata(
+    x = "10.1038/nature12373",
+    type = "doi",
+    fields = c("input", "title", "doi", "provider")
+  )
+  
+  testthat::expect_equal(
+    names(out),
+    c("input", "title", "doi", "provider")
+  )
+  testthat::expect_equal(out$input, "10.1038/nature12373")
+  testthat::expect_false(is.na(out$title))
+  testthat::expect_false(is.na(out$doi))
+  testthat::expect_false(is.na(out$provider))
+})

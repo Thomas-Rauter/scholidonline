@@ -184,3 +184,98 @@
   
   do.call(rbind, rows)
 }
+
+
+#' ORCID: retrieve metadata for an ORCID record
+#'
+#' @description
+#' Provider implementation for retrieving metadata for an ORCID record using
+#' the ORCID public API.
+#'
+#' @param x A single, normalized ORCID identifier.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata for the ORCID record.
+#'
+#' @noRd
+.meta_orcid_orcid <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  url <- paste0(
+    "https://pub.orcid.org/v3.0/",
+    utils::URLencode(x, reserved = TRUE),
+    "/record"
+  )
+  
+  req <- httr2::request(url)
+  
+  req <- httr2::req_headers(
+    req,
+    Accept = "application/json"
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("ORCID request failed.", call. = FALSE)
+    }
+    return(data.frame())
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status == 404L) {
+    return(data.frame())
+  }
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "ORCID request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(data.frame())
+  }
+  
+  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  
+  name <- obj$person$name
+  
+  full_name <- NA_character_
+  
+  if (!is.null(name)) {
+    given <- name$`given-names`$value %||% ""
+    family <- name$`family-name`$value %||% ""
+    full_name <- trimws(paste(given, family))
+  }
+  
+  data.frame(
+    title = full_name,
+    year = NA_integer_,
+    container = NA_character_,
+    doi = NA_character_,
+    pmid = NA_character_,
+    pmcid = NA_character_,
+    url = paste0("https://orcid.org/", x),
+    provider = "orcid",
+    stringsAsFactors = FALSE
+  )
+}

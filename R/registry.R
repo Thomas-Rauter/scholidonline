@@ -50,6 +50,11 @@ scholidonline_types <- function() {
         default_provider = "arxiv",
         dispatcher = ".links_arxiv"
       ),
+      meta = list(
+        providers = c("auto", "arxiv"),
+        default_provider = "arxiv",
+        dispatcher = ".meta_arxiv"
+      ),
       convert = list()
     ),
     
@@ -63,6 +68,11 @@ scholidonline_types <- function() {
         providers = c("auto", "crossref"),
         default_provider = "crossref",
         dispatcher = ".links_doi"
+      ),
+      meta = list(
+        providers = c("auto", "crossref", "doi.org"),
+        default_provider = "crossref",
+        dispatcher = ".meta_doi"
       ),
       convert = list(
         pmid = list(
@@ -87,6 +97,11 @@ scholidonline_types <- function() {
         default_provider = "orcid",
         dispatcher = ".links_orcid"
       ),
+      meta = list(
+        providers = c("auto", "orcid"),
+        default_provider = "orcid",
+        dispatcher = ".meta_orcid"
+      ),
       convert = list()
     ),
     
@@ -100,6 +115,11 @@ scholidonline_types <- function() {
         providers = c("auto", "ncbi", "epmc"),
         default_provider = "ncbi",
         dispatcher = ".links_pmcid"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi", "epmc"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_pmcid"
       ),
       convert = list(
         pmid = list(
@@ -123,6 +143,11 @@ scholidonline_types <- function() {
         providers = c("auto", "ncbi", "epmc"),
         default_provider = "ncbi",
         dispatcher = ".links_pmid"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi", "epmc"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_pmid"
       ),
       convert = list(
         doi = list(
