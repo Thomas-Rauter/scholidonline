@@ -148,28 +148,13 @@
     return(data.frame())
   }
   
-  doc <- tryCatch(
-    xml2::read_xml(xml),
-    error = function(e) NULL
+  doi <- sub(
+    ".*<arxiv:doi[^>]*>([^<]+)</arxiv:doi>.*",
+    "\\1",
+    xml
   )
   
-  if (is.null(doc)) {
-    return(data.frame())
-  }
-  
-  doi_node <- xml2::xml_find_first(
-    doc,
-    ".//arxiv:doi",
-    xml2::xml_ns(doc)
-  )
-  
-  if (is.na(doi_node)) {
-    return(data.frame())
-  }
-  
-  doi <- xml2::xml_text(doi_node)
-  
-  if (is.null(doi) || identical(doi, "")) {
+  if (identical(doi, xml) || !nzchar(doi)) {
     return(data.frame())
   }
   

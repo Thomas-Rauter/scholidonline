@@ -36,6 +36,58 @@ scholidonline_types <- function() {
 # Level 1 function (functions called by exported functions) definitions --------
 
 
+#' scholidonline registry
+#'
+#' @description
+#' Internal registry describing all supported scholarly identifier types,
+#' their capabilities, and provider-specific dispatch configuration.
+#'
+#' The registry is the central configuration object used by the
+#' scholidonline engine to:
+#'
+#' - determine which operations are supported for each identifier type
+#' - enumerate available providers for each operation
+#' - resolve default providers when `provider = "auto"`
+#' - dispatch to the correct implementation via dispatcher functions
+#'
+#' Each top-level entry corresponds to a single identifier type (e.g.
+#' `"doi"`, `"pmid"`, `"pmcid"`).
+#'
+#' For each identifier type, the following operation blocks may be defined:
+#'
+#' \itemize{
+#'   \item \code{exists}: check whether an identifier exists
+#'   \item \code{links}: retrieve external links
+#'   \item \code{meta}: retrieve metadata
+#'   \item \code{convert}: convert to other identifier types
+#' }
+#'
+#' Each operation block is a list containing:
+#'
+#' \itemize{
+#'   \item \code{providers}: character vector of supported providers
+#'   \item \code{default_provider}: default provider used when
+#'     \code{provider = "auto"}
+#'   \item \code{dispatcher}: name of the dispatcher function implementing
+#'     the operation
+#' }
+#'
+#' The \code{convert} block is itself a named list, where each element
+#' corresponds to a target identifier type and defines the conversion
+#' capabilities for that pair.
+#'
+#' This registry is consumed by both the unary and binary dispatch engines
+#' (e.g. \code{.scholidonline_run_unary()} and
+#' \code{.scholidonline_run_binary()}).
+#'
+#' @return
+#' A named list representing the scholidonline registry. The list is ordered
+#' alphabetically by identifier type.
+#'
+#' @details
+#' This function is internal and not intended to be called directly by users.
+#'
+#' @noRd
 .scholidonline_registry <- function() {
   reg <- list(
     
@@ -219,4 +271,42 @@ scholidonline_types <- function() {
   }
   
   meta
+}
+
+
+# Level 2 function (functions called by level 1 functions) definitions ---------
+
+
+#' Match and validate a scholidonline identifier type
+#'
+#' @description
+#' Internal helper used to validate and normalize identifier type arguments
+#' such as `from` and `to`.
+#'
+#' This function matches the input against the set of supported identifier
+#' types defined by `scholidonline_types()` using `match.arg()`, ensuring that
+#' only valid types are accepted.
+#'
+#' @param x A single character string specifying an identifier type.
+#' @param arg Name of the argument being validated (used for error messages).
+#'
+#' @return A single, validated identifier type string.
+#'
+#' @noRd
+.scholidonline_match_type <- function(
+    x,
+    arg = "x"
+) {
+  
+  if (!is.character(x) || length(x) != 1L || is.na(x)) {
+    stop(
+      "`", arg, "` must be a single, non-missing character string.",
+      call. = FALSE
+    )
+  }
+  
+  match.arg(
+    arg = x,
+    choices = scholidonline_types()
+  )
 }

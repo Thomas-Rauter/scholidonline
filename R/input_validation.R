@@ -167,7 +167,7 @@
 #'
 #' Validates that a given identifier `type` can be used with a given
 #' `provider`, according to the internal Scholidonline registry returned
-#' by [`.scholidonline_registry()`].
+#' by .scholidonline_registry().
 #'
 #' This function assumes that `type` and `provider` have already passed
 #' general input validation (for example via `match.arg()`). It only checks
@@ -223,7 +223,7 @@
 #' Return all providers defined in the registry
 #'
 #' Extracts all providers from the internal Scholidonline registry returned
-#' by [`.scholidonline_registry()`].
+#' by .scholidonline_registry().
 #'
 #' Providers are collected across `exists`, `links`, and all `convert`
 #' entries, deduplicated, sorted, and returned. The value `"auto"` is

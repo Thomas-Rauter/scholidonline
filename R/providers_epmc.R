@@ -220,10 +220,12 @@
 .links_pmcid_epmc <- function(x, ..., quiet = FALSE) {
   .scholidonline_check_scalar_chr(x)
   
+  pmcid_clean <- gsub("^PMC", "", x)
   url <- paste0(
-    "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:",
-    utils::URLencode(x, reserved = TRUE),
-    "%20AND%20SRC:PMC&format=json"
+    "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+    "?query=PMCID:PMC",
+    utils::URLencode(pmcid_clean, reserved = TRUE),
+    "&format=json"
   )
   
   req <- httr2::request(url)

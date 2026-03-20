@@ -21,7 +21,8 @@ Depends: R (>= 3.6.0)
 Imports:
     scholid,
     httr2,
-    jsonlite
+    jsonlite,
+    rlang
 Suggests:
     testthat (>= 3.0.0),
     knitr (>= 1.30),
