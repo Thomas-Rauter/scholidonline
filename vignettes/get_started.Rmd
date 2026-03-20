@@ -21,9 +21,11 @@ working with registry-connected identifier data.
 
 ## Installation
 
-# install.packages("scholidonline")
+```{r installation, eval = FALSE}
+install.packages("scholidonline")
+```
 
-`scholid` will be installed automatically as a dependency.
+
 
 ## Interface
 
@@ -44,12 +46,32 @@ All functions are:
 Identifier detection and normalization are delegated internally to
 `scholid`.
 
+## Supported identifier types
+
+You can inspect which identifier types are supported:
+
+```{r scholidonline_types, eval = TRUE}
+scholidonline::scholidonline_types()
+```
+
+
+## Inspecting capabilities
+
+`scholidonline` is registry-driven. You can inspect all supported
+operations, conversions, and providers:
+
+```{r scholidonline capabilities, eval = TRUE}
+scholidonline::scholidonline_capabilities()
+```
+
+
+
 ## Existence checks: `id_exists()`
 
 `id_exists()` verifies whether identifiers exist in their respective
 registries.
 
-```{r check a DOI, eval = FALSE}
+```{r id_exists 1, eval = TRUE}
 scholidonline::id_exists(
   x    = "10.1000/182",
   type = "doi"
@@ -58,7 +80,7 @@ scholidonline::id_exists(
 
 If `type = NULL`, the type is inferred automatically:
 
-```{r infer type, eval = FALSE}
+```{r description, eval = TRUE}
 scholidonline::id_exists(
   x = c(
     "10.1000/182",
@@ -81,9 +103,9 @@ Common examples:
 
 - PMID → DOI
 - PMCID → PMID
-- arXiv → DOI (when available)
+- DOI → PMCID
 
-```{r convert id, eval = FALSE}
+```{r conversion 1, eval = TRUE}
 scholidonline::id_convert(
   x    = "12345678",
   from = "pmid",
@@ -91,7 +113,14 @@ scholidonline::id_convert(
 )
 ```
 
-If `from = NULL`, the source type is inferred per element.
+If `from = NULL`, the source type is inferred per element:
+
+```{r conversion 2, eval = TRUE}
+scholidonline::id_convert(
+  x = c("12345678", "PMC1234567"),
+  to = "doi"
+)
+```
 
 Unresolvable mappings return `NA_character_`.
 
@@ -99,7 +128,7 @@ Unresolvable mappings return `NA_character_`.
 
 `id_metadata()` retrieves harmonized metadata from external registries.
 
-```{r get id metadata, eval = FALSE}
+```{r metadata 1, eval = TRUE}
 scholidonline::id_metadata(
   x    = "10.1000/182",
   type = "doi"
@@ -116,7 +145,6 @@ Typical columns include:
 - provider
 - title
 - year
-- authors
 - container
 - doi
 - pmid
@@ -125,12 +153,23 @@ Typical columns include:
 
 Metadata completeness depends on the external authority.
 
+You can restrict returned fields:
+
+```{r metadata 2, eval = TRUE}
+scholidonline::id_metadata(
+  x = "10.1000/182",
+  fields = c("title", "year", "doi")
+)
+```
+
+
+
 ## Linked identifiers: `id_links()`
 
 `id_links()` returns related identifiers discovered via registry
 queries.
 
-```{r get id links, eval = FALSE}
+```{r id_links 1, eval = TRUE}
 scholidonline::id_links(
   x    = "PMC1234567",
   type = "pmcid"
@@ -146,18 +185,20 @@ This may reveal:
 
 The result is a long data.frame with one row per link.
 
+
+
 ## Working with mixed data
 
 A common workflow for messy identifier columns:
 
-1. Detect identifier types (via `scholid`).
-2. Normalize identifiers.
-3. Check registry existence.
-4. Convert or enrich with metadata.
+1. Detect identifier types (via `scholid`)
+2. Normalize identifiers
+3. Check registry existence
+4. Convert or enrich with metadata
 
 Example:
 
-```{r working with mixed data, eval = FALSE}
+```{r mixed data, eval = TRUE}
 x <- c(
   "https://doi.org/10.1000/182",
   "PMID: 12345678",
@@ -165,24 +206,36 @@ x <- c(
 )
 
 types <- scholid::detect_scholid_type(x)
-x_norm <- mapply(
-  scholid::normalize_scholid,
-  x    = x,
-  type = types,
-  SIMPLIFY = TRUE
-)
 
-scholidonline::id_exists(x_norm, type = types)
+x_norm <- rep(NA_character_, length(x))
+
+for (i in seq_along(x)) {
+  if (is.na(types[i])) {
+    next
+  }
+
+  x_norm[i] <- scholid::normalize_scholid(
+    x = x[i],
+    type = types[i]
+  )
+}
+
+types
+x_norm
+
+scholidonline::id_exists(x)
 ```
 
 This separation keeps structural logic (`scholid`) and
 registry logic (`scholidonline`) clearly distinct.
 
+
+
 ## Provider selection
 
 Most functions accept a `provider` argument.
 
-```{r provider argument, eval = FALSE}
+```{r provider selection, eval = TRUE}
 scholidonline::id_exists(
   x        = "10.1000/182",
   type     = "doi",
@@ -191,24 +244,27 @@ scholidonline::id_exists(
 ```
 
 If `provider = "auto"` (default), a sensible registry is chosen
-automatically.
+automatically, potentially with fallback behavior.
 
-Available providers depend on the identifier type.
+Available providers depend on the identifier type and operation.
+Use `scholidonline_capabilities()` to inspect them.
 
 ## Network considerations
 
 Because `scholidonline` relies on external services:
 
-- An internet connection is required.
-- Rate limits may apply.
-- Results may change over time.
-- Temporary failures can occur.
+- An internet connection is required
+- Rate limits may apply
+- Results may change over time
+- Temporary failures can occur
 
 For reproducible workflows:
 
-- Cache results where appropriate.
-- Record provider choices.
-- Handle occasional `NA` values gracefully.
+- Cache results where appropriate
+- Record provider choices
+- Handle occasional `NA` values gracefully
+
+
 
 ## Relationship to scholid
 
@@ -231,6 +287,10 @@ Together they form a clean two-layer design:
 - Layer 1: Syntax and canonical form
 - Layer 2: External registry interaction
 
+
+
 ## Session information
 
-# sessionInfo()
+```{r session info, eval = TRUE}
+sessionInfo()
+```

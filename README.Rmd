@@ -60,42 +60,6 @@ All functions are vectorized and return predictable base R objects
 
 Identifier detection and normalization are delegated to `scholid`.
 
-## Examples
-
-```{r examples, eval = TRUE}
-# check whether a DOI exists
-scholidonline::id_exists(
-  x    = "10.1000/182",
-  type = "doi"
-)
-
-# infer identifier type automatically
-scholidonline::id_exists(
-  x = c("10.1000/182", "12345678")
-)
-
-# convert a PMID to a DOI
-scholidonline::id_convert(
-  x    = "12345678",
-  from = "pmid",
-  to   = "doi"
-)
-
-# retrieve metadata for a DOI
-scholidonline::id_metadata(
-  x    = "10.1000/182",
-  type = "doi"
-)
-
-# discover linked identifiers for a PMCID
-scholidonline::id_links(
-  x    = "PMC1234567",
-  type = "pmcid"
-)
-```
-
-For more detailed usage patterns check out the **Get started** vignette.
-
 ## Relationship to scholid
 
 `scholid` provides dependency-free utilities for detecting, normalizing,
@@ -104,6 +68,8 @@ classifying, and extracting scholarly identifiers.
 `scholidonline` builds on that foundation and adds online registry queries,
 while keeping dependencies minimal (`httr2`, `jsonlite`) and maintaining
 CRAN-friendly behavior.
+
+
 
 ## License
 

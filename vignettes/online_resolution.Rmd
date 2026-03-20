@@ -294,3 +294,8 @@ Use the appropriate layer depending on whether you need:
 
 - Offline structural guarantees
 - Or online registry-backed verification.
+
+
+```{r session info, eval = TRUE}
+sessionInfo()
+```

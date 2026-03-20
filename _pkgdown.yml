@@ -12,7 +12,7 @@ navbar:
       - home
       - get-started
       - reference
-      - scholid-definitions
+      - online-resolution
       - news
 
   components:
@@ -20,9 +20,9 @@ navbar:
       text: "Get started"
       href: articles/get_started.html
     
-    scholid-definitions:
-      text: "About identifiers"
-      href: articles/scholid_definitions.html
+    online-resolution:
+      text: "Online resolution"
+      href: articles/online_resolution.html
 
     news:
       text: "News"
@@ -38,6 +38,8 @@ reference:
       - id_exists
       - id_links
       - id_metadata
+      - scholidonline_capabilities
+      - scholidonline_types
       
 development:
   mode: auto

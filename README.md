@@ -1,38 +1,43 @@
 
-# scholid
+# scholidonline
 
-[![R-CMD-check](https://github.com/Thomas-Rauter/scholid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thomas-Rauter/scholid/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://img.shields.io/codecov/c/github/Thomas-Rauter/scholid?branch=main&logo=codecov)](https://app.codecov.io/gh/Thomas-Rauter/scholid)
+coverage](https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&logo=codecov)](https://app.codecov.io/gh/Thomas-Rauter/scholidonline)
 
-`scholid` provides lightweight, dependency-free utilities for working
-with scholarly identifiers in R. The package is designed as a small,
-well-tested foundation that can be safely reused by other packages and
-data workflows.
+`scholidonline` provides lightweight **online** utilities for working
+with scholarly identifiers in R. It builds on `scholid` for identifier
+detection and normalization, and adds minimal-dependency functions to
+query external registries.
 
-See the full documentation at the [scholid
-website](https://thomas-rauter.github.io/scholid/).
+See the full documentation at the [scholidonline
+website](https://thomas-rauter.github.io/scholidonline/).
 
 ## Installation
 
 Install the released version from CRAN:
 
 ``` r
-install.packages("scholid")
+install.packages("scholidonline")
 ```
 
 ## Scope
 
-The package focuses on common identifier systems used in scholarly
-communication:
+The package focuses on online operations for common identifier systems
+used in scholarly communication:
 
 - DOI
 - ORCID iD
-- ISBN
-- ISSN
 - arXiv
 - PubMed (PMID)
 - PubMed Central (PMCID)
+
+It provides registry-backed functionality such as:
+
+- Existence checks
+- Identifier conversion across systems
+- Basic metadata retrieval
+- Discovery of linked identifiers
 
 ## Interface
 
@@ -40,81 +45,24 @@ User-available functions:
 
 | Function | Purpose |
 |----|----|
-| `scholid_types()` | List supported scholarly identifier types |
-| `is_scholid(x, type)` | Test whether values conform to a given identifier type |
-| `normalize_scholid(x, type)` | Normalize identifiers to canonical form |
-| `extract_scholid(text, type)` | Extract identifiers of a given type from free text |
-| `classify_scholid(x)` | Guess the identifier type of each input value |
-| `detect_scholid_type(x)` | Detect identifier types from canonical or wrapped input values |
+| `id_exists(x, type = NULL)` | Check whether identifiers exist in their respective registries |
+| `id_convert(x, to, from = NULL)` | Convert identifiers across systems (e.g., PMID → DOI) |
+| `id_metadata(x, type = NULL)` | Retrieve basic structured metadata |
+| `id_links(x, type = NULL)` | Discover linked identifiers |
 
-## Examples
+All functions are vectorized and return predictable base R objects
+(logical vectors or data.frames).
 
-``` r
-# list supported scholarly identifier types
-scholid::scholid_types()
-```
+Identifier detection and normalization are delegated to `scholid`.
 
-    ## [1] "arxiv" "doi"   "isbn"  "issn"  "orcid" "pmcid" "pmid"
+## Relationship to scholid
 
-``` r
-# test whether values match a given identifier type
-scholid::is_scholid(
-  x    = "10.1000/182",
-  type = "doi"
-)
-```
+`scholid` provides dependency-free utilities for detecting, normalizing,
+classifying, and extracting scholarly identifiers.
 
-    ## [1] TRUE
-
-``` r
-# normalize identifiers to canonical form
-scholid::normalize_scholid(
-  x    = "https://doi.org/10.1000/182",
-  type = "doi"
-)
-```
-
-    ## [1] "10.1000/182"
-
-``` r
-# extract identifiers of a given type from free text
-scholid::extract_scholid(
-  text = "See https://doi.org/10.1000/182 for details.",
-  type = "doi"
-)
-```
-
-    ## [[1]]
-    ## [1] "10.1000/182"
-
-``` r
-# classify the identifier type of each input value
-scholid::classify_scholid(
-  x = c(
-    "10.1000/182",
-    "0000-0002-1825-0097",
-    "not an id"
-  )
-)
-```
-
-    ## [1] "doi"   "orcid" NA
-
-``` r
-# detect identifier types from canonical or wrapped input values
-scholid::detect_scholid_type(
-  x = c(
-    "https://doi.org/10.1000/182",
-    "ORCID: 0000-0002-1825-0097",
-    "arXiv:2101.00001",
-    "not an id"
-  )
-)
-```
-
-    ## [1] "doi"   "orcid" "arxiv" NA
-
-For more detailed usage patterns check out the **Get started** vignette.
+`scholidonline` builds on that foundation and adds online registry
+queries, while keeping dependencies minimal (`httr2`, `jsonlite`) and
+maintaining CRAN-friendly behavior.
 
 ## License
 
