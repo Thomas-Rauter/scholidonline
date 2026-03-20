@@ -1,92 +1,176 @@
-testthat::test_that(
-  "id_convert (online): PMID -> DOI returns a DOI-like string or NA",
-  {
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
+testthat::test_that("id_convert() converts PMID to DOI online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "31452104",
+    to = "doi",
+    from = "pmid"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 1L)
+  testthat::expect_false(is.na(out))
+  testthat::expect_true(grepl("^10\\.", out))
+})
 
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
+testthat::test_that("id_convert() converts DOI to PMID online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "10.1038/nature12373",
+    to = "pmid",
+    from = "doi"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 1L)
+  testthat::expect_false(is.na(out))
+  testthat::expect_true(grepl("^[0-9]+$", out))
+})
 
-    # A well-known PubMed ID (example). If provider coverage changes,
-    # conversion may yield NA; that is still acceptable behavior.
-    out <- scholidonline::id_convert(
-      x        = "31452104",
-      from     = "pmid",
-      to       = "doi",
-      provider = "auto"
-    )
+testthat::test_that("id_convert() converts PMCID to DOI online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "PMC6821181",
+    to = "doi",
+    from = "pmcid"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 1L)
+  testthat::expect_false(is.na(out))
+  testthat::expect_true(grepl("^10\\.", out))
+})
 
-    testthat::expect_type(out, "character")
-    testthat::expect_length(out, 1L)
+testthat::test_that("id_convert() converts PMCID to PMID online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "PMC6821181",
+    to = "pmid",
+    from = "pmcid"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 1L)
+  testthat::expect_false(is.na(out))
+  testthat::expect_true(grepl("^[0-9]+$", out))
+})
 
-    # If resolved, it should look like a DOI.
-    if (!is.na(out)) {
-      testthat::expect_true(
-        grepl("^10\\.", out)
-      )
-    }
-  }
-)
+testthat::test_that("id_convert() supports auto source detection online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = c(
+      "31452104",
+      "10.1038/nature12373",
+      "PMC6821181"
+    ),
+    to = "doi"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 3L)
+  testthat::expect_false(is.na(out[1]))
+  testthat::expect_false(is.na(out[2]))
+  testthat::expect_false(is.na(out[3]))
+  testthat::expect_true(grepl("^10\\.", out[1]))
+  testthat::expect_true(grepl("^10\\.", out[2]))
+  testthat::expect_true(grepl("^10\\.", out[3]))
+})
 
-testthat::test_that(
-  "id_convert (online): DOI -> PMID returns digits or NA",
-  {
+testthat::test_that("id_convert() supports provider selection online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out_ncbi <- id_convert(
+    x = "31452104",
+    to = "doi",
+    from = "pmid",
+    provider = "ncbi"
+  )
+  
+  out_epmc <- id_convert(
+    x = "31452104",
+    to = "doi",
+    from = "pmid",
+    provider = "epmc"
+  )
+  
+  testthat::expect_type(out_ncbi, "character")
+  testthat::expect_type(out_epmc, "character")
+  testthat::expect_length(out_ncbi, 1L)
+  testthat::expect_length(out_epmc, 1L)
+  testthat::expect_false(is.na(out_ncbi))
+  testthat::expect_false(is.na(out_epmc))
+  testthat::expect_true(grepl("^10\\.", out_ncbi))
+  testthat::expect_true(grepl("^10\\.", out_epmc))
+})
 
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
+testthat::test_that("id_convert() returns identity mapping online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "31452104",
+    to = "pmid",
+    from = "pmid"
+  )
+  
+  testthat::expect_equal(out, "31452104")
+})
 
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
+testthat::test_that("id_convert() returns NA for invalid identifier online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = "not_an_identifier",
+    to = "doi"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 1L)
+  testthat::expect_true(is.na(out))
+})
 
-    out <- scholidonline::id_convert(
-      x        = "10.1038/s41586-020-2649-2",
-      from     = "doi",
-      to       = "pmid",
-      provider = "auto"
-    )
+testthat::test_that("id_convert() preserves length for mixed inputs online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = c(
+      "31452104",
+      "not_an_identifier",
+      "PMC6821181"
+    ),
+    to = "doi"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 3L)
+  testthat::expect_false(is.na(out[1]))
+  testthat::expect_true(is.na(out[2]))
+  testthat::expect_false(is.na(out[3]))
+})
 
-    testthat::expect_type(out, "character")
-    testthat::expect_length(out, 1L)
-
-    if (!is.na(out)) {
-      testthat::expect_true(
-        grepl("^\\d+$", out)
-      )
-    }
-  }
-)
-
-testthat::test_that(
-  "id_convert (online): PMCID -> PMID returns digits or NA",
-  {
-
-    testthat::skip_on_cran()
-    testthat::skip_if_offline()
-
-    run <- Sys.getenv("SCHOLIDONLINE_RUN_ONLINE_TESTS", "false")
-    testthat::skip_if_not(
-      identical(tolower(run), "true")
-    )
-
-    # This example may or may not exist over time; allow NA.
-    out <- scholidonline::id_convert(
-      x        = "PMC6184899",
-      from     = "pmcid",
-      to       = "pmid",
-      provider = "auto"
-    )
-
-    testthat::expect_type(out, "character")
-    testthat::expect_length(out, 1L)
-
-    if (!is.na(out)) {
-      testthat::expect_true(
-        grepl("^\\d+$", out)
-      )
-    }
-  }
-)
+testthat::test_that("id_convert() vectorizes online", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
+  
+  out <- id_convert(
+    x = c("31452104", "31437182"),
+    to = "doi",
+    from = "pmid"
+  )
+  
+  testthat::expect_type(out, "character")
+  testthat::expect_length(out, 2L)
+  testthat::expect_false(is.na(out[1]))
+})

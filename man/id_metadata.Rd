@@ -2,12 +2,12 @@
 % Please edit documentation in R/id_metadata.R
 \name{id_metadata}
 \alias{id_metadata}
-\title{Fetch metadata for scholarly identifiers}
+\title{Retrieve scholarly metadata}
 \usage{
 id_metadata(
   x,
-  type = NULL,
-  provider = "auto",
+  type = c("auto", scholidonline_types()),
+  provider = c("auto", .scholidonline_providers()),
   fields = NULL,
   ...,
   quiet = FALSE
@@ -16,14 +16,15 @@ id_metadata(
 \arguments{
 \item{x}{A character vector of identifiers.}
 
-\item{type}{A single string giving the identifier type, or \code{NULL} to infer
-per element. See \code{scholid::scholid_types()} for supported values.}
+\item{type}{A single string giving the identifier type, or \code{"auto"} to infer
+per element. See \code{scholidonline::scholidonline_types()} for supported
+values.}
 
-\item{provider}{Provider to use (e.g. "auto", "crossref", "doi.org", "ncbi",
-"epmc", "orcid", "arxiv").}
+\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"crossref"}, \code{"doi.org"},
+\code{"ncbi"}, \code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
 
-\item{fields}{Optional character vector of fields to return. If \code{NULL},
-returns a stable default set.}
+\item{fields}{Optional character vector of columns to return. If \code{NULL}, all
+default metadata columns are returned.}
 
 \item{...}{Passed to provider-specific implementations.}
 
@@ -31,27 +32,45 @@ returns a stable default set.}
 possible.}
 }
 \value{
-A data.frame with one row per input, containing at least:
-\code{input}, \code{type}, \code{provider}, \code{title}, \code{year}, \code{authors}, \code{container},
-\code{doi}, \code{pmid}, \code{pmcid}, \code{url}.
+A data.frame with one row per input identifier. By default, the
+returned columns are:
+\code{input}, \code{type}, \code{provider}, \code{title}, \code{year}, \code{container}, \code{doi}, \code{pmid},
+\code{pmcid}, \code{url}.
 }
 \description{
-Fetch structured metadata for identifiers using online registries.
+Retrieve structured metadata for scholarly identifiers from external
+registries.
 
 \code{id_metadata()} is vectorized over \code{x} and returns a data.frame with one row
-per input identifier. If \code{type} is \code{NULL}, the identifier type is inferred
-per element using \code{scholid::detect_scholid_type()} after normalization (where
-possible). Inputs that cannot be classified or normalized yield one row with
-\code{NA} metadata fields.
+per input element.
+
+The function is intended to expose core record-level metadata such as:
+\itemize{
+\item title
+\item publication year
+\item container or journal title
+\item linked DOI, PMID, and PMCID when available
+\item canonical URL
+}
+
+\code{id_metadata()} returns provider-exposed metadata for the queried identifier.
+It is not intended to return all available provider-specific fields, but
+rather a stable cross-provider subset that can be represented consistently
+across identifier systems.
+
+If \code{type = "auto"}, the identifier type is inferred per element using
+\code{scholid::detect_scholid_type()}. Inputs that cannot be classified or
+normalized are returned as rows with \code{NA} metadata fields.
 
 Provider-/ID-specific logic lives in internal helpers named
-\verb{metadata_<type>()} (e.g., \code{metadata_doi()}), which are dispatched to from
-this front-door function.
+\verb{.meta_<type>()} (e.g. \code{.meta_pmid()}), which are dispatched to from this
+front-end function.
 }
 \examples{
 \dontrun{
-id_metadata("10.1000/182", type = "doi")
-id_metadata(c("12345678", "PMC12345"))  # infer type
+id_metadata("10.1038/nature12373", type = "doi")
+id_metadata(c("31452104", "PMC6821181"))
+id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
 }
 
 }

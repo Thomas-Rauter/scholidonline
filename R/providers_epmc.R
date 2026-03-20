@@ -1,3 +1,6 @@
+# id_exists() subfunctions -----------------------------------------------------
+
+
 #' Europe PMC: check whether a PMID exists
 #'
 #' @param x A single, normalized PMID string.
@@ -89,6 +92,9 @@
   
   hit_count > 0L
 }
+
+
+# id_links() subfunctions ------------------------------------------------------
 
 
 #' Europe PMC: return identifiers linked to a PMID
@@ -304,6 +310,9 @@
 }
 
 
+# id_metadata() subfunctions ---------------------------------------------------
+
+
 #' Europe PMC: retrieve metadata for a PMID
 #'
 #' @description
@@ -499,4 +508,272 @@
     provider = "epmc",
     stringsAsFactors = FALSE
   )
+}
+
+
+# id_convert() provider functions ----------------------------------------------
+
+
+#' Europe PMC: PMID -> DOI
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single DOI string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_doi_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("EXT_ID:", x, " AND SRC:MED")
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  doi <- rec$doi %||% NA_character_
+  
+  if (is.na(doi) || !nzchar(doi)) {
+    return(NA_character_)
+  }
+  
+  as.character(doi)
+}
+
+
+#' Europe PMC: DOI -> PMID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single PMID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("DOI:\"", x, "\"")
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmid <- rec$pmid %||% NA_character_
+  
+  if (is.na(pmid) || !nzchar(pmid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmid)
+}
+
+
+#' Europe PMC: PMCID -> PMID
+#'
+#' @param x A single PMCID string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single PMID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmcid_to_pmid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("PMCID:", x)
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmid <- rec$pmid %||% NA_character_
+  
+  if (is.na(pmid) || !nzchar(pmid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmid)
+}
+
+
+#' Europe PMC: PMCID -> DOI
+#'
+#' @param x A single PMCID string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single DOI string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmcid_to_doi_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("PMCID:", x)
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  doi <- rec$doi %||% NA_character_
+  
+  if (is.na(doi) || !nzchar(doi)) {
+    return(NA_character_)
+  }
+  
+  as.character(doi)
+}
+
+
+#' Europe PMC: PMID -> PMCID
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("EXT_ID:", x, " AND SRC:MED")
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmcid <- rec$pmcid %||% NA_character_
+  
+  if (is.na(pmcid) || !nzchar(pmcid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmcid)
+}
+
+
+#' Europe PMC: DOI -> PMCID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmcid_epmc <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  q <- paste0("DOI:\"", x, "\"")
+  
+  js <- .scholidonline_epmc_search(
+    query = q,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+  
+  rec <- .scholidonline_epmc_first_result(js)
+  pmcid <- rec$pmcid %||% NA_character_
+  
+  if (is.na(pmcid) || !nzchar(pmcid)) {
+    return(NA_character_)
+  }
+  
+  as.character(pmcid)
+}
+
+
+# id_convert() provider functions helpers --------------------------------------
+
+
+#' Return the first Europe PMC search result
+#'
+#' @description
+#' Internal helper for extracting the first result record from a parsed
+#' Europe PMC search response.
+#'
+#' This helper is used by provider implementations that query Europe PMC and
+#' need only the first matching record.
+#'
+#' @param x A parsed Europe PMC search response as a list.
+#'
+#' @return The first result record as a list, or `NULL` if no result is
+#'   available.
+#'
+#' @noRd
+.scholidonline_epmc_first_result <- function(
+    x
+) {
+  res <- x$resultList$result
+  
+  if (is.null(res) || length(res) < 1L) {
+    return(NULL)
+  }
+  
+  res[[1]]
 }

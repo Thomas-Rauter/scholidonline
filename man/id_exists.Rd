@@ -4,7 +4,13 @@
 \alias{id_exists}
 \title{Check whether scholarly identifiers exist}
 \usage{
-id_exists(x, type = NULL, provider = "auto", ..., quiet = FALSE)
+id_exists(
+  x,
+  type = c("auto", scholidonline_types()),
+  provider = c("auto", .scholidonline_providers()),
+  ...,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{x}{A character vector of identifiers.}

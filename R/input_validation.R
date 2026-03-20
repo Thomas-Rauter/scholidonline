@@ -259,6 +259,63 @@
 }
 
 
+.scholidonline_check_conversion_pair <- function(
+    from,
+    to
+) {
+  reg <- .scholidonline_registry()
+  
+  if (identical(from, to)) {
+    return(invisible(TRUE))
+  }
+  
+  if (is.null(reg[[from]]$convert[[to]])) {
+    stop(
+      "Unsupported conversion: ",
+      from,
+      " -> ",
+      to,
+      ".",
+      call. = FALSE
+    )
+  }
+  
+  invisible(TRUE)
+}
+
+
+#' Validate a scalar character input
+#'
+#' @description
+#' Internal helper used to enforce that an input argument is a single,
+#' non-missing character string.
+#'
+#' This helper is typically used in provider implementations and dispatchers
+#' to validate normalized identifier inputs before further processing.
+#'
+#' @param x The value to validate.
+#' @param arg A single string giving the argument name, used in error messages.
+#'
+#' @return Invisibly returns `x` if validation succeeds.
+#'
+#' @noRd
+.scholidonline_check_scalar_chr <- function(
+    x,
+    arg = "x"
+) {
+  if (!is.character(x) || length(x) != 1L || is.na(x)) {
+    stop(
+      "`",
+      arg,
+      "` must be a single, non-missing character string.",
+      call. = FALSE
+    )
+  }
+  
+  invisible(x)
+}
+
+
 # Level 2 function (functions called by lvl 1 functions) definitions -----------
 
 

@@ -1,3 +1,6 @@
+# id_exists() provider functions -----------------------------------------------
+
+
 #' NCBI: check whether a PMID exists
 #'
 #' @param x A single, normalized PMID string.
@@ -92,6 +95,9 @@
   
   FALSE
 }
+
+
+# id_links() provider functions ------------------------------------------------
 
 
 #' NCBI: return identifiers linked to a PMID
@@ -307,6 +313,9 @@
 }
 
 
+# id_metadata() provider functions ---------------------------------------------
+
+
 #' NCBI: retrieve metadata for a PMID
 #'
 #' @description
@@ -491,4 +500,499 @@
     provider = "ncbi",
     stringsAsFactors = FALSE
   )
+}
+
+
+# id_convert() provider functions ----------------------------------------------
+
+
+#' NCBI: PMID -> DOI
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to NCBI E-utilities (e.g. `api_key`, `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single DOI string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_doi_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  req <- httr2::request(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    db = "pubmed",
+    id = x,
+    retmode = "json",
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  rec <- js$result[[x]]
+  
+  if (is.null(rec) || is.null(rec$articleids)) {
+    return(NA_character_)
+  }
+  
+  ids <- rec$articleids
+  
+  if (is.data.frame(ids) && "idtype" %in% names(ids)) {
+    hit <- ids[ids$idtype == "doi", , drop = FALSE]
+    
+    if (nrow(hit) < 1L) {
+      return(NA_character_)
+    }
+    
+    return(as.character(hit$value[[1]]))
+  }
+  
+  if (is.list(ids)) {
+    for (i in seq_along(ids)) {
+      if (isTRUE(ids[[i]]$idtype == "doi")) {
+        return(as.character(ids[[i]]$value))
+      }
+    }
+  }
+  
+  NA_character_
+}
+
+
+#' NCBI: DOI -> PMID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to NCBI E-utilities (e.g. `api_key`, `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  term <- paste0("\"", x, "\"[DOI]")
+  
+  req <- httr2::request(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    db = "pubmed",
+    term = term,
+    retmode = "json",
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  ids <- js$esearchresult$idlist
+  
+  if (is.null(ids) || length(ids) < 1L) {
+    return(NA_character_)
+  }
+  
+  as.character(ids[[1]])
+}
+
+
+#' NCBI: PMCID -> PMID
+#'
+#' @param x A single PMCID string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmcid_to_pmid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  req <- httr2::request(
+    "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    format = "json",
+    ids = x,
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  recs <- js$records
+  
+  if (is.null(recs) || length(recs) < 1L) {
+    return(NA_character_)
+  }
+  
+  val <- recs[[1]]$pmid
+  
+  if (is.null(val) || is.na(val) || !nzchar(val)) {
+    return(NA_character_)
+  }
+  
+  as.character(val)
+}
+
+
+#' NCBI: PMCID -> DOI
+#'
+#' @param x A single PMCID string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single DOI string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmcid_to_doi_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  req <- httr2::request(
+    "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    format = "json",
+    ids = x,
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  recs <- js$records
+  
+  if (is.null(recs) || length(recs) < 1L) {
+    return(NA_character_)
+  }
+  
+  val <- recs[[1]]$doi
+  
+  if (is.null(val) || is.na(val) || !nzchar(val)) {
+    return(NA_character_)
+  }
+  
+  as.character(val)
+}
+
+
+#' NCBI: PMID -> PMCID
+#'
+#' @param x A single PMID string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  req <- httr2::request(
+    "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    format = "json",
+    ids = x,
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  recs <- js$records
+  
+  if (is.null(recs) || length(recs) < 1L) {
+    return(NA_character_)
+  }
+  
+  val <- recs[[1]]$pmcid
+  
+  if (is.null(val) || is.na(val) || !nzchar(val)) {
+    return(NA_character_)
+  }
+  
+  as.character(val)
+}
+
+
+#' NCBI: DOI -> PMCID
+#'
+#' @param x A single DOI string.
+#' @param ... Passed to PMC ID Converter (e.g. `tool`, `email`).
+#' @param quiet Logical.
+#'
+#' @return A single PMCID string or `NA_character_`.
+#'
+#' @noRd
+.convert_doi_to_pmcid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+  
+  req <- httr2::request(
+    "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
+  )
+  
+  req <- httr2::req_url_query(
+    req,
+    format = "json",
+    ids = x,
+    !!!
+      list(...)
+  )
+  
+  req <- httr2::req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) NULL
+  )
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      warning("NCBI request failed.", call. = FALSE)
+    }
+    return(NA_character_)
+  }
+  
+  status <- httr2::resp_status(resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "NCBI request returned HTTP ",
+        status,
+        ".",
+        call. = FALSE
+      )
+    }
+    return(NA_character_)
+  }
+  
+  js <- httr2::resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
+  
+  recs <- js$records
+  
+  if (is.null(recs) || length(recs) < 1L) {
+    return(NA_character_)
+  }
+  
+  val <- recs[[1]]$pmcid
+  
+  if (is.null(val) || is.na(val) || !nzchar(val)) {
+    return(NA_character_)
+  }
+  
+  as.character(val)
 }

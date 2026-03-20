@@ -77,11 +77,13 @@ scholidonline_types <- function() {
       convert = list(
         pmid = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_doi_to_pmid"
         ),
         pmcid = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_doi_to_pmcid"
         )
       )
     ),
@@ -124,11 +126,13 @@ scholidonline_types <- function() {
       convert = list(
         pmid = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_pmcid_to_pmid"
         ),
         doi = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_pmcid_to_doi"
         )
       )
     ),
@@ -152,11 +156,13 @@ scholidonline_types <- function() {
       convert = list(
         doi = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_pmid_to_doi"
         ),
         pmcid = list(
           providers = c("auto", "ncbi", "epmc"),
-          default_provider = "ncbi"
+          default_provider = "ncbi",
+          dispatcher = ".convert_pmid_to_pmcid"
         )
       )
     )

@@ -4,13 +4,20 @@
 \alias{id_convert}
 \title{Convert scholarly identifiers across systems}
 \usage{
-id_convert(x, to, from = NULL, provider = "auto", ..., quiet = FALSE)
+id_convert(
+  x,
+  to = scholidonline_types(),
+  from = NULL,
+  provider = c("auto", .scholidonline_providers()),
+  ...,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{x}{A character vector of identifiers.}
 
 \item{to}{A single string giving the target identifier type. See
-\code{scholidonline::scholidonline_types()} for supported values.}
+scholidonline_types()` for supported values.}
 
 \item{from}{A single string giving the source identifier type, or \code{NULL} to
 infer per element.}

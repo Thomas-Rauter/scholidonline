@@ -1,92 +1,92 @@
-#' Provider resolution helpers for scholidonline
+.scholidonline_req_json <- function(url, query, quiet) {
+  req <- httr2::request(url)
+  req <- httr2::req_url_query(req, !!!query)
+  req <- httr2::req_error(
+    req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- httr2::req_perform(req)
+  
+  if (httr2::resp_status(resp) >= 400) {
+    if (!isTRUE(quiet)) {
+      warning(
+        "HTTP request failed (", httr2::resp_status(resp), "): ",
+        url,
+        call. = FALSE
+      )
+    }
+    return(NULL)
+  }
+  
+  txt <- httr2::resp_body_string(resp)
+  jsonlite::fromJSON(txt, simplifyVector = FALSE)
+}
+
+
+#' Europe PMC search helper
 #'
 #' @description
-#' Internal utilities used to resolve and validate provider selections
-#' for registry-backed operations.
+#' Internal helper for querying the Europe PMC REST search API.
 #'
-#' These helpers ensure that provider arguments are valid for a given
-#' identifier type or conversion and implement the `"auto"` provider
-#' behavior using registry-defined defaults.
+#' This function constructs and executes a search query against Europe PMC and
+#' returns the parsed JSON response. It is used by provider implementations for
+#' identifier conversion and metadata retrieval.
 #'
-#' They are used by front-end functions such as `id_exists()` and
-#' `id_convert()` to dispatch work to provider-specific implementations.
-
-
-# Level 1 function (functions called by exported functions) definitions --------
-
-
-#' Match and validate a provider
+#' The helper supports a minimal subset of query parameters via `...`, notably:
+#' - `pageSize`: number of results to return (default: 1)
+#' - `format`: response format (default: `"json"`)
 #'
-#' Internal helper used by front-end functions to validate provider
-#' arguments and resolve `"auto"` selections.
+#' @param query A single search query string.
+#' @param ... Additional query parameters passed to the API.
+#' @param quiet Logical; if `TRUE`, suppress warnings on failed requests.
 #'
-#' @param provider A single provider string.
-#' @param choices A character vector of valid providers for the operation.
-#' @param default_provider A single provider string to use when
-#'   `provider = "auto"`. Must be one of the concrete providers in `choices`.
+#' @return A parsed JSON object (list), or `NULL` on failure.
 #'
-#' @return A single provider string.
+#' @importFrom rlang %||%
 #'
 #' @noRd
-.scholidonline_match_provider <- function(
-    provider,
-    choices,
-    default_provider = NULL
+.scholidonline_epmc_search <- function(query, ..., quiet = FALSE) {
+  dots <- list(...)
+  page_size <- dots$pageSize %||% 1L
+  format <- dots$format %||% "json"
+  
+  .scholidonline_req_json(
+    url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+    query = list(query = query, format = format, pageSize = page_size),
+    quiet = quiet
+  )
+}
+
+
+.scholidonline_pmc_idconv <- function(ids, ..., quiet = FALSE) {
+  dots <- list(...)
+  
+  .scholidonline_req_json(
+    url = "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/",
+    query = c(list(format = "json", ids = ids), dots),
+    quiet = quiet
+  )
+}
+
+
+.scholidonline_esummary_pubmed <- function(
+    id,
+    ...,
+    quiet = FALSE
 ) {
+  dots <- list(...)
   
-  if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
-    stop(
-      "`provider` must be a single, non-missing character string.",
-      call. = FALSE
-    )
-  }
-  
-  if (!is.character(choices) || length(choices) < 1L || anyNA(choices)) {
-    stop(
-      "`choices` must be a non-empty character vector without NA.",
-      call. = FALSE
-    )
-  }
-  
-  choices <- unique(choices)
-  concrete <- choices[choices != "auto"]
-  
-  if (length(concrete) < 1L) {
-    stop("No concrete providers available.", call. = FALSE)
-  }
-  
-  if (is.null(default_provider)) {
-    default_provider <- concrete[[1L]]
-  }
-  
-  if (!is.character(default_provider) ||
-      length(default_provider) != 1L ||
-      is.na(default_provider)) {
-    stop(
-      "`default_provider` must be a single, non-missing character string.",
-      call. = FALSE
-    )
-  }
-  
-  if (!default_provider %in% concrete) {
-    stop(
-      "`default_provider` must be one of: ",
-      paste0("`", concrete, "`", collapse = ", "),
-      call. = FALSE
-    )
-  }
-  
-  if (identical(provider, "auto")) {
-    return(default_provider)
-  }
-  
-  if (!provider %in% concrete) {
-    stop(
-      "Unknown provider: `", provider, "`. Must be one of: ",
-      paste0("`", concrete, "`", collapse = ", "),
-      call. = FALSE
-    )
-  }
-  
-  provider
+  .scholidonline_req_json(
+    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+    query = c(
+      list(
+        db = "pubmed",
+        id = id,
+        retmode = "json"
+      ),
+      dots
+    ),
+    quiet = quiet
+  )
 }

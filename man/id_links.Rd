@@ -4,7 +4,13 @@
 \alias{id_links}
 \title{Return linked scholarly identifiers}
 \usage{
-id_links(x, type = NULL, provider = "auto", ..., quiet = FALSE)
+id_links(
+  x,
+  type = c("auto", scholidonline_types()),
+  provider = c("auto", .scholidonline_providers()),
+  ...,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{x}{A character vector of identifiers.}
