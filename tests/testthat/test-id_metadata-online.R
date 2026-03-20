@@ -1,6 +1,6 @@
 testthat::test_that("id_metadata() retrieves DOI metadata online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "10.1038/nature12373",
@@ -19,8 +19,8 @@ testthat::test_that("id_metadata() retrieves DOI metadata online", {
 })
 
 testthat::test_that("id_metadata() retrieves PMID metadata online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "31452104",
@@ -39,8 +39,8 @@ testthat::test_that("id_metadata() retrieves PMID metadata online", {
 })
 
 testthat::test_that("id_metadata() retrieves PMCID metadata online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "PMC6821181",
@@ -59,8 +59,8 @@ testthat::test_that("id_metadata() retrieves PMCID metadata online", {
 })
 
 testthat::test_that("id_metadata() retrieves arXiv metadata online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "2101.00001",
@@ -79,8 +79,8 @@ testthat::test_that("id_metadata() retrieves arXiv metadata online", {
 })
 
 testthat::test_that("id_metadata() retrieves ORCID metadata online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "0000-0002-1825-0097",
@@ -99,8 +99,8 @@ testthat::test_that("id_metadata() retrieves ORCID metadata online", {
 })
 
 testthat::test_that("id_metadata() supports auto type detection online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(c(
     "10.1038/nature12373",
@@ -125,8 +125,8 @@ testthat::test_that("id_metadata() supports auto type detection online", {
 })
 
 testthat::test_that("id_metadata() supports provider selection online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out_crossref <- id_metadata(
     x = "10.1038/nature12373",
@@ -159,8 +159,8 @@ testthat::test_that("id_metadata() supports provider selection online", {
 })
 
 testthat::test_that("id_metadata() returns NA metadata for bad input online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata("not_an_identifier")
   
@@ -173,8 +173,8 @@ testthat::test_that("id_metadata() returns NA metadata for bad input online", {
 })
 
 testthat::test_that("id_metadata() supports field selection online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_metadata(
     x = "10.1038/nature12373",

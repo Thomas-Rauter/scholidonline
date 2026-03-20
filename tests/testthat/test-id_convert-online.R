@@ -1,6 +1,6 @@
 testthat::test_that("id_convert() converts PMID to DOI online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "31452104",
@@ -15,8 +15,8 @@ testthat::test_that("id_convert() converts PMID to DOI online", {
 })
 
 testthat::test_that("id_convert() converts DOI to PMID online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "10.1038/nature12373",
@@ -31,8 +31,8 @@ testthat::test_that("id_convert() converts DOI to PMID online", {
 })
 
 testthat::test_that("id_convert() converts PMCID to DOI online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "PMC6821181",
@@ -47,8 +47,8 @@ testthat::test_that("id_convert() converts PMCID to DOI online", {
 })
 
 testthat::test_that("id_convert() converts PMCID to PMID online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "PMC6821181",
@@ -63,8 +63,8 @@ testthat::test_that("id_convert() converts PMCID to PMID online", {
 })
 
 testthat::test_that("id_convert() supports auto source detection online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = c(
@@ -86,8 +86,8 @@ testthat::test_that("id_convert() supports auto source detection online", {
 })
 
 testthat::test_that("id_convert() supports provider selection online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out_ncbi <- id_convert(
     x = "31452104",
@@ -114,8 +114,8 @@ testthat::test_that("id_convert() supports provider selection online", {
 })
 
 testthat::test_that("id_convert() returns identity mapping online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "31452104",
@@ -127,8 +127,8 @@ testthat::test_that("id_convert() returns identity mapping online", {
 })
 
 testthat::test_that("id_convert() returns NA for invalid identifier online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = "not_an_identifier",
@@ -141,8 +141,8 @@ testthat::test_that("id_convert() returns NA for invalid identifier online", {
 })
 
 testthat::test_that("id_convert() preserves length for mixed inputs online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = c(
@@ -161,8 +161,8 @@ testthat::test_that("id_convert() preserves length for mixed inputs online", {
 })
 
 testthat::test_that("id_convert() vectorizes online", {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_convert(
     x = c("31452104", "31437182"),

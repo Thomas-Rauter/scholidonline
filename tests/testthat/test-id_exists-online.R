@@ -1,12 +1,7 @@
-.online_ok <- function() {
-  testthat::skip_on_cran()
-  testthat::skip_if_offline()
-}
-
 testthat::test_that(
   "id_exists (online): DOI existence works via doi.org and crossref",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     doi_valid <- "10.1038/s41586-020-2649-2"
     doi_invalid <- "10.9999/this-does-not-exist"
@@ -49,7 +44,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): DOI normalization works against live providers",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out <- scholidonline::id_exists(
       x = "https://doi.org/10.1038/s41586-021-03819-2",
@@ -65,7 +60,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): PMID existence works via Europe PMC",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out_valid <- scholidonline::id_exists(
       x = "31452104",
@@ -89,7 +84,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): PMCID existence works via Europe PMC",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out_valid <- scholidonline::id_exists(
       x = "PMC6784763",
@@ -113,7 +108,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): auto fallback works for PMID existence",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out <- scholidonline::id_exists(
       x = c("31452104", "999999999999"),
@@ -132,7 +127,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): auto fallback works for PMCID existence",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out <- scholidonline::id_exists(
       x = c("PMC6784763", "PMC0000000"),
@@ -151,7 +146,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): ORCID existence works",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out_valid <- scholidonline::id_exists(
       x = "0000-0002-1825-0097",
@@ -175,7 +170,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): arXiv existence works",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out_valid <- scholidonline::id_exists(
       x = "2203.00001",
@@ -199,7 +194,7 @@ testthat::test_that(
 testthat::test_that(
   "id_exists (online): mixed type inference works against live services",
   {
-    .online_ok()
+    skip_if_no_internet_for_live_tests()
     
     out <- scholidonline::id_exists(
       x = c(

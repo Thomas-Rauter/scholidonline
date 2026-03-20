@@ -1,6 +1,6 @@
 test_that("id_links() works online for PMID via NCBI", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "31452104",
@@ -23,8 +23,8 @@ test_that("id_links() works online for PMID via NCBI", {
 })
 
 test_that("id_links() works online for PMCID via NCBI", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "PMC6821181",
@@ -46,8 +46,8 @@ test_that("id_links() works online for PMCID via NCBI", {
 })
 
 test_that("id_links() works online for PMID via Europe PMC", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "31452104",
@@ -68,8 +68,8 @@ test_that("id_links() works online for PMID via Europe PMC", {
 })
 
 test_that("id_links() works online for PMCID via Europe PMC", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "PMC6821181",
@@ -90,8 +90,8 @@ test_that("id_links() works online for PMCID via Europe PMC", {
 })
 
 test_that("id_links() auto provider works for PMID", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "31452104",
@@ -112,8 +112,8 @@ test_that("id_links() auto provider works for PMID", {
 })
 
 test_that("id_links() auto provider works for PMCID", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "PMC6821181",
@@ -134,8 +134,8 @@ test_that("id_links() auto provider works for PMCID", {
 })
 
 test_that("id_links() vectorizes online across multiple identifiers", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = c("31452104", "PMC6821181"),
@@ -153,8 +153,8 @@ test_that("id_links() vectorizes online across multiple identifiers", {
 })
 
 test_that("id_links() returns zero rows for clearly invalid identifiers online", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = c("not_a_real_id", "definitely_not_a_pmid"),
@@ -172,8 +172,8 @@ test_that("id_links() returns zero rows for clearly invalid identifiers online",
 })
 
 test_that("id_links() works online for ORCID and returns the expected schema", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "0000-0002-1825-0097",
@@ -197,8 +197,8 @@ test_that("id_links() works online for ORCID and returns the expected schema", {
 })
 
 test_that("id_links() works online for arXiv and returns the expected schema", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "2101.00001",
@@ -222,8 +222,8 @@ test_that("id_links() works online for arXiv and returns the expected schema", {
 })
 
 test_that("id_links() works online for DOI via Crossref with stable schema", {
-  skip_on_cran()
-  skip_if_offline()
+  skip_if_no_internet_for_live_tests()
+  
   
   out <- id_links(
     x = "10.1038/nature12373",
