@@ -1,14 +1,14 @@
 #' Supported scholidonline capabilities
 #'
 #' @description
-#' Returns a registry-backed summary of the capabilities supported by the
+#' Return a registry-backed summary of the capabilities supported by the
 #' scholidonline package.
 #'
-#' The returned table describes, for each supported identifier type:
-#' - which unary operations are available (`exists`, `links`, `meta`)
-#' - which identifier conversions are available
-#' - which providers support each capability
-#' - which provider is used by default when `provider = "auto"`
+#' The returned table describes, for each supported identifier type, which
+#' unary operations are available (`exists`, `links`, `meta`), which
+#' identifier conversions are available, which providers support each
+#' capability, and which provider is used by default when
+#' `provider = "auto"`.
 #'
 #' This function is useful for discovering what scholidonline can do for a
 #' given identifier type or conversion pair.
@@ -21,7 +21,8 @@
 #'     or `convert`)
 #'   \item `target`: target identifier type for conversions, otherwise `NA`
 #'   \item `providers`: comma-separated provider names
-#'   \item `default_provider`: default provider used for `provider = "auto"`
+#'   \item `default_provider`: default provider used when
+#'     `provider = "auto"`
 #' }
 #'
 #' @examples
@@ -36,6 +37,7 @@
 #'   scholidonline_capabilities(),
 #'   type == "doi" & target == "pmcid"
 #' )
+#'
 #' @export
 scholidonline_capabilities <- function() {
   reg <- .scholidonline_registry()

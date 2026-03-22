@@ -15,39 +15,38 @@ id_exists(
 \arguments{
 \item{x}{A character vector of identifiers.}
 
-\item{type}{A single string giving the identifier type, or \code{NULL} to infer
-per element. See \code{scholidonline::scholidonline_types()} for supported
-values.}
+\item{type}{A single identifier type string, or \code{"auto"} to infer the type
+for each element of \code{x}. See \code{scholidonline_types()} for supported values.}
 
-\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"doi.org"}, \code{"crossref"},
-\code{"ncbi"}, \code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
+\item{provider}{A single provider string. Use \code{"auto"} to use the default
+provider for the resolved identifier type.}
 
-\item{...}{Passed to provider-specific implementations.}
+\item{...}{Reserved for future provider-specific arguments.}
 
-\item{quiet}{Logical; if \code{TRUE}, suppress provider warnings/messages where
-possible.}
+\item{quiet}{A single logical value; if \code{TRUE}, suppress provider
+warnings/messages where possible.}
 }
 \value{
-A logical vector. \code{TRUE} if the identifier exists, \code{FALSE} if it is
-confirmed not found, and \code{NA} if the input cannot be classified,
-normalized, or checked reliably.
+A logical vector. \code{TRUE} indicates that the identifier exists,
+\code{FALSE} indicates that it was confirmed not found, and \code{NA} indicates
+that the input could not be classified, normalized, or checked reliably.
 }
 \description{
 Check whether identifiers resolve or are found in their respective
 registries.
 
-\code{id_exists()} is vectorized over \code{x}. If \code{type} is \code{NULL}, the identifier
+\code{id_exists()} is vectorized over \code{x}. If \code{type = "auto"}, the identifier
 type is inferred per element using \code{scholid::detect_scholid_type()}.
 Inputs that cannot be classified or normalized yield \code{NA}.
 
 Provider-/ID-specific logic lives in internal helpers named
-\verb{.exists_<type>()} (e.g., \code{.exists_doi()}), which are dispatched to from
-this front-door function.
+\verb{.exists_<type>()} (e.g. \code{.exists_doi()}), which are dispatched to from
+this front-end function.
 }
 \examples{
 \dontrun{
 id_exists("10.1000/182", type = "doi")
-id_exists(c("12345678", "PMC12345"))  # infer type
+id_exists(c("12345678", "PMC12345"))
 }
 
 }

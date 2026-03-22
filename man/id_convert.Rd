@@ -16,39 +16,40 @@ id_convert(
 \arguments{
 \item{x}{A character vector of identifiers.}
 
-\item{to}{A single string giving the target identifier type. See
-scholidonline_types()` for supported values.}
+\item{to}{A single target identifier type string. See
+\code{scholidonline_types()} for supported values.}
 
-\item{from}{A single string giving the source identifier type, or \code{NULL} to
-infer per element.}
+\item{from}{A single source identifier type string, or \code{NULL} to infer the
+source type for each element of \code{x}.}
 
-\item{provider}{Provider to use (e.g. "auto", "ncbi", "epmc", ...).}
+\item{provider}{A single provider string. Use \code{"auto"} to use the default
+provider for the resolved conversion pair.}
 
-\item{...}{Passed to provider-specific implementations.}
+\item{...}{Reserved for future provider-specific arguments.}
 
-\item{quiet}{Logical; if \code{TRUE}, suppress provider warnings/messages where
-possible.}
+\item{quiet}{A single logical value; if \code{TRUE}, suppress provider
+warnings/messages where possible.}
 }
 \value{
-A character vector of converted identifiers. Unconvertible or
-unclassified inputs yield \code{NA_character_}.
+A character vector of converted identifiers. Inputs that cannot be
+classified, normalized, or converted yield \code{NA_character_}.
 }
 \description{
-Convert identifiers across registries (crosswalk), e.g. PMID -> DOI.
+Convert scholarly identifiers across registries, for example PMID -> DOI.
 
-\code{id_convert()} is vectorized over \code{x}. If \code{from} is \code{NULL}, the identifier
-type is inferred per element using \code{scholid::detect_scholid_type()} after
-normalizing (where possible). Inputs that cannot be classified or normalized
-yield \code{NA_character_}.
+\code{id_convert()} is vectorized over \code{x}. If \code{from = NULL}, the source
+identifier type is inferred per element using
+\code{scholid::detect_scholid_type()}.
+Inputs that cannot be classified or normalized yield \code{NA_character_}.
 
 Provider-/ID-specific logic lives in internal helpers named
-\verb{convert_<from>_to_<to>()} (e.g., \code{convert_pmid_to_doi()}), which are
+\verb{.convert_<from>_to_<to>()} (e.g. \code{.convert_pmid_to_doi()}), which are
 dispatched to from this front-door function.
 }
 \examples{
 \dontrun{
 id_convert("12345678", to = "doi", from = "pmid")
-id_convert(c("10.1000/182", "PMC12345"), to = "pmid") # infer `from`
+id_convert(c("10.1000/182", "PMC12345"), to = "pmid")
 }
 
 }

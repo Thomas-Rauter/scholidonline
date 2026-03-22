@@ -7,20 +7,17 @@
 #' `id_links()` is vectorized over `x` and returns a long data.frame with one
 #' row per discovered identifier link.
 #'
-#' The function is intended to expose cross-registry identifier links such as:
-#' - DOI ↔ PMID
-#' - DOI ↔ PMCID
-#' - PMID ↔ PMCID
-#' - arXiv ID ↔ DOI
-#' - ORCID → DOI for works recorded in ORCID
+#' The function is intended to expose cross-registry identifier links such as
+#' DOI ↔ PMID, DOI ↔ PMCID, PMID ↔ PMCID, arXiv ID ↔ DOI, and ORCID → DOI
+#' for works recorded in ORCID.
 #'
 #' Only identifier links explicitly exposed by the queried provider are
 #' returned. `id_links()` is not a general metadata retrieval function and does
 #' not attempt to return broader related records unless the provider represents
-#' them as direct identifier links for the same object or directly corresponding
-#' manifestation.
+#' them as direct identifier links for the same object or directly
+#' corresponding manifestation.
 #'
-#' If `type` is `NULL`, the identifier type is inferred per element using
+#' If `type = "auto"`, the identifier type is inferred per element using
 #' `scholid::detect_scholid_type()`. Inputs that cannot be classified or
 #' normalized yield zero rows.
 #'
@@ -29,17 +26,16 @@
 #' front-end function.
 #'
 #' @param x A character vector of identifiers.
-#' @param type A single string giving the identifier type, or `NULL` to infer
-#'   per element. See `scholidonline::scholidonline_types()` for supported
-#'   values.
-#' @param provider Provider to use (e.g. `"auto"`, `"crossref"`, `"ncbi"`,
-#'   `"epmc"`, `"orcid"`, `"arxiv"`).
-#' @param ... Passed to provider-specific implementations.
-#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
-#'   possible.
+#' @param type A single identifier type string, or `"auto"` to infer the type
+#'   for each element of `x`. See `scholidonline_types()` for supported values.
+#' @param provider A single provider string. Use `"auto"` to use the default
+#'   provider for the resolved identifier type.
+#' @param ... Reserved for future provider-specific arguments.
+#' @param quiet A single logical value; if `TRUE`, suppress provider
+#'   warnings/messages where possible.
 #'
-#' @return A data.frame with columns:
-#'   `input`, `input_type`, `linked_type`, `linked_value`, `provider`.
+#' @return A data.frame with columns `input`, `input_type`, `linked_type`,
+#'   `linked_value`, and `provider`.
 #'
 #' @examples
 #' \dontrun{

@@ -18,15 +18,18 @@
 #' Supported scholidonline identifier types
 #'
 #' @description
-#' Returns the set of identifier types supported by the scholidonline package.
+#' Return the set of identifier types supported by the scholidonline package.
 #'
-#' This is the set of identifiers for which scholidonline provides registry-
-#' backed functionality (existence checks, conversion, metadata, and links).
+#' This is the set of identifier types for which scholidonline provides
+#' registry-backed functionality, including existence checks, identifier
+#' conversion, metadata retrieval, and link discovery.
 #'
 #' @return A character vector of supported identifier type strings.
+#'
 #' @examples
 #' scholidonline_types()
 #' "doi" %in% scholidonline_types()
+#'
 #' @export
 scholidonline_types <- function() {
     names(.scholidonline_registry())

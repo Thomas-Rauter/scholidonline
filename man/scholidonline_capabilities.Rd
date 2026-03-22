@@ -15,20 +15,19 @@ following columns:
 or \code{convert})
 \item \code{target}: target identifier type for conversions, otherwise \code{NA}
 \item \code{providers}: comma-separated provider names
-\item \code{default_provider}: default provider used for \code{provider = "auto"}
+\item \code{default_provider}: default provider used when
+\code{provider = "auto"}
 }
 }
 \description{
-Returns a registry-backed summary of the capabilities supported by the
+Return a registry-backed summary of the capabilities supported by the
 scholidonline package.
 
-The returned table describes, for each supported identifier type:
-\itemize{
-\item which unary operations are available (\code{exists}, \code{links}, \code{meta})
-\item which identifier conversions are available
-\item which providers support each capability
-\item which provider is used by default when \code{provider = "auto"}
-}
+The returned table describes, for each supported identifier type, which
+unary operations are available (\code{exists}, \code{links}, \code{meta}), which
+identifier conversions are available, which providers support each
+capability, and which provider is used by default when
+\code{provider = "auto"}.
 
 This function is useful for discovering what scholidonline can do for a
 given identifier type or conversion pair.
@@ -45,4 +44,5 @@ subset(
   scholidonline_capabilities(),
   type == "doi" & target == "pmcid"
 )
+
 }

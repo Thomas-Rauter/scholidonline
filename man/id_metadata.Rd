@@ -16,26 +16,24 @@ id_metadata(
 \arguments{
 \item{x}{A character vector of identifiers.}
 
-\item{type}{A single string giving the identifier type, or \code{"auto"} to infer
-per element. See \code{scholidonline::scholidonline_types()} for supported
-values.}
+\item{type}{A single identifier type string, or \code{"auto"} to infer the type
+for each element of \code{x}. See \code{scholidonline_types()} for supported values.}
 
-\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"crossref"}, \code{"doi.org"},
-\code{"ncbi"}, \code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
+\item{provider}{A single provider string. Use \code{"auto"} to use the default
+provider for the resolved identifier type.}
 
-\item{fields}{Optional character vector of columns to return. If \code{NULL}, all
-default metadata columns are returned.}
+\item{fields}{An optional character vector of column names to return. If
+\code{NULL}, all default metadata columns are returned.}
 
-\item{...}{Passed to provider-specific implementations.}
+\item{...}{Reserved for future provider-specific arguments.}
 
-\item{quiet}{Logical; if \code{TRUE}, suppress provider warnings/messages where
-possible.}
+\item{quiet}{A single logical value; if \code{TRUE}, suppress provider
+warnings/messages where possible.}
 }
 \value{
 A data.frame with one row per input identifier. By default, the
-returned columns are:
-\code{input}, \code{type}, \code{provider}, \code{title}, \code{year}, \code{container}, \code{doi}, \code{pmid},
-\code{pmcid}, \code{url}.
+returned columns are \code{input}, \code{type}, \code{provider}, \code{title}, \code{year},
+\code{container}, \code{doi}, \code{pmid}, \code{pmcid}, and \code{url}.
 }
 \description{
 Retrieve structured metadata for scholarly identifiers from external
@@ -44,19 +42,10 @@ registries.
 \code{id_metadata()} is vectorized over \code{x} and returns a data.frame with one row
 per input element.
 
-The function is intended to expose core record-level metadata such as:
-\itemize{
-\item title
-\item publication year
-\item container or journal title
-\item linked DOI, PMID, and PMCID when available
-\item canonical URL
-}
-
-\code{id_metadata()} returns provider-exposed metadata for the queried identifier.
-It is not intended to return all available provider-specific fields, but
-rather a stable cross-provider subset that can be represented consistently
-across identifier systems.
+The function returns a stable cross-provider subset of record-level metadata
+for the queried identifier. It is intended to expose core bibliographic
+fields such as title, publication year, container title, linked DOI, PMID,
+and PMCID when available, and a canonical URL.
 
 If \code{type = "auto"}, the identifier type is inferred per element using
 \code{scholid::detect_scholid_type()}. Inputs that cannot be classified or

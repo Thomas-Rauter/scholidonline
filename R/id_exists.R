@@ -4,32 +4,31 @@
 #' Check whether identifiers resolve or are found in their respective
 #' registries.
 #'
-#' `id_exists()` is vectorized over `x`. If `type` is `NULL`, the identifier
+#' `id_exists()` is vectorized over `x`. If `type = "auto"`, the identifier
 #' type is inferred per element using `scholid::detect_scholid_type()`.
 #' Inputs that cannot be classified or normalized yield `NA`.
 #'
 #' Provider-/ID-specific logic lives in internal helpers named
-#' `.exists_<type>()` (e.g., `.exists_doi()`), which are dispatched to from
-#' this front-door function.
+#' `.exists_<type>()` (e.g. `.exists_doi()`), which are dispatched to from
+#' this front-end function.
 #'
 #' @param x A character vector of identifiers.
-#' @param type A single string giving the identifier type, or `NULL` to infer
-#'   per element. See `scholidonline::scholidonline_types()` for supported
-#'   values.
-#' @param provider Provider to use (e.g. `"auto"`, `"doi.org"`, `"crossref"`,
-#'   `"ncbi"`, `"epmc"`, `"orcid"`, `"arxiv"`).
-#' @param ... Passed to provider-specific implementations.
-#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
-#'   possible.
+#' @param type A single identifier type string, or `"auto"` to infer the type
+#'   for each element of `x`. See `scholidonline_types()` for supported values.
+#' @param provider A single provider string. Use `"auto"` to use the default
+#'   provider for the resolved identifier type.
+#' @param ... Reserved for future provider-specific arguments.
+#' @param quiet A single logical value; if `TRUE`, suppress provider
+#'   warnings/messages where possible.
 #'
-#' @return A logical vector. `TRUE` if the identifier exists, `FALSE` if it is
-#'   confirmed not found, and `NA` if the input cannot be classified,
-#'   normalized, or checked reliably.
+#' @return A logical vector. `TRUE` indicates that the identifier exists,
+#'   `FALSE` indicates that it was confirmed not found, and `NA` indicates
+#'   that the input could not be classified, normalized, or checked reliably.
 #'
 #' @examples
 #' \dontrun{
 #' id_exists("10.1000/182", type = "doi")
-#' id_exists(c("12345678", "PMC12345"))  # infer type
+#' id_exists(c("12345678", "PMC12345"))
 #' }
 #'
 #' @export

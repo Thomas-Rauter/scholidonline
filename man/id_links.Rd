@@ -15,21 +15,20 @@ id_links(
 \arguments{
 \item{x}{A character vector of identifiers.}
 
-\item{type}{A single string giving the identifier type, or \code{NULL} to infer
-per element. See \code{scholidonline::scholidonline_types()} for supported
-values.}
+\item{type}{A single identifier type string, or \code{"auto"} to infer the type
+for each element of \code{x}. See \code{scholidonline_types()} for supported values.}
 
-\item{provider}{Provider to use (e.g. \code{"auto"}, \code{"crossref"}, \code{"ncbi"},
-\code{"epmc"}, \code{"orcid"}, \code{"arxiv"}).}
+\item{provider}{A single provider string. Use \code{"auto"} to use the default
+provider for the resolved identifier type.}
 
-\item{...}{Passed to provider-specific implementations.}
+\item{...}{Reserved for future provider-specific arguments.}
 
-\item{quiet}{Logical; if \code{TRUE}, suppress provider warnings/messages where
-possible.}
+\item{quiet}{A single logical value; if \code{TRUE}, suppress provider
+warnings/messages where possible.}
 }
 \value{
-A data.frame with columns:
-\code{input}, \code{input_type}, \code{linked_type}, \code{linked_value}, \code{provider}.
+A data.frame with columns \code{input}, \code{input_type}, \code{linked_type},
+\code{linked_value}, and \code{provider}.
 }
 \description{
 Return identifier links that external registries associate with the same
@@ -38,22 +37,17 @@ scholarly object or a directly corresponding manifestation.
 \code{id_links()} is vectorized over \code{x} and returns a long data.frame with one
 row per discovered identifier link.
 
-The function is intended to expose cross-registry identifier links such as:
-\itemize{
-\item DOI ↔ PMID
-\item DOI ↔ PMCID
-\item PMID ↔ PMCID
-\item arXiv ID ↔ DOI
-\item ORCID → DOI for works recorded in ORCID
-}
+The function is intended to expose cross-registry identifier links such as
+DOI ↔ PMID, DOI ↔ PMCID, PMID ↔ PMCID, arXiv ID ↔ DOI, and ORCID → DOI
+for works recorded in ORCID.
 
 Only identifier links explicitly exposed by the queried provider are
 returned. \code{id_links()} is not a general metadata retrieval function and does
 not attempt to return broader related records unless the provider represents
-them as direct identifier links for the same object or directly corresponding
-manifestation.
+them as direct identifier links for the same object or directly
+corresponding manifestation.
 
-If \code{type} is \code{NULL}, the identifier type is inferred per element using
+If \code{type = "auto"}, the identifier type is inferred per element using
 \code{scholid::detect_scholid_type()}. Inputs that cannot be classified or
 normalized yield zero rows.
 

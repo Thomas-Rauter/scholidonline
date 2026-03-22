@@ -26,12 +26,14 @@ Helper functions in this file expose registry metadata used by the
 exported front-end functions (e.g. \code{id_exists()}, \code{id_convert()}).
 Supported scholidonline identifier types
 
-Returns the set of identifier types supported by the scholidonline package.
+Return the set of identifier types supported by the scholidonline package.
 
-This is the set of identifiers for which scholidonline provides registry-
-backed functionality (existence checks, conversion, metadata, and links).
+This is the set of identifier types for which scholidonline provides
+registry-backed functionality, including existence checks, identifier
+conversion, metadata retrieval, and link discovery.
 }
 \examples{
 scholidonline_types()
 "doi" \%in\% scholidonline_types()
+
 }

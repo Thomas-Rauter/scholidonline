@@ -1,34 +1,35 @@
 #' Convert scholarly identifiers across systems
 #'
 #' @description
-#' Convert identifiers across registries (crosswalk), e.g. PMID -> DOI.
+#' Convert scholarly identifiers across registries, for example PMID -> DOI.
 #'
-#' `id_convert()` is vectorized over `x`. If `from` is `NULL`, the identifier
-#' type is inferred per element using `scholid::detect_scholid_type()` after
-#' normalizing (where possible). Inputs that cannot be classified or normalized
-#' yield `NA_character_`.
+#' `id_convert()` is vectorized over `x`. If `from = NULL`, the source
+#' identifier type is inferred per element using
+#' `scholid::detect_scholid_type()`.
+#' Inputs that cannot be classified or normalized yield `NA_character_`.
 #'
 #' Provider-/ID-specific logic lives in internal helpers named
-#' `convert_<from>_to_<to>()` (e.g., `convert_pmid_to_doi()`), which are
+#' `.convert_<from>_to_<to>()` (e.g. `.convert_pmid_to_doi()`), which are
 #' dispatched to from this front-door function.
 #'
 #' @param x A character vector of identifiers.
-#' @param to A single string giving the target identifier type. See
-#'   scholidonline_types()` for supported values.
-#' @param from A single string giving the source identifier type, or `NULL` to
-#'   infer per element.
-#' @param provider Provider to use (e.g. "auto", "ncbi", "epmc", ...).
-#' @param ... Passed to provider-specific implementations.
-#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
-#'   possible.
+#' @param to A single target identifier type string. See
+#'   `scholidonline_types()` for supported values.
+#' @param from A single source identifier type string, or `NULL` to infer the
+#'   source type for each element of `x`.
+#' @param provider A single provider string. Use `"auto"` to use the default
+#'   provider for the resolved conversion pair.
+#' @param ... Reserved for future provider-specific arguments.
+#' @param quiet A single logical value; if `TRUE`, suppress provider
+#'   warnings/messages where possible.
 #'
-#' @return A character vector of converted identifiers. Unconvertible or
-#'   unclassified inputs yield `NA_character_`.
+#' @return A character vector of converted identifiers. Inputs that cannot be
+#'   classified, normalized, or converted yield `NA_character_`.
 #'
 #' @examples
 #' \dontrun{
 #' id_convert("12345678", to = "doi", from = "pmid")
-#' id_convert(c("10.1000/182", "PMC12345"), to = "pmid") # infer `from`
+#' id_convert(c("10.1000/182", "PMC12345"), to = "pmid")
 #' }
 #'
 #' @export
