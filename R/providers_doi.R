@@ -12,10 +12,7 @@
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://doi.org/",
@@ -25,23 +22,17 @@
     )
   )
   
-  req <- httr2::request(url)
-  req <- httr2::req_headers(
-    .req = req,
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_headers(
+    req = req,
     Accept = "application/vnd.citationstyles.csl+json"
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(
-      req = req
-    ),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -53,9 +44,7 @@
     return(NA)
   }
   
-  status <- httr2::resp_status(
-    resp = resp
-  )
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status >= 200L && status < 300L) {
     return(TRUE)
@@ -97,29 +86,27 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://doi.org/",
-    utils::URLencode(x, reserved = TRUE)
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    )
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_headers(
-    .req = req,
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_headers(
+    req = req,
     Accept = "application/vnd.citationstyles.csl+json"
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -128,7 +115,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status == 404L) {
     return(data.frame())
@@ -146,7 +133,10 @@
     return(data.frame())
   }
   
-  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
   
   data.frame(
     title = obj$title %||% NA_character_,
