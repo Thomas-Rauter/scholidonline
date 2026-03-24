@@ -15,10 +15,7 @@
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x = x)
   
   js <- .scholidonline_epmc_search(
     query = paste0(
@@ -35,9 +32,7 @@
   }
   
   hit_count <- suppressWarnings(
-    as.integer(
-      js$hitCount %||% NA_character_
-    )
+    as.integer(js$hitCount %||% NA_character_)
   )
   
   if (is.na(hit_count)) {
@@ -62,16 +57,10 @@
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x = x)
   
   js <- .scholidonline_epmc_search(
-    query = paste0(
-      "PMCID:",
-      x
-    ),
+    query = paste0("PMCID:", x),
     ...,
     quiet = quiet
   )
@@ -81,9 +70,7 @@
   }
   
   hit_count <- suppressWarnings(
-    as.integer(
-      js$hitCount %||% NA_character_
-    )
+    as.integer(js$hitCount %||% NA_character_)
   )
   
   if (is.na(hit_count)) {
@@ -111,25 +98,24 @@
 #'
 #' @noRd
 .links_pmid_epmc <- function(x, ..., quiet = FALSE) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:",
-    utils::URLencode(x, reserved = TRUE),
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    ),
     "%20AND%20SRC:MED&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -138,7 +124,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (!(status >= 200L && status < 300L)) {
     if (!isTRUE(quiet)) {
@@ -150,7 +136,7 @@
   }
   
   json <- tryCatch(
-    httr2::resp_body_json(resp),
+    .scholidonline_resp_body_json(resp = resp),
     error = function(e) NULL
   )
   
@@ -165,32 +151,31 @@
   }
   
   rec <- results[[1]]
-  
   rows <- list()
   
   if (!is.null(rec$pmid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmid",
+      linked_type = "pmid",
       linked_value = as.character(rec$pmid),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$pmcid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmcid",
+      linked_type = "pmcid",
       linked_value = as.character(rec$pmcid),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$doi)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "doi",
+      linked_type = "doi",
       linked_value = as.character(rec$doi),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
@@ -201,7 +186,6 @@
   
   do.call(rbind, rows)
 }
-
 
 
 #' Europe PMC: return identifiers linked to a PMCID
@@ -218,27 +202,27 @@
 #'
 #' @noRd
 .links_pmcid_epmc <- function(x, ..., quiet = FALSE) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   pmcid_clean <- gsub("^PMC", "", x)
+  
   url <- paste0(
     "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
     "?query=PMCID:PMC",
-    utils::URLencode(pmcid_clean, reserved = TRUE),
+    utils::URLencode(
+      pmcid_clean,
+      reserved = TRUE
+    ),
     "&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -247,7 +231,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (!(status >= 200L && status < 300L)) {
     if (!isTRUE(quiet)) {
@@ -259,7 +243,7 @@
   }
   
   json <- tryCatch(
-    httr2::resp_body_json(resp),
+    .scholidonline_resp_body_json(resp = resp),
     error = function(e) NULL
   )
   
@@ -274,32 +258,31 @@
   }
   
   rec <- results[[1]]
-  
   rows <- list()
   
   if (!is.null(rec$pmid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmid",
+      linked_type = "pmid",
       linked_value = as.character(rec$pmid),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$pmcid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmcid",
+      linked_type = "pmcid",
       linked_value = as.character(rec$pmcid),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$doi)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "doi",
+      linked_type = "doi",
       linked_value = as.character(rec$doi),
-      provider     = "epmc",
+      provider = "epmc",
       stringsAsFactors = FALSE
     )
   }
@@ -334,26 +317,25 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
     "?query=EXT_ID:",
-    utils::URLencode(x, reserved = TRUE),
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    ),
     "%20AND%20SRC:MED&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -362,7 +344,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -376,7 +358,10 @@
     return(data.frame())
   }
   
-  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
   
   recs <- obj$resultList$result
   
@@ -432,28 +417,27 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   pmcid_clean <- gsub("^PMC", "", x)
   
   url <- paste0(
     "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
     "?query=PMCID:PMC",
-    utils::URLencode(pmcid_clean, reserved = TRUE),
+    utils::URLencode(
+      pmcid_clean,
+      reserved = TRUE
+    ),
     "&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -462,7 +446,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -476,7 +460,10 @@
     return(data.frame())
   }
   
-  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
   
   recs <- obj$resultList$result
   
@@ -530,7 +517,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("EXT_ID:", x, " AND SRC:MED")
   
@@ -544,7 +531,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   doi <- rec$doi %||% NA_character_
   
   if (is.na(doi) || !nzchar(doi)) {
@@ -569,7 +556,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("DOI:\"", x, "\"")
   
@@ -583,7 +570,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   pmid <- rec$pmid %||% NA_character_
   
   if (is.na(pmid) || !nzchar(pmid)) {
@@ -608,7 +595,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("PMCID:", x)
   
@@ -622,7 +609,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   pmid <- rec$pmid %||% NA_character_
   
   if (is.na(pmid) || !nzchar(pmid)) {
@@ -647,7 +634,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("PMCID:", x)
   
@@ -661,7 +648,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   doi <- rec$doi %||% NA_character_
   
   if (is.na(doi) || !nzchar(doi)) {
@@ -686,7 +673,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("EXT_ID:", x, " AND SRC:MED")
   
@@ -700,7 +687,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   pmcid <- rec$pmcid %||% NA_character_
   
   if (is.na(pmcid) || !nzchar(pmcid)) {
@@ -725,7 +712,7 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   q <- paste0("DOI:\"", x, "\"")
   
@@ -739,7 +726,7 @@
     return(NA_character_)
   }
   
-  rec <- .scholidonline_epmc_first_result(js)
+  rec <- .scholidonline_epmc_first_result(x = js)
   pmcid <- rec$pmcid %||% NA_character_
   
   if (is.na(pmcid) || !nzchar(pmcid)) {
@@ -768,9 +755,7 @@
 #'   available.
 #'
 #' @noRd
-.scholidonline_epmc_first_result <- function(
-    x
-) {
+.scholidonline_epmc_first_result <- function(x) {
   res <- x$resultList$result
   
   if (is.null(res) || length(res) < 1L) {

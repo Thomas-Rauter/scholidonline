@@ -15,10 +15,7 @@
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x = x)
   
   js <- .scholidonline_esummary_pubmed(
     id = x,
@@ -68,10 +65,7 @@
     ...,
     quiet = FALSE
 ) {
-  
-  .scholidonline_check_scalar_chr(
-    x = x
-  )
+  .scholidonline_check_scalar_chr(x = x)
   
   js <- .scholidonline_pmc_idconv(
     ids = x,
@@ -114,25 +108,24 @@
 #'
 #' @noRd
 .links_pmid_ncbi <- function(x, ..., quiet = FALSE) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=",
-    utils::URLencode(x, reserved = TRUE),
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    ),
     "&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -141,7 +134,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (!(status >= 200L && status < 300L)) {
     if (!isTRUE(quiet)) {
@@ -153,7 +146,7 @@
   }
   
   json <- tryCatch(
-    httr2::resp_body_json(resp),
+    .scholidonline_resp_body_json(resp = resp),
     error = function(e) NULL
   )
   
@@ -168,32 +161,31 @@
   }
   
   rec <- records[[1]]
-  
   rows <- list()
   
   if (!is.null(rec$pmid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmid",
+      linked_type = "pmid",
       linked_value = as.character(rec$pmid),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$pmcid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmcid",
+      linked_type = "pmcid",
       linked_value = as.character(rec$pmcid),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$doi)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "doi",
+      linked_type = "doi",
       linked_value = as.character(rec$doi),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
@@ -204,7 +196,6 @@
   
   do.call(rbind, rows)
 }
-
 
 
 #' NCBI: return identifiers linked to a PMCID
@@ -221,25 +212,24 @@
 #'
 #' @noRd
 .links_pmcid_ncbi <- function(x, ..., quiet = FALSE) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=",
-    utils::URLencode(x, reserved = TRUE),
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    ),
     "&format=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -248,7 +238,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (!(status >= 200L && status < 300L)) {
     if (!isTRUE(quiet)) {
@@ -260,7 +250,7 @@
   }
   
   json <- tryCatch(
-    httr2::resp_body_json(resp),
+    .scholidonline_resp_body_json(resp = resp),
     error = function(e) NULL
   )
   
@@ -275,32 +265,31 @@
   }
   
   rec <- records[[1]]
-  
   rows <- list()
   
   if (!is.null(rec$pmid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmid",
+      linked_type = "pmid",
       linked_value = as.character(rec$pmid),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$pmcid)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmcid",
+      linked_type = "pmcid",
       linked_value = as.character(rec$pmcid),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
   
   if (!is.null(rec$doi)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "doi",
+      linked_type = "doi",
       linked_value = as.character(rec$doi),
-      provider     = "ncbi",
+      provider = "ncbi",
       stringsAsFactors = FALSE
     )
   }
@@ -335,25 +324,25 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
-    "?db=pubmed&id=", utils::URLencode(x, reserved = TRUE),
+    "?db=pubmed&id=",
+    utils::URLencode(
+      x,
+      reserved = TRUE
+    ),
     "&retmode=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -362,7 +351,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -371,7 +360,10 @@
     return(data.frame())
   }
   
-  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
   
   rec <- obj$result[[x]]
   
@@ -425,26 +417,27 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
+  
+  key <- gsub("^PMC", "", x)
   
   url <- paste0(
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
     "?db=pmc&id=",
-    utils::URLencode(gsub("^PMC", "", x), reserved = TRUE),
+    utils::URLencode(
+      key,
+      reserved = TRUE
+    ),
     "&retmode=json"
   )
   
-  req <- httr2::request(url)
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -453,7 +446,7 @@
     return(data.frame())
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -467,9 +460,11 @@
     return(data.frame())
   }
   
-  obj <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
   
-  key <- gsub("^PMC", "", x)
   rec <- obj$result[[key]]
   
   if (is.null(rec)) {
@@ -520,30 +515,25 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     db = "pubmed",
     id = x,
     retmode = "json",
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -552,7 +542,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -566,8 +556,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   
@@ -615,32 +605,27 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
   term <- paste0("\"", x, "\"[DOI]")
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     db = "pubmed",
     term = term,
     retmode = "json",
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -649,7 +634,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -663,8 +648,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   
@@ -692,29 +677,24 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     format = "json",
     ids = x,
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -723,7 +703,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -737,8 +717,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   
@@ -772,29 +752,24 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     format = "json",
     ids = x,
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -803,7 +778,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -817,8 +792,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   
@@ -852,29 +827,24 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     format = "json",
     ids = x,
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -883,7 +853,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -897,8 +867,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   
@@ -932,29 +902,24 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x)
+  .scholidonline_check_scalar_chr(x = x)
   
-  req <- httr2::request(
+  req <- .scholidonline_request(
     "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
   )
-  
-  req <- httr2::req_url_query(
-    req,
+  req <- .scholidonline_req_url_query(
+    req = req,
     format = "json",
     ids = x,
     !!!
       list(...)
   )
-  
-  req <- httr2::req_error(
+  req <- .scholidonline_req_error(
     req = req,
     is_error = function(resp) FALSE
   )
   
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    error = function(e) NULL
-  )
+  resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
@@ -963,7 +928,7 @@
     return(NA_character_)
   }
   
-  status <- httr2::resp_status(resp)
+  status <- .scholidonline_resp_status(resp = resp)
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
@@ -977,8 +942,8 @@
     return(NA_character_)
   }
   
-  js <- httr2::resp_body_json(
-    resp,
+  js <- .scholidonline_resp_body_json(
+    resp = resp,
     simplifyVector = FALSE
   )
   

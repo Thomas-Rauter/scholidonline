@@ -22,10 +22,12 @@
     req,
     ...
 ) {
+  query <- rlang::list2(...)
+  
   httr2::req_url_query(
-    req,
+    .req = req,
     !!!
-      list(...)
+      query
   )
 }
 

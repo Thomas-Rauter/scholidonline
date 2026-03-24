@@ -1,17 +1,19 @@
 .scholidonline_req_json <- function(url, query, quiet) {
-  req <- httr2::request(url)
-  req <- httr2::req_url_query(req, !!!query)
-  req <- httr2::req_error(
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_url_query(req, !!!query)
+  req <- .scholidonline_req_error(
     req,
     is_error = function(resp) FALSE
   )
   
-  resp <- httr2::req_perform(req)
+  resp <- .scholidonline_req_perform(req)
   
-  if (httr2::resp_status(resp) >= 400) {
+  if (.scholidonline_resp_status(resp) >= 400) {
     if (!isTRUE(quiet)) {
       warning(
-        "HTTP request failed (", httr2::resp_status(resp), "): ",
+        "HTTP request failed (",
+        .scholidonline_resp_status(resp),
+        "): ",
         url,
         call. = FALSE
       )
@@ -19,7 +21,7 @@
     return(NULL)
   }
   
-  txt <- httr2::resp_body_string(resp)
+  txt <- .scholidonline_resp_body_string(resp)
   jsonlite::fromJSON(txt, simplifyVector = FALSE)
 }
 
