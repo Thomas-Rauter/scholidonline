@@ -33,7 +33,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/get_started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="articles/scholid_definitions.html">About identifiers</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/online_resolution.html">Online resolution</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -49,30 +49,35 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="scholid">scholid<a class="anchor" aria-label="anchor" href="#scholid"></a>
+<div class="page-header"><h1 id="scholidonline">scholidonline<a class="anchor" aria-label="anchor" href="#scholidonline"></a>
 </h1></div>
-<p><a href="https://github.com/Thomas-Rauter/scholid/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Thomas-Rauter/scholid/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/Thomas-Rauter/scholid" class="external-link"><img src="https://img.shields.io/codecov/c/github/Thomas-Rauter/scholid?branch=main&amp;logo=codecov" alt="Codecov test coverage"></a></p>
-<p><code>scholid</code> provides lightweight, dependency-free utilities for working with scholarly identifiers in R. The package is designed as a small, well-tested foundation that can be safely reused by other packages and data workflows.</p>
-<p>See the full documentation at the <a href="https://thomas-rauter.github.io/scholid/" class="external-link">scholid website</a>.</p>
+<p><a href="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/Thomas-Rauter/scholidonline" class="external-link"><img src="https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&amp;logo=codecov" alt="Codecov test coverage"></a></p>
+<p><code>scholidonline</code> provides lightweight <strong>online</strong> utilities for working with scholarly identifiers in R. It builds on <code>scholid</code> for identifier detection and normalization, and adds minimal-dependency functions to query external registries.</p>
+<p>See the full documentation at the <a href="https://thomas-rauter.github.io/scholidonline/">scholidonline website</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install the released version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"scholid"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"scholidonline"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="scope">Scope<a class="anchor" aria-label="anchor" href="#scope"></a>
 </h2>
-<p>The package focuses on common identifier systems used in scholarly communication:</p>
+<p>The package focuses on online operations for common identifier systems used in scholarly communication:</p>
 <ul>
 <li>DOI</li>
 <li>ORCID iD</li>
-<li>ISBN</li>
-<li>ISSN</li>
 <li>arXiv</li>
 <li>PubMed (PMID)</li>
 <li>PubMed Central (PMCID)</li>
+</ul>
+<p>It provides registry-backed functionality such as:</p>
+<ul>
+<li>Existence checks</li>
+<li>Identifier conversion across systems</li>
+<li>Basic metadata retrieval</li>
+<li>Discovery of linked identifiers</li>
 </ul>
 </div>
 <div class="section level2">
@@ -90,83 +95,31 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>scholid_types()</code></td>
-<td>List supported scholarly identifier types</td>
+<td><code>id_exists(x, type = NULL)</code></td>
+<td>Check whether identifiers exist in their respective registries</td>
 </tr>
 <tr class="even">
-<td><code>is_scholid(x, type)</code></td>
-<td>Test whether values conform to a given identifier type</td>
+<td><code>id_convert(x, to, from = NULL)</code></td>
+<td>Convert identifiers across systems (e.g., PMID → DOI)</td>
 </tr>
 <tr class="odd">
-<td><code>normalize_scholid(x, type)</code></td>
-<td>Normalize identifiers to canonical form</td>
+<td><code>id_metadata(x, type = NULL)</code></td>
+<td>Retrieve basic structured metadata</td>
 </tr>
 <tr class="even">
-<td><code>extract_scholid(text, type)</code></td>
-<td>Extract identifiers of a given type from free text</td>
-</tr>
-<tr class="odd">
-<td><code>classify_scholid(x)</code></td>
-<td>Guess the identifier type of each input value</td>
-</tr>
-<tr class="even">
-<td><code>detect_scholid_type(x)</code></td>
-<td>Detect identifier types from canonical or wrapped input values</td>
+<td><code>id_links(x, type = NULL)</code></td>
+<td>Discover linked identifiers</td>
 </tr>
 </tbody>
 </table>
+<p>All functions are vectorized and return predictable base R objects (logical vectors or data.frames).</p>
+<p>Identifier detection and normalization are delegated to <code>scholid</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+<h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># list supported scholarly identifier types</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/scholid_types.html" class="external-link">scholid_types</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## [1] "arxiv" "doi"   "isbn"  "issn"  "orcid" "pmcid" "pmid"</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># test whether values match a given identifier type</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/is_scholid.html" class="external-link">is_scholid</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># normalize identifiers to canonical form</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/normalize_scholid.html" class="external-link">normalize_scholid</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"https://doi.org/10.1000/182"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## [1] "10.1000/182"</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># extract identifiers of a given type from free text</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/extract_scholid.html" class="external-link">extract_scholid</a></span><span class="op">(</span></span>
-<span>  text <span class="op">=</span> <span class="st">"See https://doi.org/10.1000/182 for details."</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## [[1]]</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="do">## [1] "10.1000/182"</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># classify the identifier type of each input value</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/classify_scholid.html" class="external-link">classify_scholid</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"10.1000/182"</span>,</span>
-<span>    <span class="st">"0000-0002-1825-0097"</span>,</span>
-<span>    <span class="st">"not an id"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## [1] "doi"   "orcid" NA</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># detect identifier types from canonical or wrapped input values</span></span>
-<span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html" class="external-link">detect_scholid_type</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"https://doi.org/10.1000/182"</span>,</span>
-<span>    <span class="st">"ORCID: 0000-0002-1825-0097"</span>,</span>
-<span>    <span class="st">"arXiv:2101.00001"</span>,</span>
-<span>    <span class="st">"not an id"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">## [1] "doi"   "orcid" "arxiv" NA</span></span></code></pre></div>
-<p>For more detailed usage patterns check out the <strong>Get started</strong> vignette.</p>
+<p><code>scholid</code> provides dependency-free utilities for detecting, normalizing, classifying, and extracting scholarly identifiers.</p>
+<p><code>scholidonline</code> builds on that foundation and adds online registry queries, while keeping dependencies minimal (<code>httr2</code>, <code>jsonlite</code>) and maintaining CRAN-friendly behavior.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>

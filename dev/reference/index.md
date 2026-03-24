@@ -12,4 +12,8 @@ GitHub).
 - [`id_links()`](https://thomas-rauter.github.io/scholidonline/reference/id_links.md)
   : Return linked scholarly identifiers
 - [`id_metadata()`](https://thomas-rauter.github.io/scholidonline/reference/id_metadata.md)
-  : Fetch metadata for scholarly identifiers
+  : Retrieve scholarly metadata
+- [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+  : Supported scholidonline capabilities
+- [`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_types.md)
+  : scholidonline identifier registry

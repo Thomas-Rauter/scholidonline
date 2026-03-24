@@ -4,7 +4,7 @@
 <url><loc>https://thomas-rauter.github.io/scholidonline/LICENSE.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/articles/get_started.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/articles/index.html</loc></url>
-<url><loc>https://thomas-rauter.github.io/scholidonline/articles/online-resolution.html</loc></url>
+<url><loc>https://thomas-rauter.github.io/scholidonline/articles/online_resolution.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/authors.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/index.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/news/index.html</loc></url>
@@ -13,5 +13,7 @@
 <url><loc>https://thomas-rauter.github.io/scholidonline/reference/id_links.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/reference/id_metadata.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/reference/index.html</loc></url>
+<url><loc>https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.html</loc></url>
+<url><loc>https://thomas-rauter.github.io/scholidonline/reference/scholidonline_types.html</loc></url>
 </urlset>
 

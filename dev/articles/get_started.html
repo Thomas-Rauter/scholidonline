@@ -31,7 +31,7 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/get_started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/scholid_definitions.html">About identifiers</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/online_resolution.html">Online resolution</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -73,18 +73,15 @@ as:</p>
 </ul>
 <p>This vignette introduces the interface and typical workflows when
 working with registry-connected identifier data.</p>
-<div class="section level3">
-<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h3>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"scholidonline"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="install-packagesscholidonline">install.packages(“scholidonline”)<a class="anchor" aria-label="anchor" href="#install-packagesscholidonline"></a>
+<h2 id="interface">Interface<a class="anchor" aria-label="anchor" href="#interface"></a>
 </h2>
-<p><code>scholid</code> will be installed automatically as a
-dependency.</p>
-<div class="section level3">
-<h3 id="interface">Interface<a class="anchor" aria-label="anchor" href="#interface"></a>
-</h3>
 <p><code>scholidonline</code> exposes a small set of user-facing
 functions:</p>
 <ul>
@@ -103,24 +100,64 @@ functions:</p>
 <p>Identifier detection and normalization are delegated internally to
 <code>scholid</code>.</p>
 </div>
-<div class="section level3">
-<h3 id="existence-checks-id_exists">Existence checks: <code>id_exists()</code><a class="anchor" aria-label="anchor" href="#existence-checks-id_exists"></a>
-</h3>
+<div class="section level2">
+<h2 id="supported-identifier-types">Supported identifier types<a class="anchor" aria-label="anchor" href="#supported-identifier-types"></a>
+</h2>
+<p>You can inspect which identifier types are supported:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_types.html">scholidonline_types</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="inspecting-capabilities">Inspecting capabilities<a class="anchor" aria-label="anchor" href="#inspecting-capabilities"></a>
+</h2>
+<p><code>scholidonline</code> is registry-driven. You can inspect all
+supported operations, conversions, and providers:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     type operation target               providers default_provider</span></span>
+<span><span class="co">## 1  arxiv    exists   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 2  arxiv     links   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 3  arxiv      meta   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 4    doi    exists   &lt;NA&gt; auto, doi.org, crossref          doi.org</span></span>
+<span><span class="co">## 5    doi     links   &lt;NA&gt;          auto, crossref         crossref</span></span>
+<span><span class="co">## 6    doi      meta   &lt;NA&gt; auto, crossref, doi.org         crossref</span></span>
+<span><span class="co">## 7    doi   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 8    doi   convert  pmcid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 9  orcid    exists   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 10 orcid     links   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 11 orcid      meta   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 12 pmcid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 13 pmcid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 14 pmcid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 15 pmcid   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 16 pmcid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 17  pmid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 18  pmid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 19  pmid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 20  pmid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 21  pmid   convert  pmcid        auto, ncbi, epmc             ncbi</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="existence-checks-id_exists">Existence checks: <code>id_exists()</code><a class="anchor" aria-label="anchor" href="#existence-checks-id_exists"></a>
+</h2>
 <p><code><a href="../reference/id_exists.html">id_exists()</a></code> verifies whether identifiers exist in their
 respective registries.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>If <code>type = NULL</code>, the type is inferred automatically:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"10.1000/182"</span>,</span>
 <span>    <span class="st">"12345678"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE TRUE</span></span></code></pre>
 <p>Return values:</p>
 <ul>
 <li>TRUE → confirmed by registry</li>
@@ -128,36 +165,45 @@ respective registries.</p>
 <li>NA → cannot be classified or normalized</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="conversion-id_convert">Conversion: <code>id_convert()</code><a class="anchor" aria-label="anchor" href="#conversion-id_convert"></a>
-</h3>
+<div class="section level2">
+<h2 id="conversion-id_convert">Conversion: <code>id_convert()</code><a class="anchor" aria-label="anchor" href="#conversion-id_convert"></a>
+</h2>
 <p>Many scholarly identifiers are cross-linked across systems.</p>
 <p>Common examples:</p>
 <ul>
 <li>PMID → DOI</li>
 <li>PMCID → PMID</li>
-<li>arXiv → DOI (when available)</li>
+<li>DOI → PMCID</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"12345678"</span>,</span>
 <span>  from <span class="op">=</span> <span class="st">"pmid"</span>,</span>
 <span>  to   <span class="op">=</span> <span class="st">"doi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "10.1234/2013/999990"</span></span></code></pre>
 <p>If <code>from = NULL</code>, the source type is inferred per
-element.</p>
+element:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12345678"</span>, <span class="st">"PMC1234567"</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="st">"doi"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "10.1234/2013/999990"              "10.1097/00000658-199503000-00007"</span></span></code></pre>
 <p>Unresolvable mappings return <code>NA_character_</code>.</p>
 </div>
-<div class="section level3">
-<h3 id="metadata-retrieval-id_metadata">Metadata retrieval: <code>id_metadata()</code><a class="anchor" aria-label="anchor" href="#metadata-retrieval-id_metadata"></a>
-</h3>
+<div class="section level2">
+<h2 id="metadata-retrieval-id_metadata">Metadata retrieval: <code>id_metadata()</code><a class="anchor" aria-label="anchor" href="#metadata-retrieval-id_metadata"></a>
+</h2>
 <p><code><a href="../reference/id_metadata.html">id_metadata()</a></code> retrieves harmonized metadata from
 external registries.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         input type provider title year container  doi pmid pmcid  url</span></span>
+<span><span class="co">## 1 10.1000/182  doi     &lt;NA&gt;  &lt;NA&gt;   NA      &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt;</span></span></code></pre>
 <p>Returned metadata is registry-derived and minimally harmonized across
 providers.</p>
 <p>Typical columns include:</p>
@@ -167,7 +213,6 @@ providers.</p>
 <li>provider</li>
 <li>title</li>
 <li>year</li>
-<li>authors</li>
 <li>container</li>
 <li>doi</li>
 <li>pmid</li>
@@ -175,17 +220,29 @@ providers.</p>
 <li>url</li>
 </ul>
 <p>Metadata completeness depends on the external authority.</p>
+<p>You can restrict returned fields:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
+<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"year"</span>, <span class="st">"doi"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   title year  doi</span></span>
+<span><span class="co">## 1  &lt;NA&gt;   NA &lt;NA&gt;</span></span></code></pre>
 </div>
-<div class="section level3">
-<h3 id="linked-identifiers-id_links">Linked identifiers: <code>id_links()</code><a class="anchor" aria-label="anchor" href="#linked-identifiers-id_links"></a>
-</h3>
+<div class="section level2">
+<h2 id="linked-identifiers-id_links">Linked identifiers: <code>id_links()</code><a class="anchor" aria-label="anchor" href="#linked-identifiers-id_links"></a>
+</h2>
 <p><code><a href="../reference/id_links.html">id_links()</a></code> returns related identifiers discovered via
 registry queries.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_links.html">id_links</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"pmcid"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        input input_type linked_type                     linked_value provider</span></span>
+<span><span class="co">## 1 PMC1234567      pmcid        pmid                          7717779     ncbi</span></span>
+<span><span class="co">## 2 PMC1234567      pmcid       pmcid                       PMC1234567     ncbi</span></span>
+<span><span class="co">## 3 PMC1234567      pmcid         doi 10.1097/00000658-199503000-00007     ncbi</span></span></code></pre>
 <p>This may reveal:</p>
 <ul>
 <li>DOI</li>
@@ -195,18 +252,18 @@ registry queries.</p>
 </ul>
 <p>The result is a long data.frame with one row per link.</p>
 </div>
-<div class="section level3">
-<h3 id="working-with-mixed-data">Working with mixed data<a class="anchor" aria-label="anchor" href="#working-with-mixed-data"></a>
-</h3>
+<div class="section level2">
+<h2 id="working-with-mixed-data">Working with mixed data<a class="anchor" aria-label="anchor" href="#working-with-mixed-data"></a>
+</h2>
 <p>A common workflow for messy identifier columns:</p>
 <ol style="list-style-type: decimal">
-<li>Detect identifier types (via <code>scholid</code>).</li>
-<li>Normalize identifiers.</li>
-<li>Check registry existence.</li>
-<li>Convert or enrich with metadata.</li>
+<li>Detect identifier types (via <code>scholid</code>)</li>
+<li>Normalize identifiers</li>
+<li>Check registry existence</li>
+<li>Convert or enrich with metadata</li>
 </ol>
 <p>Example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://doi.org/10.1000/182"</span>,</span>
 <span>  <span class="st">"PMID: 12345678"</span>,</span>
@@ -214,51 +271,67 @@ registry queries.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html" class="external-link">detect_scholid_type</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="va">x_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span></span>
-<span>  <span class="fu">scholid</span><span class="fu">::</span><span class="va"><a href="https://thomas-rauter.github.io/scholid/reference/normalize_scholid.html" class="external-link">normalize_scholid</a></span>,</span>
-<span>  x    <span class="op">=</span> <span class="va">x</span>,</span>
-<span>  type <span class="op">=</span> <span class="va">types</span>,</span>
-<span>  SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x_norm</span>, type <span class="op">=</span> <span class="va">types</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">x_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">types</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">next</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="va">x_norm</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/normalize_scholid.html" class="external-link">normalize_scholid</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
+<span>    type <span class="op">=</span> <span class="va">types</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">types</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "doi"  "issn" NA</span></span></code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x_norm</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "10.1000/182" "1234-5678"   NA</span></span></code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE   NA   NA</span></span></code></pre>
 <p>This separation keeps structural logic (<code>scholid</code>) and
 registry logic (<code>scholidonline</code>) clearly distinct.</p>
 </div>
-<div class="section level3">
-<h3 id="provider-selection">Provider selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
-</h3>
+<div class="section level2">
+<h2 id="provider-selection">Provider selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
+</h2>
 <p>Most functions accept a <code>provider</code> argument.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x        <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type     <span class="op">=</span> <span class="st">"doi"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"crossref"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] FALSE</span></span></code></pre>
 <p>If <code>provider = "auto"</code> (default), a sensible registry is
-chosen automatically.</p>
-<p>Available providers depend on the identifier type.</p>
+chosen automatically, potentially with fallback behavior.</p>
+<p>Available providers depend on the identifier type and operation. Use
+<code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to inspect them.</p>
 </div>
-<div class="section level3">
-<h3 id="network-considerations">Network considerations<a class="anchor" aria-label="anchor" href="#network-considerations"></a>
-</h3>
+<div class="section level2">
+<h2 id="network-considerations">Network considerations<a class="anchor" aria-label="anchor" href="#network-considerations"></a>
+</h2>
 <p>Because <code>scholidonline</code> relies on external services:</p>
 <ul>
-<li>An internet connection is required.</li>
-<li>Rate limits may apply.</li>
-<li>Results may change over time.</li>
-<li>Temporary failures can occur.</li>
+<li>An internet connection is required</li>
+<li>Rate limits may apply</li>
+<li>Results may change over time</li>
+<li>Temporary failures can occur</li>
 </ul>
 <p>For reproducible workflows:</p>
 <ul>
-<li>Cache results where appropriate.</li>
-<li>Record provider choices.</li>
-<li>Handle occasional <code>NA</code> values gracefully.</li>
+<li>Cache results where appropriate</li>
+<li>Record provider choices</li>
+<li>Handle occasional <code>NA</code> values gracefully</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
-</h3>
+<div class="section level2">
+<h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
+</h2>
 <p><code>scholid</code> handles:</p>
 <ul>
 <li>Detection</li>
@@ -279,14 +352,43 @@ chosen automatically.</p>
 <li>Layer 2: External registry interaction</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
-</h3>
-</div>
-</div>
 <div class="section level2">
-<h2 id="sessioninfo">sessionInfo()<a class="anchor" aria-label="anchor" href="#sessioninfo"></a>
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">##  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">## [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##  [1] cli_3.6.5           knitr_1.51          rlang_1.1.7        </span></span>
+<span><span class="co">##  [4] xfun_0.57           textshaping_1.0.5   jsonlite_2.0.0     </span></span>
+<span><span class="co">##  [7] glue_1.8.0          htmltools_0.5.9     ragg_1.5.2         </span></span>
+<span><span class="co">## [10] sass_0.4.10         rmarkdown_2.30      rappdirs_0.3.4     </span></span>
+<span><span class="co">## [13] evaluate_1.0.5      jquerylib_0.1.4     fastmap_1.2.0      </span></span>
+<span><span class="co">## [16] yaml_2.3.12         lifecycle_1.0.5     httr2_1.2.2        </span></span>
+<span><span class="co">## [19] compiler_4.5.3      fs_2.0.0            scholid_0.1.0      </span></span>
+<span><span class="co">## [22] scholidonline_0.1.0 systemfonts_1.3.2   digest_0.6.39      </span></span>
+<span><span class="co">## [25] R6_2.6.1            curl_7.0.0          magrittr_2.0.4     </span></span>
+<span><span class="co">## [28] bslib_0.10.0        tools_4.5.3         pkgdown_2.2.0      </span></span>
+<span><span class="co">## [31] cachem_1.1.0        desc_1.4.3</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
