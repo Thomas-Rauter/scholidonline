@@ -93,7 +93,7 @@ knitr::kable(out)
 # Return linked scholarly identifiers
 out <- scholidonline::id_links(
   "31452104",
-  provider = "ncbi"
+  provider = "epmc"
   )
 
 knitr::kable(out)

@@ -14,7 +14,7 @@ normalization, and adds registry-backed functionality such as:
 - Existence checks
 - Identifier conversion across systems
 - Metadata retrieval
-- Discovery of linked identifiers
+- Retrieval of directly linked identifiers
 
 This vignette introduces the interface and typical workflows when
 working with registry-connected identifier data.
@@ -31,6 +31,8 @@ install.packages("scholidonline")
 
 `scholidonline` exposes a small set of user-facing functions:
 
+- `scholidonline_types()`
+- `scholidonline_capabilities()`
 - `id_exists(x, type = NULL)`
 - `id_convert(x, to, from = NULL)`
 - `id_metadata(x, type = NULL)`
@@ -45,6 +47,8 @@ All functions are:
 
 Identifier detection and normalization are delegated internally to
 `scholid`.
+
+
 
 ## Supported identifier types
 
@@ -95,6 +99,8 @@ Return values:
 - FALSE → confirmed not found
 - NA    → cannot be classified or normalized
 
+
+
 ## Conversion: `id_convert()`
 
 Many scholarly identifiers are cross-linked across systems.
@@ -123,6 +129,8 @@ scholidonline::id_convert(
 ```
 
 Unresolvable mappings return `NA_character_`.
+
+
 
 ## Metadata retrieval: `id_metadata()`
 
@@ -249,20 +257,32 @@ automatically, potentially with fallback behavior.
 Available providers depend on the identifier type and operation.
 Use `scholidonline_capabilities()` to inspect them.
 
-## Network considerations
+The chosen provider affects:
 
-Because `scholidonline` relies on external services:
+- Response speed
+- Metadata richness
+- Crosswalk coverage
 
-- An internet connection is required
-- Rate limits may apply
-- Results may change over time
-- Temporary failures can occur
 
-For reproducible workflows:
 
-- Cache results where appropriate
-- Record provider choices
-- Handle occasional `NA` values gracefully
+## Scope of scholidonline
+
+`scholidonline` focuses on identifiers that have:
+
+- Stable public registries
+- Accessible APIs
+- Meaningful cross-system relationships
+
+Examples:
+
+- DOI
+- PMID
+- PMCID
+- ORCID
+- arXiv
+
+Other identifiers (e.g., ISBN, ISSN) are structurally supported by
+`scholid`, but do not always have stable, open registry APIs.
 
 
 
@@ -282,7 +302,7 @@ For reproducible workflows:
 - Metadata retrieval
 - Link discovery
 
-Together they form a clean two-layer design:
+Together they form a two-layer design:
 
 - Layer 1: Syntax and canonical form
 - Layer 2: External registry interaction

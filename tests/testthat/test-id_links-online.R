@@ -11,16 +11,22 @@ testthat::test_that("id_links() works online for PMID via NCBI", {
   testthat::expect_true(ncol(out) == 5L)
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   
   if (nrow(out) > 0L) {
-    testthat::expect_true(all(out$input == "31452104"))
-    testthat::expect_true(all(out$input_type == "pmid"))
+    testthat::expect_true(all(out$query == "31452104"))
+    testthat::expect_true(all(out$query_type == "pmid"))
     testthat::expect_true(all(out$provider == "ncbi"))
     testthat::expect_false(any(
       out$linked_type == "pmid" &
-        out$linked_value == "31452104"
+        out$linked_id == "31452104"
     ))
     testthat::expect_true(any(out$linked_type %in% c("pmcid", "doi")))
   }
@@ -38,16 +44,22 @@ testthat::test_that("id_links() works online for PMCID via NCBI", {
   testthat::expect_s3_class(out, "data.frame")
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   
   if (nrow(out) > 0L) {
-    testthat::expect_true(all(out$input == "PMC6821181"))
-    testthat::expect_true(all(out$input_type == "pmcid"))
+    testthat::expect_true(all(out$query == "PMC6821181"))
+    testthat::expect_true(all(out$query_type == "pmcid"))
     testthat::expect_true(all(out$provider == "ncbi"))
     testthat::expect_false(any(
       out$linked_type == "pmcid" &
-        out$linked_value == "PMC6821181"
+        out$linked_id == "PMC6821181"
     ))
     testthat::expect_true(any(out$linked_type %in% c("pmid", "doi")))
   }
@@ -65,15 +77,21 @@ testthat::test_that("id_links() works online for PMID via Europe PMC", {
   testthat::expect_s3_class(out, "data.frame")
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   testthat::expect_true(nrow(out) >= 1L)
-  testthat::expect_true(all(out$input == "31452104"))
-  testthat::expect_true(all(out$input_type == "pmid"))
+  testthat::expect_true(all(out$query == "31452104"))
+  testthat::expect_true(all(out$query_type == "pmid"))
   testthat::expect_true(all(out$provider == "epmc"))
   testthat::expect_false(any(
     out$linked_type == "pmid" &
-      out$linked_value == "31452104"
+      out$linked_id == "31452104"
   ))
   testthat::expect_true(any(out$linked_type %in% c("pmcid", "doi")))
 })
@@ -90,15 +108,21 @@ testthat::test_that("id_links() works online for PMCID via Europe PMC", {
   testthat::expect_s3_class(out, "data.frame")
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   testthat::expect_true(nrow(out) >= 1L)
-  testthat::expect_true(all(out$input == "PMC6821181"))
-  testthat::expect_true(all(out$input_type == "pmcid"))
+  testthat::expect_true(all(out$query == "PMC6821181"))
+  testthat::expect_true(all(out$query_type == "pmcid"))
   testthat::expect_true(all(out$provider == "epmc"))
   testthat::expect_false(any(
     out$linked_type == "pmcid" &
-      out$linked_value == "PMC6821181"
+      out$linked_id == "PMC6821181"
   ))
   testthat::expect_true(any(out$linked_type %in% c("pmid", "doi")))
 })
@@ -115,16 +139,22 @@ testthat::test_that("id_links() auto provider works for PMID", {
   testthat::expect_s3_class(out, "data.frame")
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   
   if (nrow(out) > 0L) {
-    testthat::expect_true(all(out$input == "31452104"))
-    testthat::expect_true(all(out$input_type == "pmid"))
+    testthat::expect_true(all(out$query == "31452104"))
+    testthat::expect_true(all(out$query_type == "pmid"))
     testthat::expect_true(all(out$provider %in% c("ncbi", "epmc")))
     testthat::expect_false(any(
       out$linked_type == "pmid" &
-        out$linked_value == "31452104"
+        out$linked_id == "31452104"
     ))
     testthat::expect_true(any(out$linked_type %in% c("pmcid", "doi")))
   }
@@ -142,16 +172,22 @@ testthat::test_that("id_links() auto provider works for PMCID", {
   testthat::expect_s3_class(out, "data.frame")
   testthat::expect_identical(
     names(out),
-    c("input", "input_type", "linked_type", "linked_value", "provider")
+    c(
+      "query",
+      "query_type",
+      "linked_type",
+      "linked_id",
+      "provider"
+    )
   )
   
   if (nrow(out) > 0L) {
-    testthat::expect_true(all(out$input == "PMC6821181"))
-    testthat::expect_true(all(out$input_type == "pmcid"))
+    testthat::expect_true(all(out$query == "PMC6821181"))
+    testthat::expect_true(all(out$query_type == "pmcid"))
     testthat::expect_true(all(out$provider %in% c("ncbi", "epmc")))
     testthat::expect_false(any(
       out$linked_type == "pmcid" &
-        out$linked_value == "PMC6821181"
+        out$linked_id == "PMC6821181"
     ))
     testthat::expect_true(any(out$linked_type %in% c("pmid", "doi")))
   }
@@ -170,25 +206,31 @@ testthat::test_that(
     testthat::expect_s3_class(out, "data.frame")
     testthat::expect_identical(
       names(out),
-      c("input", "input_type", "linked_type", "linked_value", "provider")
+      c(
+        "query",
+        "query_type",
+        "linked_type",
+        "linked_id",
+        "provider"
+      )
     )
     
     if (nrow(out) > 0L) {
       testthat::expect_true(all(
-        out$input %in% c("31452104", "PMC6821181")
+        out$query %in% c("31452104", "PMC6821181")
       ))
       testthat::expect_true(all(
-        out$input_type %in% c("pmid", "pmcid")
+        out$query_type %in% c("pmid", "pmcid")
       ))
       testthat::expect_false(any(
-        out$input == "31452104" &
+        out$query == "31452104" &
           out$linked_type == "pmid" &
-          out$linked_value == "31452104"
+          out$linked_id == "31452104"
       ))
       testthat::expect_false(any(
-        out$input == "PMC6821181" &
+        out$query == "PMC6821181" &
           out$linked_type == "pmcid" &
-          out$linked_value == "PMC6821181"
+          out$linked_id == "PMC6821181"
       ))
     }
   }
@@ -209,7 +251,13 @@ testthat::test_that(
     testthat::expect_s3_class(out, "data.frame")
     testthat::expect_identical(
       names(out),
-      c("input", "input_type", "linked_type", "linked_value", "provider")
+      c(
+        "query",
+        "query_type",
+        "linked_type",
+        "linked_id",
+        "provider"
+      )
     )
     testthat::expect_identical(nrow(out), 0L)
   }
@@ -230,12 +278,18 @@ testthat::test_that(
     testthat::expect_s3_class(out, "data.frame")
     testthat::expect_identical(
       names(out),
-      c("input", "input_type", "linked_type", "linked_value", "provider")
+      c(
+        "query",
+        "query_type",
+        "linked_type",
+        "linked_id",
+        "provider"
+      )
     )
     
     if (nrow(out) > 0L) {
-      testthat::expect_true(all(out$input == "0000-0002-1825-0097"))
-      testthat::expect_true(all(out$input_type == "orcid"))
+      testthat::expect_true(all(out$query == "0000-0002-1825-0097"))
+      testthat::expect_true(all(out$query_type == "orcid"))
       testthat::expect_true(all(out$provider == "orcid"))
       testthat::expect_true(all(out$linked_type == "doi"))
     }
@@ -257,12 +311,18 @@ testthat::test_that(
     testthat::expect_s3_class(out, "data.frame")
     testthat::expect_identical(
       names(out),
-      c("input", "input_type", "linked_type", "linked_value", "provider")
+      c(
+        "query",
+        "query_type",
+        "linked_type",
+        "linked_id",
+        "provider"
+      )
     )
     
     if (nrow(out) > 0L) {
-      testthat::expect_true(all(out$input == "2101.00001"))
-      testthat::expect_true(all(out$input_type == "arxiv"))
+      testthat::expect_true(all(out$query == "2101.00001"))
+      testthat::expect_true(all(out$query_type == "arxiv"))
       testthat::expect_true(all(out$provider == "arxiv"))
       testthat::expect_true(all(out$linked_type == "doi"))
     }
@@ -284,19 +344,25 @@ testthat::test_that(
     testthat::expect_s3_class(out, "data.frame")
     testthat::expect_identical(
       names(out),
-      c("input", "input_type", "linked_type", "linked_value", "provider")
+      c(
+        "query",
+        "query_type",
+        "linked_type",
+        "linked_id",
+        "provider"
+      )
     )
     
     if (nrow(out) > 0L) {
-      testthat::expect_true(all(out$input == "10.1038/nature12373"))
-      testthat::expect_true(all(out$input_type == "doi"))
+      testthat::expect_true(all(out$query == "10.1038/nature12373"))
+      testthat::expect_true(all(out$query_type == "doi"))
       testthat::expect_true(all(out$provider == "crossref"))
       testthat::expect_true(all(
         out$linked_type %in% c("doi", "pmid", "pmcid")
       ))
       testthat::expect_false(any(
         out$linked_type == "doi" &
-          out$linked_value == "10.1038/nature12373"
+          out$linked_id == "10.1038/nature12373"
       ))
     }
   }

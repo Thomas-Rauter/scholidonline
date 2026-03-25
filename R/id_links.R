@@ -9,13 +9,15 @@
 #'
 #' The function is intended to expose cross-registry identifier links such as
 #' DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID, arXiv ID <-> DOI,
-#' and ORCID → DOI for works recorded in ORCID.
+#' and ORCID -> DOI for works recorded in ORCID.
 #'
 #' Only identifier links explicitly exposed by the queried provider are
 #' returned. `id_links()` is not a general metadata retrieval function and does
 #' not attempt to return broader related records unless the provider represents
 #' them as direct identifier links for the same object or directly
 #' corresponding manifestation.
+#'
+#' Trivial self-links are excluded from the result.
 #'
 #' If `type = "auto"`, the identifier type is inferred per element using
 #' `scholid::detect_scholid_type()`. Inputs that cannot be classified or
@@ -34,12 +36,12 @@
 #' @param quiet A single logical value; if `TRUE`, suppress provider
 #'   warnings/messages where possible.
 #'
-#' @return A data.frame with columns `input`, `input_type`, `linked_type`,
-#'   `linked_value`, and `provider`.
+#' @return A data.frame with columns `query`, `query_type`, `linked_type`,
+#'   `linked_id`, and `provider`.
 #'
 #' @examples
 #' \dontrun{
-#' id_links("31452104", provider = "ncbi")
+#' id_links("31452104", provider = "epmc")
 #' }
 #'
 #' @export
@@ -54,7 +56,7 @@ id_links <- function(
   type <- match.arg(type)
   provider <- match.arg(provider)
   .scholidonline_check_type_provider(
-    type     = type,
+    type = type,
     provider = provider
   )
   .scholidonline_check_quiet(quiet)
@@ -99,10 +101,10 @@ id_links <- function(
   if (!any(ok)) {
     return(
       data.frame(
-        input = character(),
-        input_type = character(),
+        query = character(),
+        query_type = character(),
         linked_type = character(),
-        linked_value = character(),
+        linked_id = character(),
         provider = character(),
         stringsAsFactors = FALSE
       )
@@ -128,13 +130,15 @@ id_links <- function(
       next
     }
     
-    df$input <- x_norm[ok_idx[j]]
-    df$input_type <- type_vec[ok_idx[j]]
+    names(df)[names(df) == "linked_value"] <- "linked_id"
+    
+    df$query <- x_norm[ok_idx[j]]
+    df$query_type <- type_vec[ok_idx[j]]
     
     df <- df[
       !(
-        df$linked_type == df$input_type &
-          df$linked_value == df$input
+        df$linked_type == df$query_type &
+          df$linked_id == df$query
       ),
       ,
       drop = FALSE
@@ -148,12 +152,13 @@ id_links <- function(
     df <- df[
       ,
       c(
-        "input",
-        "input_type",
+        "query",
+        "query_type",
         "linked_type",
-        "linked_value",
+        "linked_id",
         "provider"
-      )
+      ),
+      drop = FALSE
     ]
     
     out_list[[ok_idx[j]]] <- df
@@ -164,10 +169,10 @@ id_links <- function(
   if (length(rows) == 0L) {
     return(
       data.frame(
-        input = character(),
-        input_type = character(),
+        query = character(),
+        query_type = character(),
         linked_type = character(),
-        linked_value = character(),
+        linked_id = character(),
         provider = character(),
         stringsAsFactors = FALSE
       )

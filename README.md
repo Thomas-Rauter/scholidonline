@@ -135,9 +135,8 @@ out <- scholidonline::id_links(
 knitr::kable(out)
 ```
 
-| input    | input_type | linked_type | linked_value | provider |
-|:---------|:-----------|:------------|:-------------|:---------|
-| 31452104 | pmid       | pmid        | 31452104     | ncbi     |
+| input | input_type | linked_type | linked_value | provider |
+|:------|:-----------|:------------|:-------------|:---------|
 
 ## Relationship to scholid
 
