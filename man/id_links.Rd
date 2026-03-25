@@ -38,8 +38,8 @@ scholarly object or a directly corresponding manifestation.
 row per discovered identifier link.
 
 The function is intended to expose cross-registry identifier links such as
-DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID, arXiv ID <-> DOI, and ORCID → DOI
-for works recorded in ORCID.
+DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID, arXiv ID <-> DOI,
+and ORCID → DOI for works recorded in ORCID.
 
 Only identifier links explicitly exposed by the queried provider are
 returned. \code{id_links()} is not a general metadata retrieval function and does
@@ -57,8 +57,7 @@ front-end function.
 }
 \examples{
 \dontrun{
-id_links("10.1000/182", type = "doi")
-id_links(c("12345678", "PMC12345"))
+id_links("31452104", provider = "ncbi")
 }
 
 }

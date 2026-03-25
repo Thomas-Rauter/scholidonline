@@ -39,8 +39,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' id_links("10.1000/182", type = "doi")
-#' id_links(c("12345678", "PMC12345"))
+#' id_links("31452104", provider = "ncbi")
 #' }
 #'
 #' @export
@@ -131,6 +130,20 @@ id_links <- function(
     
     df$input <- x_norm[ok_idx[j]]
     df$input_type <- type_vec[ok_idx[j]]
+    
+    df <- df[
+      !(
+        df$linked_type == df$input_type &
+          df$linked_value == df$input
+      ),
+      ,
+      drop = FALSE
+    ]
+    
+    if (nrow(df) == 0L) {
+      out_list[[ok_idx[j]]] <- NULL
+      next
+    }
     
     df <- df[
       ,
