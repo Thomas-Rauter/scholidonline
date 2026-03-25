@@ -27,6 +27,8 @@
 #'   skipping tests when appropriate.
 #' @keywords internal
 skip_if_no_internet_for_live_tests <- function() {
+  testthat::skip_on_cran()
+  
   if (identical(Sys.getenv("RUN_LIVE_TESTS"), "true")) {
     return(invisible())
   }

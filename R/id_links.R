@@ -8,8 +8,8 @@
 #' row per discovered identifier link.
 #'
 #' The function is intended to expose cross-registry identifier links such as
-#' DOI ↔ PMID, DOI ↔ PMCID, PMID ↔ PMCID, arXiv ID ↔ DOI, and ORCID → DOI
-#' for works recorded in ORCID.
+#' DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID, arXiv ID <-> DOI,
+#' and ORCID → DOI for works recorded in ORCID.
 #'
 #' Only identifier links explicitly exposed by the queried provider are
 #' returned. `id_links()` is not a general metadata retrieval function and does
