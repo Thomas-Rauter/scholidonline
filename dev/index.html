@@ -95,6 +95,14 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td><code>scholidonline_types</code></td>
+<td>Supported scholidonline identifier types</td>
+</tr>
+<tr class="even">
+<td><code>scholidonline_capabilities</code></td>
+<td>Supported scholidonline capabilities</td>
+</tr>
+<tr class="odd">
 <td><code>id_exists(x, type = NULL)</code></td>
 <td>Check whether identifiers exist in their respective registries</td>
 </tr>
@@ -112,14 +120,131 @@
 </tr>
 </tbody>
 </table>
-<p>All functions are vectorized and return predictable base R objects (logical vectors or data.frames).</p>
-<p>Identifier detection and normalization are delegated to <code>scholid</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List supported scholidonline identifier types</span></span>
+<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/scholidonline_types.html">scholidonline_types</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List scholidonline capabilities</span></span>
+<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     type operation target               providers default_provider</span></span>
+<span><span class="co">## 1  arxiv    exists   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 2  arxiv     links   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 3  arxiv      meta   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span><span class="co">## 4    doi    exists   &lt;NA&gt; auto, doi.org, crossref          doi.org</span></span>
+<span><span class="co">## 5    doi     links   &lt;NA&gt;          auto, crossref         crossref</span></span>
+<span><span class="co">## 6    doi      meta   &lt;NA&gt; auto, crossref, doi.org         crossref</span></span>
+<span><span class="co">## 7    doi   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 8    doi   convert  pmcid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 9  orcid    exists   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 10 orcid     links   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 11 orcid      meta   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span><span class="co">## 12 pmcid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 13 pmcid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 14 pmcid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 15 pmcid   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 16 pmcid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 17  pmid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 18  pmid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 19  pmid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 20  pmid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span><span class="co">## 21  pmid   convert  pmcid        auto, ncbi, epmc             ncbi</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check if an ID exists online</span></span>
+<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
+<span>  <span class="st">"10.1000/182"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convert identifiers across systems</span></span>
+<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
+<span>  <span class="st">"12345678"</span>,</span>
+<span>  to <span class="op">=</span> <span class="st">"doi"</span>,</span>
+<span>  from <span class="op">=</span> <span class="st">"pmid"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "10.1234/2013/999990"</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Retrieve scholarly metadata</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
+<span>  <span class="st">"10.1038/nature12373"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Show key fields</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">input</th>
+<th align="left">type</th>
+<th align="left">provider</th>
+<th align="left">title</th>
+<th align="right">year</th>
+<th align="left">container</th>
+<th align="left">doi</th>
+<th align="left">pmid</th>
+<th align="left">pmcid</th>
+<th align="left">url</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">10.1038/nature12373</td>
+<td align="left">doi</td>
+<td align="left">crossref</td>
+<td align="left">Nanometre-scale thermometry in a living cell</td>
+<td align="right">2013</td>
+<td align="left">Nature</td>
+<td align="left">10.1038/nature12373</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left"><a href="https://doi.org/10.1038/nature12373" class="external-link uri">https://doi.org/10.1038/nature12373</a></td>
+</tr></tbody>
+</table>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Return linked scholarly identifiers</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_links.html">id_links</a></span><span class="op">(</span></span>
+<span>  <span class="st">"31452104"</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">input</th>
+<th align="left">input_type</th>
+<th align="left">linked_type</th>
+<th align="left">linked_value</th>
+<th align="left">provider</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">31452104</td>
+<td align="left">pmid</td>
+<td align="left">pmid</td>
+<td align="left">31452104</td>
+<td align="left">ncbi</td>
+</tr></tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
 </h2>
-<p><code>scholid</code> provides dependency-free utilities for detecting, normalizing, classifying, and extracting scholarly identifiers.</p>
-<p><code>scholidonline</code> builds on that foundation and adds online registry queries, while keeping dependencies minimal (<code>httr2</code>, <code>jsonlite</code>) and maintaining CRAN-friendly behavior.</p>
+<p><a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a> provides dependency-free utilities for detecting, normalizing, classifying, and extracting scholarly identifiers.</p>
+<p><code>scholidonline</code> builds on that foundation and adds online registry queries.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>

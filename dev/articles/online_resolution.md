@@ -326,4 +326,4 @@ sessionInfo()
     ## [13] pkgdown_2.2.0     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
     ## [17] compiler_4.5.3    tools_4.5.3       ragg_1.5.2        evaluate_1.0.5   
     ## [21] bslib_0.10.0      yaml_2.3.12       jsonlite_2.0.0    rlang_1.1.7      
-    ## [25] fs_2.0.0
+    ## [25] fs_2.0.1

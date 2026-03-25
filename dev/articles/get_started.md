@@ -359,7 +359,7 @@ sessionInfo()
     ## [10] sass_0.4.10         rmarkdown_2.30      rappdirs_0.3.4     
     ## [13] evaluate_1.0.5      jquerylib_0.1.4     fastmap_1.2.0      
     ## [16] yaml_2.3.12         lifecycle_1.0.5     httr2_1.2.2        
-    ## [19] compiler_4.5.3      fs_2.0.0            scholid_0.1.0      
+    ## [19] compiler_4.5.3      fs_2.0.1            scholid_0.1.0      
     ## [22] scholidonline_0.1.0 systemfonts_1.3.2   digest_0.6.39      
     ## [25] R6_2.6.1            curl_7.0.0          magrittr_2.0.4     
     ## [28] bslib_0.10.0        tools_4.5.3         pkgdown_2.2.0      
