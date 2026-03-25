@@ -93,7 +93,11 @@ system?</li>
 </ul>
 <p>Example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/is_scholid.html" class="external-link">is_scholid</a></span><span class="op">(</span><span class="st">"10.1000/182"</span>, type <span class="op">=</span> <span class="st">"doi"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">scholid</span><span class="fu">::</span><span class="fu"><a href="https://thomas-rauter.github.io/scholid/reference/is_scholid.html" class="external-link">is_scholid</a></span><span class="op">(</span></span>
+<span>  <span class="st">"10.1000/182"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>Structural validation uses regular expressions and, where applicable,
 checksum algorithms (e.g., ORCID).</p>
 <p>It does <strong>not</strong> require internet access.</p>
@@ -114,8 +118,12 @@ checksum algorithms (e.g., ORCID).</p>
 <li>Is this ORCID iD present in the ORCID registry?</li>
 </ul>
 <p>Example:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="st">"10.1000/182"</span>, type <span class="op">=</span> <span class="st">"doi"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
+<span>  <span class="st">"10.1000/182"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>Registry validation:</p>
 <ul>
 <li>Requires internet access</li>
@@ -125,206 +133,7 @@ checksum algorithms (e.g., ORCID).</p>
 </ul>
 <p>A structurally valid identifier may still fail registry
 validation.</p>
-<hr>
-</div>
-</div>
-<div class="section level2">
-<h2 id="existence-checks">Existence Checks<a class="anchor" aria-label="anchor" href="#existence-checks"></a>
-</h2>
-<p>The function <code><a href="../reference/id_exists.html">id_exists()</a></code> performs registry-backed
-validation.</p>
-<p>Example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"12345678"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"pmid"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Possible return values:</p>
-<ul>
-<li>TRUE → confirmed by registry</li>
-<li>FALSE → registry confirms not found</li>
-<li>NA → input could not be classified or normalized</li>
-</ul>
-<p>Importantly, <code>NA</code> does not mean “does not exist”. It means
-“cannot be evaluated”.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="identifier-conversion">Identifier Conversion<a class="anchor" aria-label="anchor" href="#identifier-conversion"></a>
-</h2>
-<p>Many scholarly identifiers are linked across systems.</p>
-<p>Examples:</p>
-<ul>
-<li>PMID → DOI</li>
-<li>PMCID → PMID</li>
-<li>arXiv → DOI (when available)</li>
-</ul>
-<p><code><a href="../reference/id_convert.html">id_convert()</a></code> performs registry-backed crosswalks.</p>
-<p>Example:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"12345678"</span>,</span>
-<span>  from <span class="op">=</span> <span class="st">"pmid"</span>,</span>
-<span>  to   <span class="op">=</span> <span class="st">"doi"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Conversions depend on:</p>
-<ul>
-<li>Metadata availability</li>
-<li>Registry completeness</li>
-<li>Provider selection</li>
-</ul>
-<p>Not all identifiers can be converted.</p>
-<p>Unresolvable mappings return NA.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="metadata-retrieval">Metadata Retrieval<a class="anchor" aria-label="anchor" href="#metadata-retrieval"></a>
-</h2>
-<p><code><a href="../reference/id_metadata.html">id_metadata()</a></code> retrieves structured metadata from
-registries.</p>
-<p>Example:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Returned metadata is:</p>
-<ul>
-<li>Registry-derived</li>
-<li>Minimal and harmonized across providers</li>
-<li>Subject to external data quality</li>
-</ul>
-<p>Metadata completeness depends entirely on the external authority.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="linked-identifiers">Linked Identifiers<a class="anchor" aria-label="anchor" href="#linked-identifiers"></a>
-</h2>
-<p><code><a href="../reference/id_links.html">id_links()</a></code> returns related identifiers discovered via
-registry queries.</p>
-<p>Example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_links.html">id_links</a></span><span class="op">(</span></span>
-<span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"pmcid"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>This may include:</p>
-<ul>
-<li>DOI</li>
-<li>PMID</li>
-<li>PMCID</li>
-<li>Other linked registry identifiers</li>
-</ul>
-<p>Link discovery is registry-dependent and may vary across
-providers.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="provider-selection">Provider Selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
-</h2>
-<p>Many functions accept a <code>provider</code> argument.</p>
-<p>Example:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
-<span>  x        <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
-<span>  type     <span class="op">=</span> <span class="st">"doi"</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"crossref"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>If <code>provider = "auto"</code> (default),
-<code>scholidonline</code> selects a sensible default and may fall back
-to alternative providers.</p>
-<p>Provider behavior:</p>
-<ul>
-<li>DOI: doi.org or Crossref</li>
-<li>PMID / PMCID: NCBI or Europe PMC</li>
-<li>ORCID: ORCID public API</li>
-<li>arXiv: arXiv API</li>
-</ul>
-<p>The exact provider affects:</p>
-<ul>
-<li>Response speed</li>
-<li>Metadata richness</li>
-<li>Crosswalk coverage</li>
-</ul>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="network-considerations">Network Considerations<a class="anchor" aria-label="anchor" href="#network-considerations"></a>
-</h2>
-<p>Because <code>scholidonline</code> relies on external services:</p>
-<ul>
-<li>An internet connection is required.</li>
-<li>Rate limits may apply.</li>
-<li>APIs may change.</li>
-<li>Results may differ over time.</li>
-</ul>
-<p>For reproducible pipelines:</p>
-<ul>
-<li>Cache results when appropriate.</li>
-<li>Record provider choices.</li>
-<li>Expect occasional transient failures.</li>
-</ul>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="scope-of-scholidonline">Scope of scholidonline<a class="anchor" aria-label="anchor" href="#scope-of-scholidonline"></a>
-</h2>
-<p><code>scholidonline</code> focuses on identifiers that have:</p>
-<ul>
-<li>Stable public registries</li>
-<li>Accessible APIs</li>
-<li>Meaningful cross-system relationships</li>
-</ul>
-<p>Examples:</p>
-<ul>
-<li>DOI</li>
-<li>PMID</li>
-<li>PMCID</li>
-<li>ORCID</li>
-<li>arXiv</li>
-</ul>
-<p>Other identifiers (e.g., ISBN, ISSN) are structurally supported by
-<code>scholid</code>, but do not always have stable, open registry APIs
-suitable for lightweight CRAN-friendly integration.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
-</h2>
-<p><code>scholid</code> provides:</p>
-<ul>
-<li>Structural detection</li>
-<li>Normalization</li>
-<li>Classification</li>
-<li>Extraction</li>
-</ul>
-<p><code>scholidonline</code> provides:</p>
-<ul>
-<li>Registry-backed validation</li>
-<li>Cross-identifier conversion</li>
-<li>Metadata retrieval</li>
-<li>Link discovery</li>
-</ul>
-<p>Together, they form a two-layer design:</p>
-<p>Layer 1: Syntax and canonical form (<code>scholid</code>) Layer 2:
-External registry interaction (<code>scholidonline</code>)</p>
-<p>This separation keeps both packages small, predictable, and
-maintainable.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
-</h2>
-<p>Structural validity and registry validity are not the same.</p>
-<p><code>scholid</code> ensures identifiers are well-formed.</p>
-<p><code>scholidonline</code> checks whether they exist, resolve, and
-connect within the scholarly registry ecosystem.</p>
-<p>Use the appropriate layer depending on whether you need:</p>
-<ul>
-<li>Offline structural guarantees</li>
-<li>Or online registry-backed verification.</li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
@@ -347,13 +156,18 @@ connect within the scholarly registry ecosystem.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
-<span><span class="co">##  [5] xfun_0.57         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  </span></span>
-<span><span class="co">##  [9] rmarkdown_2.30    lifecycle_1.0.5   cli_3.6.5         sass_0.4.10      </span></span>
-<span><span class="co">## [13] pkgdown_2.2.0     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2</span></span>
-<span><span class="co">## [17] compiler_4.5.3    tools_4.5.3       ragg_1.5.2        evaluate_1.0.5   </span></span>
-<span><span class="co">## [21] bslib_0.10.0      yaml_2.3.12       jsonlite_2.0.0    rlang_1.1.7      </span></span>
-<span><span class="co">## [25] fs_2.0.1</span></span></code></pre>
+<span><span class="co">##  [1] cli_3.6.5           knitr_1.51          rlang_1.1.7        </span></span>
+<span><span class="co">##  [4] xfun_0.57           textshaping_1.0.5   jsonlite_2.0.0     </span></span>
+<span><span class="co">##  [7] glue_1.8.0          htmltools_0.5.9     ragg_1.5.2         </span></span>
+<span><span class="co">## [10] sass_0.4.10         rmarkdown_2.30      rappdirs_0.3.4     </span></span>
+<span><span class="co">## [13] evaluate_1.0.5      jquerylib_0.1.4     fastmap_1.2.0      </span></span>
+<span><span class="co">## [16] yaml_2.3.12         lifecycle_1.0.5     httr2_1.2.2        </span></span>
+<span><span class="co">## [19] compiler_4.5.3      fs_2.0.1            scholid_0.1.0      </span></span>
+<span><span class="co">## [22] scholidonline_0.1.0 systemfonts_1.3.2   digest_0.6.39      </span></span>
+<span><span class="co">## [25] R6_2.6.1            curl_7.0.0          magrittr_2.0.4     </span></span>
+<span><span class="co">## [28] bslib_0.10.0        tools_4.5.3         pkgdown_2.2.0      </span></span>
+<span><span class="co">## [31] cachem_1.1.0        desc_1.4.3</span></span></code></pre>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

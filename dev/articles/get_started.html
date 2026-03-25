@@ -69,7 +69,7 @@ as:</p>
 <li>Existence checks</li>
 <li>Identifier conversion across systems</li>
 <li>Metadata retrieval</li>
-<li>Discovery of linked identifiers</li>
+<li>Retrieval of directly linked identifiers</li>
 </ul>
 <p>This vignette introduces the interface and typical workflows when
 working with registry-connected identifier data.</p>
@@ -85,6 +85,8 @@ working with registry-connected identifier data.</p>
 <p><code>scholidonline</code> exposes a small set of user-facing
 functions:</p>
 <ul>
+<li><code><a href="../reference/scholidonline_types.html">scholidonline_types()</a></code></li>
+<li><code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code></li>
 <li><code>id_exists(x, type = NULL)</code></li>
 <li><code>id_convert(x, to, from = NULL)</code></li>
 <li><code>id_metadata(x, type = NULL)</code></li>
@@ -239,7 +241,7 @@ registry queries.</p>
 <span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"pmcid"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##        input input_type linked_type                     linked_value provider</span></span>
+<pre><code><span><span class="co">##        query query_type linked_type                        linked_id provider</span></span>
 <span><span class="co">## 1 PMC1234567      pmcid        pmid                          7717779     ncbi</span></span>
 <span><span class="co">## 3 PMC1234567      pmcid         doi 10.1097/00000658-199503000-00007     ncbi</span></span></code></pre>
 <p>This may reveal:</p>
@@ -310,23 +312,33 @@ registry logic (<code>scholidonline</code>) clearly distinct.</p>
 chosen automatically, potentially with fallback behavior.</p>
 <p>Available providers depend on the identifier type and operation. Use
 <code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to inspect them.</p>
+<p>The chosen provider affects:</p>
+<ul>
+<li>Response speed</li>
+<li>Metadata richness</li>
+<li>Crosswalk coverage</li>
+</ul>
 </div>
 <div class="section level2">
-<h2 id="network-considerations">Network considerations<a class="anchor" aria-label="anchor" href="#network-considerations"></a>
+<h2 id="scope-of-scholidonline">Scope of scholidonline<a class="anchor" aria-label="anchor" href="#scope-of-scholidonline"></a>
 </h2>
-<p>Because <code>scholidonline</code> relies on external services:</p>
+<p><code>scholidonline</code> focuses on identifiers that have:</p>
 <ul>
-<li>An internet connection is required</li>
-<li>Rate limits may apply</li>
-<li>Results may change over time</li>
-<li>Temporary failures can occur</li>
+<li>Stable public registries</li>
+<li>Accessible APIs</li>
+<li>Meaningful cross-system relationships</li>
 </ul>
-<p>For reproducible workflows:</p>
+<p>Examples:</p>
 <ul>
-<li>Cache results where appropriate</li>
-<li>Record provider choices</li>
-<li>Handle occasional <code>NA</code> values gracefully</li>
+<li>DOI</li>
+<li>PMID</li>
+<li>PMCID</li>
+<li>ORCID</li>
+<li>arXiv</li>
 </ul>
+<p>Other identifiers (e.g., ISBN, ISSN) are structurally supported by
+<code>scholid</code>, but do not always have stable, open registry
+APIs.</p>
 </div>
 <div class="section level2">
 <h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
@@ -345,7 +357,7 @@ chosen automatically, potentially with fallback behavior.</p>
 <li>Metadata retrieval</li>
 <li>Link discovery</li>
 </ul>
-<p>Together they form a clean two-layer design:</p>
+<p>Together they form a two-layer design:</p>
 <ul>
 <li>Layer 1: Syntax and canonical form</li>
 <li>Layer 2: External registry interaction</li>

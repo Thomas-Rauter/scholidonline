@@ -7,7 +7,7 @@ normalization, and adds registry-backed functionality such as:
 - Existence checks
 - Identifier conversion across systems
 - Metadata retrieval
-- Discovery of linked identifiers
+- Retrieval of directly linked identifiers
 
 This vignette introduces the interface and typical workflows when
 working with registry-connected identifier data.
@@ -22,6 +22,8 @@ install.packages("scholidonline")
 
 `scholidonline` exposes a small set of user-facing functions:
 
+- [`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_types.md)
+- [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
 - `id_exists(x, type = NULL)`
 - `id_convert(x, to, from = NULL)`
 - `id_metadata(x, type = NULL)`
@@ -202,7 +204,7 @@ scholidonline::id_links(
 )
 ```
 
-    ##        input input_type linked_type                     linked_value provider
+    ##        query query_type linked_type                        linked_id provider
     ## 1 PMC1234567      pmcid        pmid                          7717779     ncbi
     ## 3 PMC1234567      pmcid         doi 10.1097/00000658-199503000-00007     ncbi
 
@@ -289,20 +291,30 @@ Available providers depend on the identifier type and operation. Use
 [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
 to inspect them.
 
-## Network considerations
+The chosen provider affects:
 
-Because `scholidonline` relies on external services:
+- Response speed
+- Metadata richness
+- Crosswalk coverage
 
-- An internet connection is required
-- Rate limits may apply
-- Results may change over time
-- Temporary failures can occur
+## Scope of scholidonline
 
-For reproducible workflows:
+`scholidonline` focuses on identifiers that have:
 
-- Cache results where appropriate
-- Record provider choices
-- Handle occasional `NA` values gracefully
+- Stable public registries
+- Accessible APIs
+- Meaningful cross-system relationships
+
+Examples:
+
+- DOI
+- PMID
+- PMCID
+- ORCID
+- arXiv
+
+Other identifiers (e.g., ISBN, ISSN) are structurally supported by
+`scholid`, but do not always have stable, open registry APIs.
 
 ## Relationship to scholid
 
@@ -320,7 +332,7 @@ For reproducible workflows:
 - Metadata retrieval
 - Link discovery
 
-Together they form a clean two-layer design:
+Together they form a two-layer design:
 
 - Layer 1: Syntax and canonical form
 - Layer 2: External registry interaction
