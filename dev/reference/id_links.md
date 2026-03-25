@@ -72,7 +72,6 @@ A data.frame with columns `input`, `input_type`, `linked_type`,
 
 ``` r
 if (FALSE) { # \dontrun{
-id_links("10.1000/182", type = "doi")
-id_links(c("12345678", "PMC12345"))
+id_links("31452104", provider = "ncbi")
 } # }
 ```

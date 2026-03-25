@@ -204,7 +204,6 @@ scholidonline::id_links(
 
     ##        input input_type linked_type                     linked_value provider
     ## 1 PMC1234567      pmcid        pmid                          7717779     ncbi
-    ## 2 PMC1234567      pmcid       pmcid                       PMC1234567     ncbi
     ## 3 PMC1234567      pmcid         doi 10.1097/00000658-199503000-00007     ncbi
 
 This may reveal:
