@@ -60,7 +60,23 @@
 }
 
 
-#' Lookup allowed providers for a conversion
+#' Lookup allowed providers for a conversion pair
+#'
+#' @description
+#' Internal helper used by the scholidonline engine to determine the set of
+#' supported providers for a given identifier conversion.
+#'
+#' This helper returns the providers that implement a conversion from `from`
+#' to `to`, including `"auto"` where applicable. The mapping is defined
+#' explicitly and reflects the currently supported provider implementations.
+#'
+#' If the conversion pair is not supported, a descriptive error is thrown.
+#'
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#'
+#' @return A character vector of provider names.
+#'
 #' @noRd
 .scholidonline_conversion_providers <- function(
     from,
@@ -259,6 +275,25 @@
 }
 
 
+#' Validate a scholidonline conversion pair
+#'
+#' @description
+#' Internal helper used by the scholidonline engine to validate that a
+#' conversion between two identifier types is supported.
+#'
+#' This helper checks whether a conversion from `from` to `to` is defined in
+#' the central registry. If the conversion is not available, a descriptive
+#' error is thrown.
+#'
+#' Identity mappings (i.e. `from == to`) are always considered valid and are
+#' returned without further checks.
+#'
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#'
+#' @return Invisibly returns `TRUE` if the conversion is valid.
+#'
+#' @noRd
 .scholidonline_check_conversion_pair <- function(
     from,
     to

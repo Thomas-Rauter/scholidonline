@@ -30,6 +30,7 @@ skip_if_no_internet_for_live_tests <- function() {
   testthat::skip_on_cran()
   
   if (identical(Sys.getenv("RUN_LIVE_TESTS"), "true")) {
+    message("RUN_LIVE_TESTS=[", Sys.getenv("RUN_LIVE_TESTS"), "]")
     return(invisible())
   }
   

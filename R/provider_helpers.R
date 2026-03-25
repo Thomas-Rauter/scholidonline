@@ -1,3 +1,30 @@
+#' Perform an HTTP GET request and parse JSON response
+#'
+#' @description
+#' Internal helper used by scholidonline provider implementations to perform
+#' HTTP GET requests and parse JSON responses.
+#'
+#' This helper constructs a request using the internal HTTP wrapper layer,
+#' executes it, and returns the parsed JSON body as an R object. Query
+#' parameters are passed via `query` and added using
+#' `.scholidonline_req_url_query()`.
+#'
+#' HTTP responses with status codes greater than or equal to 400 are treated
+#' as failures. In such cases, a warning is emitted (unless `quiet = TRUE`)
+#' and `NULL` is returned.
+#'
+#' The function is designed to be testable in offline environments by relying
+#' exclusively on internal HTTP wrapper functions rather than calling
+#' `httr2` directly.
+#'
+#' @param url A single character string specifying the request URL.
+#' @param query A named list of query parameters.
+#' @param quiet A single logical value; if `TRUE`, suppress warnings on
+#'   failed HTTP requests.
+#'
+#' @return A parsed JSON object (typically a list), or `NULL` on failure.
+#'
+#' @noRd
 .scholidonline_req_json <- function(url, query, quiet) {
   req <- .scholidonline_request(url)
   req <- .scholidonline_req_url_query(req, !!!query)
@@ -61,6 +88,27 @@
 }
 
 
+#' Query the NCBI PMC ID conversion API
+#'
+#' @description
+#' Internal helper used by scholidonline provider implementations to query
+#' the NCBI PMC ID conversion API.
+#'
+#' This helper performs a request to the PMC `idconv` endpoint and returns
+#' the parsed JSON response. It is typically used to retrieve mappings
+#' between identifiers such as PMCID, PMID, and DOI.
+#'
+#' Additional query parameters can be supplied via `...` and are forwarded
+#' to the API request.
+#'
+#' @param ids A character vector of identifiers to convert.
+#' @param ... Additional query parameters passed to the API.
+#' @param quiet A single logical value; if `TRUE`, suppress warnings on
+#'   failed HTTP requests.
+#'
+#' @return A parsed JSON object (list), or `NULL` on failure.
+#'
+#' @noRd
 .scholidonline_pmc_idconv <- function(ids, ..., quiet = FALSE) {
   dots <- list(...)
   
@@ -72,6 +120,27 @@
 }
 
 
+#' Query the NCBI PubMed ESummary API
+#'
+#' @description
+#' Internal helper used by scholidonline provider implementations to query
+#' the NCBI Entrez ESummary API for PubMed records.
+#'
+#' This helper performs a request to the PubMed `esummary` endpoint and
+#' returns the parsed JSON response. It is typically used to retrieve
+#' structured metadata summaries for one or more PubMed identifiers.
+#'
+#' Additional query parameters can be supplied via `...` and are forwarded
+#' to the API request.
+#'
+#' @param id A character vector of PubMed identifiers.
+#' @param ... Additional query parameters passed to the API.
+#' @param quiet A single logical value; if `TRUE`, suppress warnings on
+#'   failed HTTP requests.
+#'
+#' @return A parsed JSON object (list), or `NULL` on failure.
+#'
+#' @noRd
 .scholidonline_esummary_pubmed <- function(
     id,
     ...,

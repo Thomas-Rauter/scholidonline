@@ -88,19 +88,29 @@ testthat::test_that("id_convert() supports auto source detection online", {
 testthat::test_that("id_convert() supports provider selection online", {
   skip_if_no_internet_for_live_tests()
   
+  out_ncbi <- NULL
   
-  out_ncbi <- id_convert(
-    x = "31452104",
-    to = "doi",
-    from = "pmid",
-    provider = "ncbi"
+  testthat::expect_no_warning(
+    out_epmc <- id_convert(
+      x = "31452104",
+      to = "doi",
+      from = "pmid",
+      provider = "epmc"
+    )
   )
   
-  out_epmc <- id_convert(
-    x = "31452104",
-    to = "doi",
-    from = "pmid",
-    provider = "epmc"
+  out_ncbi <- withCallingHandlers(
+    id_convert(
+      x = "31452104",
+      to = "doi",
+      from = "pmid",
+      provider = "ncbi"
+    ),
+    warning = function(w) {
+      if (grepl("HTTP 429", conditionMessage(w), fixed = TRUE)) {
+        testthat::skip("NCBI rate-limited request (HTTP 429).")
+      }
+    }
   )
   
   testthat::expect_type(out_ncbi, "character")

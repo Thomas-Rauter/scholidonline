@@ -107,7 +107,11 @@
 #' @return A data.frame with columns `linked_type`, `linked_value`, `provider`.
 #'
 #' @noRd
-.links_pmid_ncbi <- function(x, ..., quiet = FALSE) {
+.links_pmid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
@@ -211,7 +215,11 @@
 #' @return A data.frame with columns `linked_type`, `linked_value`, `provider`.
 #'
 #' @noRd
-.links_pmcid_ncbi <- function(x, ..., quiet = FALSE) {
+.links_pmcid_ncbi <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
@@ -346,7 +354,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(data.frame())
   }
@@ -355,7 +363,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request returned HTTP ", status, ".", call. = FALSE)
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
@@ -441,7 +449,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(data.frame())
   }
@@ -450,12 +458,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
@@ -537,7 +540,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -546,12 +549,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }
@@ -629,7 +627,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -638,12 +636,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }
@@ -698,7 +691,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -707,12 +700,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }
@@ -773,7 +761,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -782,12 +770,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }
@@ -848,7 +831,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -857,12 +840,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }
@@ -923,7 +901,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("NCBI request failed.", call. = FALSE)
+      rlang::warn("NCBI request failed.")
     }
     return(NA_character_)
   }
@@ -932,12 +910,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "NCBI request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
     }
     return(NA_character_)
   }

@@ -36,10 +36,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning(
-        "DOI.org request failed.",
-        call. = FALSE
-      )
+      rlang::warn("DOI.org request failed.")
     }
     return(NA)
   }
@@ -55,12 +52,7 @@
   }
   
   if (!isTRUE(quiet)) {
-    warning(
-      "DOI.org request returned HTTP ",
-      status,
-      ".",
-      call. = FALSE
-    )
+    rlang::warn(paste0("DOI.org request returned HTTP ", status, "."))
   }
   
   NA
@@ -110,7 +102,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("DOI.org request failed.", call. = FALSE)
+      rlang::warn("DOI.org request failed.")
     }
     return(data.frame())
   }
@@ -123,12 +115,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "DOI.org request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("DOI.org request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
@@ -145,12 +132,12 @@
     } else {
       NA_integer_
     },
-    container = obj$`container-title` %||% NA_character_,
-    doi = obj$DOI %||% x,
-    pmid = NA_character_,
-    pmcid = NA_character_,
-    url = obj$URL %||% NA_character_,
-    provider = "doi.org",
+    container        = obj$`container-title` %||% NA_character_,
+    doi              = obj$DOI %||% x,
+    pmid             = NA_character_,
+    pmcid            = NA_character_,
+    url              = obj$URL %||% NA_character_,
+    provider         = "doi.org",
     stringsAsFactors = FALSE
   )
 }

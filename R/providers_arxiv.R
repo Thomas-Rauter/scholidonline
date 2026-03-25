@@ -37,10 +37,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning(
-        "arXiv request failed.",
-        call. = FALSE
-      )
+      rlang::warn("arXiv request failed.")
     }
     return(NA)
   }
@@ -49,12 +46,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "arXiv request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("arXiv request returned HTTP ", status, "."))
     }
     return(NA)
   }
@@ -89,7 +81,11 @@
 #' @return A data.frame with columns `linked_type`, `linked_value`, `provider`.
 #'
 #' @noRd
-.links_arxiv_arxiv <- function(x, ..., quiet = FALSE) {
+.links_arxiv_arxiv <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
@@ -147,9 +143,9 @@
   }
   
   data.frame(
-    linked_type = "doi",
-    linked_value = doi,
-    provider = "arxiv",
+    linked_type      = "doi",
+    linked_value     = doi,
+    provider         = "arxiv",
     stringsAsFactors = FALSE
   )
 }
@@ -195,7 +191,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("arXiv request failed.", call. = FALSE)
+      rlang::warn("arXiv request failed.")
     }
     return(data.frame())
   }
@@ -204,11 +200,8 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "arXiv request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
+      rlang::warn(
+        paste0("arXiv request returned HTTP ", status, ".")
       )
     }
     return(data.frame())
@@ -221,11 +214,19 @@
     "\\1",
     txt
   )
-  entry_year <- sub(
-    ".*<entry>.*?<published>([0-9]{4})-.*",
+  entry_year_raw <- sub(
+    ".*<entry>.*?<published>(.*?)</published>.*",
     "\\1",
     txt
   )
+  entry_year <- if (
+    !identical(entry_year_raw, txt) &&
+    grepl("^[0-9]{4}(-|$)", entry_year_raw)
+  ) {
+    as.integer(substr(entry_year_raw, 1L, 4L))
+  } else {
+    NA_integer_
+  }
   entry_url <- sub(
     ".*<entry>.*?<id>(.*?)</id>.*",
     "\\1",
@@ -237,14 +238,14 @@
   }
   
   data.frame(
-    title = entry_title,
-    year = suppressWarnings(as.integer(entry_year)),
-    container = "arXiv",
-    doi = NA_character_,
-    pmid = NA_character_,
-    pmcid = NA_character_,
-    url = entry_url,
-    provider = "arxiv",
+    title            = entry_title,
+    year             = entry_year,
+    container        = "arXiv",
+    doi              = NA_character_,
+    pmid             = NA_character_,
+    pmcid            = NA_character_,
+    url              = entry_url,
+    provider         = "arxiv",
     stringsAsFactors = FALSE
   )
 }

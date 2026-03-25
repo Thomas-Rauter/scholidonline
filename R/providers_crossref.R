@@ -33,10 +33,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning(
-        "Crossref request failed.",
-        call. = FALSE
-      )
+      rlang::warn("Crossref request failed.")
     }
     return(NA)
   }
@@ -52,12 +49,7 @@
   }
   
   if (!isTRUE(quiet)) {
-    warning(
-      "Crossref request returned HTTP ",
-      status,
-      ".",
-      call. = FALSE
-    )
+    rlang::warn(paste0("Crossref request returned HTTP ", status, "."))
   }
   
   NA
@@ -80,7 +72,11 @@
 #' @return A data.frame with columns `linked_type`, `linked_value`, `provider`.
 #'
 #' @noRd
-.links_doi_crossref <- function(x, ..., quiet = FALSE) {
+.links_doi_crossref <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
@@ -138,9 +134,9 @@
   # PMID
   if (!is.null(msg$`pubmed-id`)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmid",
-      linked_value = as.character(msg$`pubmed-id`),
-      provider     = "crossref",
+      linked_type      = "pmid",
+      linked_value     = as.character(msg$`pubmed-id`),
+      provider         = "crossref",
       stringsAsFactors = FALSE
     )
   }
@@ -148,9 +144,9 @@
   # PMCID
   if (!is.null(msg$`pmcid`)) {
     rows[[length(rows) + 1L]] <- data.frame(
-      linked_type  = "pmcid",
-      linked_value = as.character(msg$pmcid),
-      provider     = "crossref",
+      linked_type      = "pmcid",
+      linked_value     = as.character(msg$pmcid),
+      provider         = "crossref",
       stringsAsFactors = FALSE
     )
   }
@@ -163,9 +159,9 @@
       for (entry in rel_entries) {
         if (!is.null(entry$id)) {
           rows[[length(rows) + 1L]] <- data.frame(
-            linked_type  = "doi",
-            linked_value = as.character(entry$id),
-            provider     = "crossref",
+            linked_type      = "doi",
+            linked_value     = as.character(entry$id),
+            provider         = "crossref",
             stringsAsFactors = FALSE
           )
         }
@@ -221,7 +217,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("Crossref request failed.", call. = FALSE)
+      rlang::warn("Crossref request failed.")
     }
     return(data.frame())
   }
@@ -234,7 +230,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning("Crossref request returned HTTP ", status, ".", call. = FALSE)
+      rlang::warn(paste0("Crossref request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
@@ -262,11 +258,11 @@
     } else {
       NA_character_
     },
-    doi = msg$DOI %||% x,
-    pmid = NA_character_,
-    pmcid = NA_character_,
-    url = msg$URL %||% NA_character_,
-    provider = "crossref",
+    doi              = msg$DOI %||% x,
+    pmid             = NA_character_,
+    pmcid            = NA_character_,
+    url              = msg$URL %||% NA_character_,
+    provider         = "crossref",
     stringsAsFactors = FALSE
   )
 }

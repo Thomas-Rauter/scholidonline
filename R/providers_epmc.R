@@ -339,7 +339,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("Europe PMC request failed.", call. = FALSE)
+      rlang::warn("Europe PMC request failed.")
     }
     return(data.frame())
   }
@@ -348,12 +348,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "Europe PMC request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("Europe PMC request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
@@ -441,7 +436,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("Europe PMC request failed.", call. = FALSE)
+      rlang::warn("Europe PMC request failed.")
     }
     return(data.frame())
   }
@@ -450,12 +445,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "Europe PMC request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("Europe PMC request returned HTTP ", status, "."))
     }
     return(data.frame())
   }

@@ -33,10 +33,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning(
-        "ORCID request failed.",
-        call. = FALSE
-      )
+      rlang::warn("ORCID request failed.")
     }
     return(NA)
   }
@@ -52,12 +49,7 @@
   }
   
   if (!isTRUE(quiet)) {
-    warning(
-      "ORCID request returned HTTP ",
-      status,
-      ".",
-      call. = FALSE
-    )
+    rlang::warn(paste0("ORCID request returned HTTP ", status, "."))
   }
   
   NA
@@ -77,7 +69,11 @@
 #' @return A data.frame with columns `linked_type`, `linked_value`, `provider`.
 #'
 #' @noRd
-.links_orcid_orcid <- function(x, ..., quiet = FALSE) {
+.links_orcid_orcid <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
   .scholidonline_check_scalar_chr(x = x)
   
   url <- paste0(
@@ -212,7 +208,7 @@
   
   if (is.null(resp)) {
     if (!isTRUE(quiet)) {
-      warning("ORCID request failed.", call. = FALSE)
+      rlang::warn("ORCID request failed.")
     }
     return(data.frame())
   }
@@ -225,12 +221,7 @@
   
   if (status < 200L || status >= 300L) {
     if (!isTRUE(quiet)) {
-      warning(
-        "ORCID request returned HTTP ",
-        status,
-        ".",
-        call. = FALSE
-      )
+      rlang::warn(paste0("ORCID request returned HTTP ", status, "."))
     }
     return(data.frame())
   }
