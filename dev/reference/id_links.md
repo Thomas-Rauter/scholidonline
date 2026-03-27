@@ -8,13 +8,15 @@ one row per discovered identifier link.
 
 The function is intended to expose cross-registry identifier links such
 as DOI \<-\> PMID, DOI \<-\> PMCID, PMID \<-\> PMCID, arXiv ID \<-\>
-DOI, and ORCID → DOI for works recorded in ORCID.
+DOI, and ORCID -\> DOI for works recorded in ORCID.
 
 Only identifier links explicitly exposed by the queried provider are
 returned. `id_links()` is not a general metadata retrieval function and
 does not attempt to return broader related records unless the provider
 represents them as direct identifier links for the same object or
 directly corresponding manifestation.
+
+Trivial self-links are excluded from the result.
 
 If `type = "auto"`, the identifier type is inferred per element using
 [`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
@@ -65,13 +67,13 @@ id_links(
 
 ## Value
 
-A data.frame with columns `input`, `input_type`, `linked_type`,
-`linked_value`, and `provider`.
+A data.frame with columns `query`, `query_type`, `linked_type`,
+`linked_id`, and `provider`.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-id_links("31452104", provider = "ncbi")
+id_links("31452104", provider = "epmc")
 } # }
 ```

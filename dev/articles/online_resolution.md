@@ -88,7 +88,7 @@ sessionInfo()
 
     ## R version 4.5.3 (2026-03-11)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -110,7 +110,7 @@ sessionInfo()
     ##  [1] cli_3.6.5           knitr_1.51          rlang_1.1.7        
     ##  [4] xfun_0.57           textshaping_1.0.5   jsonlite_2.0.0     
     ##  [7] glue_1.8.0          htmltools_0.5.9     ragg_1.5.2         
-    ## [10] sass_0.4.10         rmarkdown_2.30      rappdirs_0.3.4     
+    ## [10] sass_0.4.10         rmarkdown_2.31      rappdirs_0.3.4     
     ## [13] evaluate_1.0.5      jquerylib_0.1.4     fastmap_1.2.0      
     ## [16] yaml_2.3.12         lifecycle_1.0.5     httr2_1.2.2        
     ## [19] compiler_4.5.3      fs_2.0.1            scholid_0.1.0      
