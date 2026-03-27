@@ -27,8 +27,8 @@ provider for the resolved identifier type.}
 warnings/messages where possible.}
 }
 \value{
-A data.frame with columns \code{input}, \code{input_type}, \code{linked_type},
-\code{linked_value}, and \code{provider}.
+A data.frame with columns \code{query}, \code{query_type}, \code{linked_type},
+\code{linked_id}, and \code{provider}.
 }
 \description{
 Return identifier links that external registries associate with the same
@@ -39,13 +39,15 @@ row per discovered identifier link.
 
 The function is intended to expose cross-registry identifier links such as
 DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID, arXiv ID <-> DOI,
-and ORCID → DOI for works recorded in ORCID.
+and ORCID -> DOI for works recorded in ORCID.
 
 Only identifier links explicitly exposed by the queried provider are
 returned. \code{id_links()} is not a general metadata retrieval function and does
 not attempt to return broader related records unless the provider represents
 them as direct identifier links for the same object or directly
 corresponding manifestation.
+
+Trivial self-links are excluded from the result.
 
 If \code{type = "auto"}, the identifier type is inferred per element using
 \code{scholid::detect_scholid_type()}. Inputs that cannot be classified or
@@ -57,7 +59,7 @@ front-end function.
 }
 \examples{
 \dontrun{
-id_links("31452104", provider = "ncbi")
+id_links("31452104", provider = "epmc")
 }
 
 }

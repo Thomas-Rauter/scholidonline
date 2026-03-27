@@ -45,9 +45,26 @@ req_json_http_bindings <- function(
       request_calls$status_n <- request_calls$status_n + 1L
       resp$status
     },
-    .scholidonline_resp_body_string = function(resp) {
+    .scholidonline_resp_body_json = function(resp, ...) {
       request_calls$body_n <- request_calls$body_n + 1L
-      resp$body
+      
+      if (identical(resp$body, "{\"a\":1,\"b\":[\"x\"]}")) {
+        return(list(a = 1L, b = list("x")))
+      }
+      
+      if (identical(resp$body, "{\"ok\":true}")) {
+        return(list(ok = TRUE))
+      }
+      
+      if (identical(resp$body, "{\"error\":\"not found\"}")) {
+        return(list(error = "not found"))
+      }
+      
+      if (identical(resp$body, "{\"error\":\"server\"}")) {
+        return(list(error = "server"))
+      }
+      
+      stop("Unexpected mock JSON body.", call. = FALSE)
     }
   )
   

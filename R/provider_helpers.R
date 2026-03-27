@@ -25,7 +25,11 @@
 #' @return A parsed JSON object (typically a list), or `NULL` on failure.
 #'
 #' @noRd
-.scholidonline_req_json <- function(url, query, quiet) {
+.scholidonline_req_json <- function(
+    url,
+    query,
+    quiet
+) {
   req <- .scholidonline_request(url)
   req <- .scholidonline_req_url_query(req, !!!query)
   req <- .scholidonline_req_error(
@@ -37,19 +41,17 @@
   
   if (.scholidonline_resp_status(resp) >= 400) {
     if (!isTRUE(quiet)) {
-      warning(
-        "HTTP request failed (",
-        .scholidonline_resp_status(resp),
-        "): ",
-        url,
-        call. = FALSE
-      )
+      rlang::warn(paste0(
+        "HTTP request failed (", .scholidonline_resp_status(resp), "): ", url
+        ))
     }
     return(NULL)
   }
   
-  txt <- .scholidonline_resp_body_string(resp)
-  jsonlite::fromJSON(txt, simplifyVector = FALSE)
+  .scholidonline_resp_body_json(
+    resp,
+    simplifyVector = FALSE
+  )
 }
 
 
