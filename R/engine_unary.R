@@ -238,11 +238,11 @@
   
   if (!provider %in% choices) {
     rlang::abort(
-      paste0(
-        "Unknown provider: `",
-        provider,
-        "`. Must be one of: ",
-        paste0("`", choices, "`", collapse = ", ")
+      message = paste0(
+        "Provider `", provider, "` is not supported for this identifier type. ",
+        "Available providers: ",
+        paste0("`", choices, "`", collapse = ", "),
+        "."
       )
     )
   }

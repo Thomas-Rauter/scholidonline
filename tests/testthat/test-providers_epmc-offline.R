@@ -892,3 +892,182 @@ testthat::test_that(
     )
   }
 )
+
+# tests/testthat/test-providers_epmc.R
+
+mock_scalar_chr_check <- function() {
+  testthat::local_mocked_bindings(
+    .scholidonline_check_scalar_chr = function(x) invisible(x)
+  )
+}
+
+make_resp <- function(status = 200L, body = list()) {
+  structure(
+    list(status = status, body = body),
+    class = "mock_resp"
+  )
+}
+
+mock_httr2 <- function(resp = NULL) {
+  testthat::local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_error = function(req, is_error) req,
+    req_perform = function(req) {
+      if (is.null(resp)) {
+        stop("boom")
+      }
+      resp
+    },
+    resp_status = function(resp) resp$status,
+    resp_body_json = function(resp, simplifyVector = TRUE) {
+      resp$body
+    },
+    .package = "httr2"
+  )
+}
+
+testthat::test_that(
+  ".meta_pmcid_epmc returns empty data.frame on failure states",
+  {
+    mock_scalar_chr_check()
+    
+    mock_httr2(resp = NULL)
+    
+    testthat::expect_no_warning(
+      out <- .meta_pmcid_epmc("PMC123", quiet = TRUE)
+    )
+    testthat::expect_s3_class(out, "data.frame")
+    testthat::expect_equal(nrow(out), 0L)
+    
+    mock_httr2(make_resp(status = 500L, body = list()))
+    
+    testthat::expect_no_warning(
+      out <- .meta_pmcid_epmc("PMC123", quiet = TRUE)
+    )
+    testthat::expect_equal(nrow(out), 0L)
+    
+    body <- list(resultList = list(result = list()))
+    mock_httr2(make_resp(body = body))
+    
+    out <- .meta_pmcid_epmc("PMC123", quiet = TRUE)
+    testthat::expect_equal(nrow(out), 0L)
+  }
+)
+
+testthat::test_that(
+  ".scholidonline_epmc_first_result handles list and empty results",
+  {
+    x_list <- list(
+      resultList = list(
+        result = list(
+          list(
+            title = "B title",
+            pubYear = "2021",
+            journalTitle = "Journal Y",
+            doi = "10.2000/abc",
+            pmid = "456"
+          ),
+          list(
+            title = "C title",
+            pmid = "789"
+          )
+        )
+      )
+    )
+    
+    out_list <- .scholidonline_epmc_first_result(x_list)
+    
+    testthat::expect_equal(out_list$title, "B title")
+    testthat::expect_equal(out_list$pubYear, "2021")
+    testthat::expect_equal(out_list$journalTitle, "Journal Y")
+    testthat::expect_equal(out_list$doi, "10.2000/abc")
+    testthat::expect_equal(out_list$pmid, "456")
+    
+    x_empty <- list(resultList = list(result = list()))
+    testthat::expect_null(.scholidonline_epmc_first_result(x_empty))
+  }
+)
+
+testthat::test_that(
+  ".convert_*_epmc return NA when search is NULL or field is missing",
+  {
+    mock_scalar_chr_check()
+    
+    testthat::local_mocked_bindings(
+      .scholidonline_epmc_search = function(query, ..., quiet = FALSE) {
+        NULL
+      }
+    )
+    
+    testthat::expect_true(is.na(
+      .convert_pmid_to_doi_epmc("123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_doi_to_pmid_epmc("10.1000/xyz", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmcid_to_pmid_epmc("PMC123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmcid_to_doi_epmc("PMC123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmid_to_pmcid_epmc("123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_doi_to_pmcid_epmc("10.1000/xyz", quiet = TRUE)
+    ))
+    
+    testthat::local_mocked_bindings(
+      .scholidonline_epmc_search = function(query, ..., quiet = FALSE) {
+        list(resultList = list(result = list(list())))
+      },
+      .scholidonline_epmc_first_result = function(x) {
+        list(
+          doi = "",
+          pmid = "",
+          pmcid = ""
+        )
+      }
+    )
+    
+    testthat::expect_true(is.na(
+      .convert_pmid_to_doi_epmc("123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_doi_to_pmid_epmc("10.1000/xyz", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmcid_to_pmid_epmc("PMC123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmcid_to_doi_epmc("PMC123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_pmid_to_pmcid_epmc("123", quiet = TRUE)
+    ))
+    testthat::expect_true(is.na(
+      .convert_doi_to_pmcid_epmc("10.1000/xyz", quiet = TRUE)
+    ))
+  }
+)
+
+testthat::test_that(
+  ".scholidonline_epmc_first_result returns first result or NULL",
+  {
+    x <- list(
+      resultList = list(
+        result = list(
+          list(pmid = "123"),
+          list(pmid = "456")
+        )
+      )
+    )
+    
+    out <- .scholidonline_epmc_first_result(x)
+    testthat::expect_equal(out$pmid, "123")
+    
+    empty <- list(resultList = list(result = list()))
+    testthat::expect_null(.scholidonline_epmc_first_result(empty))
+  }
+)

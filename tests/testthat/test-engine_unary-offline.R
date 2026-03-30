@@ -142,12 +142,12 @@ test_that(".scholidonline_resolve_unary_provider() validates inputs", {
     "`provider` must be a single, non-missing character string\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_resolve_unary_provider(
       provider = "crossref",
       meta = meta
     ),
-    "Unknown provider: `crossref`\\."
+    "Provider `crossref` is not supported for this identifier type\\."
   )
 })
 

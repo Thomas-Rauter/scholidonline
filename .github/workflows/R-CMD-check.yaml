@@ -7,7 +7,6 @@ name: R-CMD-check
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
@@ -18,7 +17,7 @@ jobs:
           - { os: windows-latest, r: "release" }
           - { os: ubuntu-latest,  r: "devel"   }
           - { os: ubuntu-latest,  r: "release" }
-          - { os: ubuntu-latest,  r: "oldrel-1"}
+          - { os: ubuntu-latest,  r: "oldrel-1" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -35,6 +34,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      - name: Disable pak lockfile on R-devel
+        if: matrix.config.r == 'devel'
+        run: rm -f .github/pkg.lock
+        shell: bash
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
@@ -43,4 +47,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-
