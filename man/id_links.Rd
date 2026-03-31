@@ -48,9 +48,6 @@ returned. \code{id_links()} does not retrieve general metadata or broader relate
 records unless the provider represents them as direct identifier links.
 
 Trivial self-links are excluded from the result.
-
-If \code{type = "auto"}, the identifier type is inferred for each element of
-\code{x}. Inputs that cannot be identified or normalized yield zero rows.
 }
 \examples{
 \donttest{

@@ -36,11 +36,6 @@ input could not be identified, normalized, or checked reliably.
 Check whether scholarly identifiers are found in their respective
 registries.
 }
-\details{
-\code{id_exists()} is vectorized over \code{x}. If \code{type = "auto"}, the type of each
-input identifier is inferred individually. Inputs that cannot be
-identified, normalized, or checked reliably return \code{NA}.
-}
 \examples{
 \donttest{
   id_exists("10.1038/nature12373", type = "doi")

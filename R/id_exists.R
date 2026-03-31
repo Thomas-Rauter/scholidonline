@@ -4,11 +4,6 @@
 #' Check whether scholarly identifiers are found in their respective
 #' registries.
 #'
-#' @details
-#' `id_exists()` is vectorized over `x`. If `type = "auto"`, the type of each
-#' input identifier is inferred individually. Inputs that cannot be
-#' identified, normalized, or checked reliably return `NA`.
-#'
 #' @param x A character vector of identifiers.
 #' @param type A single identifier type string, or `"auto"` to infer the type
 #'   for each element of `x`. See `scholidonline_types()` for supported values.

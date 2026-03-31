@@ -17,9 +17,6 @@
 #'
 #' Trivial self-links are excluded from the result.
 #'
-#' If `type = "auto"`, the identifier type is inferred for each element of
-#' `x`. Inputs that cannot be identified or normalized yield zero rows.
-#'
 #' @param x A character vector of identifiers.
 #' @param type A single identifier type string, or `"auto"` to infer the type
 #'   for each element of `x`. See `scholidonline_types()` for supported values.

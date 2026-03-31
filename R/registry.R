@@ -1,18 +1,18 @@
-#' scholidonline identifier registry
-#'
-#' @description
-#' Internal registry defining the identifier types supported by the
-#' scholidonline package and their associated metadata.
-#'
-#' The registry is the single source of truth for identifier capabilities,
-#' including:
-#' - existence-check providers
-#' - default providers
-#' - supported identifier conversions
-#' - conversion providers
-#'
-#' Helper functions in this file expose registry metadata used by the
-#' exported front-end functions (e.g. `id_exists()`, `id_convert()`).
+# scholidonline identifier registry
+#
+# @description
+# Internal registry defining the identifier types supported by the
+# scholidonline package and their associated metadata.
+#
+# The registry is the single source of truth for identifier capabilities,
+# including:
+# - existence-check providers
+# - default providers
+# - supported identifier conversions
+# - conversion providers
+#
+# Helper functions in this file expose registry metadata used by the
+# exported front-end functions (e.g. `id_exists()`, `id_convert()`).
 
 
 #' Supported scholidonline identifier types

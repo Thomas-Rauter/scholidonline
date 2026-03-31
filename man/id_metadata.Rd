@@ -49,10 +49,6 @@ per input identifier.
 The function returns a consistent cross-provider subset of core
 bibliographic metadata, such as title, publication year, container title,
 linked DOI, PMID, PMCID, and a canonical URL when available.
-
-If \code{type = "auto"}, the identifier type is inferred for each element of
-\code{x}. Inputs that cannot be identified, normalized, or resolved are returned
-as rows with missing metadata fields.
 }
 \examples{
 \donttest{

@@ -12,10 +12,6 @@
 #' bibliographic metadata, such as title, publication year, container title,
 #' linked DOI, PMID, PMCID, and a canonical URL when available.
 #'
-#' If `type = "auto"`, the identifier type is inferred for each element of
-#' `x`. Inputs that cannot be identified, normalized, or resolved are returned
-#' as rows with missing metadata fields.
-#'
 #' @param x A character vector of identifiers.
 #' @param type A single identifier type string, or `"auto"` to infer the type
 #'   for each element of `x`. See `scholidonline_types()` for supported values.

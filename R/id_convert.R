@@ -4,11 +4,6 @@
 #' Convert scholarly identifiers across registries, for example from PMID to
 #' DOI.
 #'
-#' @details
-#' `id_convert()` is vectorized over `x`. If `from = NULL`, the type of each
-#' input identifier is inferred individually. Inputs that cannot be
-#' identified, normalized, or converted return `NA_character_`.
-#'
 #' @param x A character vector of scholarly identifiers.
 #' @param to A single target identifier type string, such as `"doi"` or
 #'   `"pmid"`. See `scholidonline_types()` for all supported values.

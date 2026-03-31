@@ -39,11 +39,6 @@ be identified, normalized, or converted return \code{NA_character_}.
 Convert scholarly identifiers across registries, for example from PMID to
 DOI.
 }
-\details{
-\code{id_convert()} is vectorized over \code{x}. If \code{from = NULL}, the type of each
-input identifier is inferred individually. Inputs that cannot be
-identified, normalized, or converted return \code{NA_character_}.
-}
 \examples{
 \donttest{
   id_convert("12345678", to = "doi", from = "pmid")
