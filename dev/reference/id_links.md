@@ -1,30 +1,7 @@
 # Return linked scholarly identifiers
 
-Return identifier links that external registries associate with the same
-scholarly object or a directly corresponding manifestation.
-
-`id_links()` is vectorized over `x` and returns a long data.frame with
-one row per discovered identifier link.
-
-The function is intended to expose cross-registry identifier links such
-as DOI \<-\> PMID, DOI \<-\> PMCID, PMID \<-\> PMCID, arXiv ID \<-\>
-DOI, and ORCID -\> DOI for works recorded in ORCID.
-
-Only identifier links explicitly exposed by the queried provider are
-returned. `id_links()` is not a general metadata retrieval function and
-does not attempt to return broader related records unless the provider
-represents them as direct identifier links for the same object or
-directly corresponding manifestation.
-
-Trivial self-links are excluded from the result.
-
-If `type = "auto"`, the identifier type is inferred per element using
-[`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
-Inputs that cannot be classified or normalized yield zero rows.
-
-Provider-/ID-specific logic lives in internal helpers named
-`.links_<type>()` (e.g. `.links_pmid()`), which are dispatched to from
-this front-end function.
+Return identifiers that external registries link to the same scholarly
+record or to a closely corresponding version of it.
 
 ## Usage
 
@@ -53,8 +30,9 @@ id_links(
 
 - provider:
 
-  A single provider string. Use `"auto"` to use the default provider for
-  the resolved identifier type.
+  A single provider string specifying which online service to use. Use
+  `"auto"` to use the default provider for the resolved identifier type.
+  In most cases, `"auto"` is appropriate.
 
 - ...:
 
@@ -62,18 +40,39 @@ id_links(
 
 - quiet:
 
-  A single logical value; if `TRUE`, suppress provider warnings/messages
-  where possible.
+  A single logical value; if `TRUE`, suppress provider warnings and
+  messages where possible.
 
 ## Value
 
 A data.frame with columns `query`, `query_type`, `linked_type`,
-`linked_id`, and `provider`.
+`linked_id`, and `provider`. If no links are found, a zero-row
+data.frame with these columns is returned.
+
+## Details
+
+`id_links()` is vectorized over `x` and returns a long data.frame with
+one row per discovered identifier link.
+
+Typical links include DOI \<-\> PMID, DOI \<-\> PMCID, PMID \<-\> PMCID,
+arXiv ID \<-\> DOI, and ORCID -\> DOI for works recorded in ORCID.
+
+Only identifier links explicitly exposed by the queried provider are
+returned. `id_links()` does not retrieve general metadata or broader
+related records unless the provider represents them as direct identifier
+links.
+
+Trivial self-links are excluded from the result.
+
+If `type = "auto"`, the identifier type is inferred for each element of
+`x`. Inputs that cannot be identified or normalized yield zero rows.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-id_links("31452104", provider = "epmc")
-} # }
+# \donttest{
+  id_links("31452104", provider = "epmc")
+#>      query query_type linked_type                    linked_id provider
+#> 2 31452104       pmid         doi 10.1007/978-1-4939-9752-7_10     epmc
+# }
 ```

@@ -3,23 +3,6 @@
 Retrieve structured metadata for scholarly identifiers from external
 registries.
 
-`id_metadata()` is vectorized over `x` and returns a data.frame with one
-row per input element.
-
-The function returns a stable cross-provider subset of record-level
-metadata for the queried identifier. It is intended to expose core
-bibliographic fields such as title, publication year, container title,
-linked DOI, PMID, and PMCID when available, and a canonical URL.
-
-If `type = "auto"`, the identifier type is inferred per element using
-[`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
-Inputs that cannot be classified or normalized are returned as rows with
-`NA` metadata fields.
-
-Provider-/ID-specific logic lives in internal helpers named
-`.meta_<type>()` (e.g. `.meta_pmid()`), which are dispatched to from
-this front-end function.
-
 ## Usage
 
 ``` r
@@ -48,13 +31,14 @@ id_metadata(
 
 - provider:
 
-  A single provider string. Use `"auto"` to use the default provider for
-  the resolved identifier type.
+  A single provider string specifying which online service to use. Use
+  `"auto"` to use the default provider for the resolved identifier type.
+  In most cases, `"auto"` is appropriate.
 
 - fields:
 
-  An optional character vector of column names to return. If `NULL`, all
-  default metadata columns are returned.
+  An optional character vector naming the columns to return. If `NULL`,
+  all default columns are returned. Unknown field names are ignored.
 
 - ...:
 
@@ -62,21 +46,56 @@ id_metadata(
 
 - quiet:
 
-  A single logical value; if `TRUE`, suppress provider warnings/messages
-  where possible.
+  A single logical value; if `TRUE`, suppress provider warnings and
+  messages where possible.
 
 ## Value
 
 A data.frame with one row per input identifier. By default, the returned
 columns are `input`, `type`, `provider`, `title`, `year`, `container`,
-`doi`, `pmid`, `pmcid`, and `url`.
+`doi`, `pmid`, `pmcid`, and `url`. Inputs that cannot be identified,
+normalized, or resolved are returned as rows with missing metadata
+fields.
+
+## Details
+
+`id_metadata()` is vectorized over `x` and returns a data.frame with one
+row per input identifier.
+
+The function returns a consistent cross-provider subset of core
+bibliographic metadata, such as title, publication year, container
+title, linked DOI, PMID, PMCID, and a canonical URL when available.
+
+If `type = "auto"`, the identifier type is inferred for each element of
+`x`. Inputs that cannot be identified, normalized, or resolved are
+returned as rows with missing metadata fields.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-id_metadata("10.1038/nature12373", type = "doi")
-id_metadata(c("31452104", "PMC6821181"))
-id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
-} # }
+# \donttest{
+  id_metadata("10.1038/nature12373", type = "doi")
+#>                 input type provider
+#> 1 10.1038/nature12373  doi crossref
+#>                                          title year container
+#> 1 Nanometre-scale thermometry in a living cell 2013    Nature
+#>                   doi pmid pmcid                                 url
+#> 1 10.1038/nature12373 <NA>  <NA> https://doi.org/10.1038/nature12373
+  id_metadata(c("31452104", "PMC6821181"))
+#>        input  type provider
+#> 1   31452104  pmid     ncbi
+#> 2 PMC6821181 pmcid     ncbi
+#>                                                      title year
+#> 1                      Molegro Virtual Docker for Docking. 2019
+#> 2 Figure and caption extraction from biomedical documents. 2019
+#>          container  doi     pmid      pmcid
+#> 1 Methods Mol Biol <NA> 31452104       <NA>
+#> 2   Bioinformatics <NA>     <NA> PMC6821181
+#>                                                     url
+#> 1             https://pubmed.ncbi.nlm.nih.gov/31452104/
+#> 2 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/
+  id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
+#>                                          title year                 doi
+#> 1 Nanometre-scale thermometry in a living cell 2013 10.1038/nature12373
+# }
 ```

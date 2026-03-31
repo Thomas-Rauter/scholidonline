@@ -1,16 +1,7 @@
 # Convert scholarly identifiers across systems
 
-Convert scholarly identifiers across registries, for example PMID -\>
-DOI.
-
-`id_convert()` is vectorized over `x`. If `from = NULL`, the source
-identifier type is inferred per element using
-[`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
-Inputs that cannot be classified or normalized yield `NA_character_`.
-
-Provider-/ID-specific logic lives in internal helpers named
-`.convert_<from>_to_<to>()` (e.g. `.convert_pmid_to_doi()`), which are
-dispatched to from this front-door function.
+Convert scholarly identifiers across registries, for example from PMID
+to DOI.
 
 ## Usage
 
@@ -29,13 +20,14 @@ id_convert(
 
 - x:
 
-  A character vector of identifiers.
+  A character vector of scholarly identifiers.
 
 - to:
 
-  A single target identifier type string. See
+  A single target identifier type string, such as `"doi"` or `"pmid"`.
+  See
   [`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_types.md)
-  for supported values.
+  for all supported values.
 
 - from:
 
@@ -44,8 +36,9 @@ id_convert(
 
 - provider:
 
-  A single provider string. Use `"auto"` to use the default provider for
-  the resolved conversion pair.
+  A single provider string specifying which online service to use for
+  the conversion. Use `"auto"` to use the default provider for the
+  requested conversion. In most cases, `"auto"` is appropriate.
 
 - ...:
 
@@ -53,19 +46,27 @@ id_convert(
 
 - quiet:
 
-  A single logical value; if `TRUE`, suppress provider warnings/messages
-  where possible.
+  A single logical value; if `TRUE`, suppress provider warnings and
+  messages where possible.
 
 ## Value
 
-A character vector of converted identifiers. Inputs that cannot be
-classified, normalized, or converted yield `NA_character_`.
+A character vector of converted identifiers. Elements that cannot be
+identified, normalized, or converted return `NA_character_`.
+
+## Details
+
+`id_convert()` is vectorized over `x`. If `from = NULL`, the type of
+each input identifier is inferred individually. Inputs that cannot be
+identified, normalized, or converted return `NA_character_`.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-id_convert("12345678", to = "doi", from = "pmid")
-id_convert(c("10.1000/182", "PMC12345"), to = "pmid")
-} # }
+# \donttest{
+  id_convert("12345678", to = "doi", from = "pmid")
+#> [1] "10.1234/2013/999990"
+  id_convert("10.1038/nature12373", to = "pmid", from = "doi")
+#> [1] "23903748"
+# }
 ```
