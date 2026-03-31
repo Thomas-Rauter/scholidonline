@@ -1,15 +1,4 @@
-#' Input validation helpers for scholidonline
-#'
-#' @description
-#' Internal helper functions used to validate and normalize user inputs
-#' across scholidonline front-end functions.
-#'
-#' These helpers enforce consistent argument checking for identifier
-#' vectors, identifier types, logical flags, and scalar inputs.
-#'
-#' The functions in this file are intentionally generic and independent
-#' of registry metadata, making them reusable across multiple exported
-#' functions (e.g. `id_exists()`, `id_convert()`).
+# Input validation helpers for scholidonline
 
 
 # Level 1 function (functions called by exported functions) definitions --------

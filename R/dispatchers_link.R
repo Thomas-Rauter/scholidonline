@@ -190,9 +190,10 @@
     }
     
     if (!isTRUE(quiet)) {
-      rlang::warn(
-        "Linked identifiers for this PMCID could not be determined via NCBI or Europe PMC."
-      )
+      rlang::warn(paste0(
+        "Linked identifiers for this PMCID could not be determined via ",
+        "NCBI or Europe PMC."
+      ))
     }
     
     return(data.frame())
@@ -270,9 +271,10 @@
     }
     
     if (!isTRUE(quiet)) {
-      rlang::warn(
-        "Linked identifiers for this PMID could not be determined via NCBI or Europe PMC."
-      )
+      rlang::warn(paste(
+        "Linked identifiers for this PMID could not be determined",
+        "via NCBI or Europe PMC."
+      ))
     }
     
     return(data.frame())

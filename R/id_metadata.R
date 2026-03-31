@@ -4,42 +4,41 @@
 #' Retrieve structured metadata for scholarly identifiers from external
 #' registries.
 #'
+#' @details
 #' `id_metadata()` is vectorized over `x` and returns a data.frame with one row
-#' per input element.
+#' per input identifier.
 #'
-#' The function returns a stable cross-provider subset of record-level metadata
-#' for the queried identifier. It is intended to expose core bibliographic
-#' fields such as title, publication year, container title, linked DOI, PMID,
-#' and PMCID when available, and a canonical URL.
+#' The function returns a consistent cross-provider subset of core
+#' bibliographic metadata, such as title, publication year, container title,
+#' linked DOI, PMID, PMCID, and a canonical URL when available.
 #'
-#' If `type = "auto"`, the identifier type is inferred per element using
-#' `scholid::detect_scholid_type()`. Inputs that cannot be classified or
-#' normalized are returned as rows with `NA` metadata fields.
-#'
-#' Provider-/ID-specific logic lives in internal helpers named
-#' `.meta_<type>()` (e.g. `.meta_pmid()`), which are dispatched to from this
-#' front-end function.
+#' If `type = "auto"`, the identifier type is inferred for each element of
+#' `x`. Inputs that cannot be identified, normalized, or resolved are returned
+#' as rows with missing metadata fields.
 #'
 #' @param x A character vector of identifiers.
 #' @param type A single identifier type string, or `"auto"` to infer the type
 #'   for each element of `x`. See `scholidonline_types()` for supported values.
-#' @param provider A single provider string. Use `"auto"` to use the default
-#'   provider for the resolved identifier type.
-#' @param fields An optional character vector of column names to return. If
-#'   `NULL`, all default metadata columns are returned.
+#' @param provider A single provider string specifying which online service to
+#'   use. Use `"auto"` to use the default provider for the resolved identifier
+#'   type. In most cases, `"auto"` is appropriate.
+#' @param fields An optional character vector naming the columns to return. If
+#'   `NULL`, all default columns are returned. Unknown field names are ignored.
 #' @param ... Reserved for future provider-specific arguments.
 #' @param quiet A single logical value; if `TRUE`, suppress provider
-#'   warnings/messages where possible.
+#'   warnings and messages where possible.
 #'
 #' @return A data.frame with one row per input identifier. By default, the
 #'   returned columns are `input`, `type`, `provider`, `title`, `year`,
-#'   `container`, `doi`, `pmid`, `pmcid`, and `url`.
+#'   `container`, `doi`, `pmid`, `pmcid`, and `url`. Inputs that cannot be
+#'   identified, normalized, or resolved are returned as rows with missing
+#'   metadata fields.
 #'
 #' @examples
-#' \dontrun{
-#' id_metadata("10.1038/nature12373", type = "doi")
-#' id_metadata(c("31452104", "PMC6821181"))
-#' id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
+#' \donttest{
+#'   id_metadata("10.1038/nature12373", type = "doi")
+#'   id_metadata(c("31452104", "PMC6821181"))
+#'   id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
 #' }
 #'
 #' @export

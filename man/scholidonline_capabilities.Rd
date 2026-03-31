@@ -13,36 +13,34 @@ following columns:
 \item \code{type}: source identifier type
 \item \code{operation}: operation name (\code{exists}, \code{links}, \code{meta},
 or \code{convert})
-\item \code{target}: target identifier type for conversions, otherwise \code{NA}
-\item \code{providers}: comma-separated provider names
+\item \code{target}: target identifier type for conversion operations,
+otherwise \code{NA}
+\item \code{providers}: comma-separated names of providers supporting the
+capability
 \item \code{default_provider}: default provider used when
 \code{provider = "auto"}
 }
 }
 \description{
-Return a registry-backed summary of the capabilities supported by the
-scholidonline package.
+Return a summary of the capabilities supported by the scholidonline package.
 
-The returned table describes, for each supported identifier type, which
-unary operations are available (\code{exists}, \code{links}, \code{meta}), which
-identifier conversions are available, which providers support each
-capability, and which provider is used by default when
-\code{provider = "auto"}.
+The returned table describes, for each supported identifier type:
+\itemize{
+\item which single-identifier operations are available
+(\code{exists}, \code{links}, \code{meta}),
+\item which identifier conversions are available,
+\item which providers support each capability, and
+\item which provider is used by default when \code{provider = "auto"}.
+}
 
 This function is useful for discovering what scholidonline can do for a
 given identifier type or conversion pair.
 }
 \examples{
-scholidonline_capabilities()
+caps <- scholidonline_capabilities()
 
-subset(
-  scholidonline_capabilities(),
-  type == "pmid" & operation == "convert"
-)
+subset(caps, type == "pmid" & operation == "convert")
 
-subset(
-  scholidonline_capabilities(),
-  type == "doi" & target == "pmcid"
-)
+subset(caps, type == "doi" & target == "pmcid")
 
 }

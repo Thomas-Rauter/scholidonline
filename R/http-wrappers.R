@@ -1,3 +1,6 @@
+# These wrappers where made to make the offline testing much easier. 
+
+
 #' HTTP request wrapper
 #'
 #' @param url A single URL string.

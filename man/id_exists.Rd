@@ -18,35 +18,33 @@ id_exists(
 \item{type}{A single identifier type string, or \code{"auto"} to infer the type
 for each element of \code{x}. See \code{scholidonline_types()} for supported values.}
 
-\item{provider}{A single provider string. Use \code{"auto"} to use the default
-provider for the resolved identifier type.}
+\item{provider}{A single provider string specifying which online service to
+use for the lookup. Use \code{"auto"} to use the default provider for the
+resolved identifier type. In most cases, \code{"auto"} is appropriate.}
 
 \item{...}{Reserved for future provider-specific arguments.}
 
 \item{quiet}{A single logical value; if \code{TRUE}, suppress provider
-warnings/messages where possible.}
+warnings and messages where possible.}
 }
 \value{
-A logical vector. \code{TRUE} indicates that the identifier exists,
-\code{FALSE} indicates that it was confirmed not found, and \code{NA} indicates
-that the input could not be classified, normalized, or checked reliably.
+A logical vector. \code{TRUE} indicates that the identifier was found,
+\code{FALSE} indicates that it was not found, and \code{NA} indicates that the
+input could not be identified, normalized, or checked reliably.
 }
 \description{
-Check whether identifiers resolve or are found in their respective
+Check whether scholarly identifiers are found in their respective
 registries.
-
-\code{id_exists()} is vectorized over \code{x}. If \code{type = "auto"}, the identifier
-type is inferred per element using \code{scholid::detect_scholid_type()}.
-Inputs that cannot be classified or normalized yield \code{NA}.
-
-Provider-/ID-specific logic lives in internal helpers named
-\verb{.exists_<type>()} (e.g. \code{.exists_doi()}), which are dispatched to from
-this front-end function.
+}
+\details{
+\code{id_exists()} is vectorized over \code{x}. If \code{type = "auto"}, the type of each
+input identifier is inferred individually. Inputs that cannot be
+identified, normalized, or checked reliably return \code{NA}.
 }
 \examples{
-\dontrun{
-id_exists("10.1000/182", type = "doi")
-id_exists(c("12345678", "PMC12345"))
+\donttest{
+  id_exists("10.1038/nature12373", type = "doi")
+  id_exists(c("31452104", "PMC6784763"))
 }
 
 }

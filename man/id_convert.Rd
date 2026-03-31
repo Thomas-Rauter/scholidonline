@@ -14,42 +14,40 @@ id_convert(
 )
 }
 \arguments{
-\item{x}{A character vector of identifiers.}
+\item{x}{A character vector of scholarly identifiers.}
 
-\item{to}{A single target identifier type string. See
-\code{scholidonline_types()} for supported values.}
+\item{to}{A single target identifier type string, such as \code{"doi"} or
+\code{"pmid"}. See \code{scholidonline_types()} for all supported values.}
 
 \item{from}{A single source identifier type string, or \code{NULL} to infer the
 source type for each element of \code{x}.}
 
-\item{provider}{A single provider string. Use \code{"auto"} to use the default
-provider for the resolved conversion pair.}
+\item{provider}{A single provider string specifying which online service to
+use for the conversion. Use \code{"auto"} to use the default provider for the
+requested conversion. In most cases, \code{"auto"} is appropriate.}
 
 \item{...}{Reserved for future provider-specific arguments.}
 
 \item{quiet}{A single logical value; if \code{TRUE}, suppress provider
-warnings/messages where possible.}
+warnings and messages where possible.}
 }
 \value{
-A character vector of converted identifiers. Inputs that cannot be
-classified, normalized, or converted yield \code{NA_character_}.
+A character vector of converted identifiers. Elements that cannot
+be identified, normalized, or converted return \code{NA_character_}.
 }
 \description{
-Convert scholarly identifiers across registries, for example PMID -> DOI.
-
-\code{id_convert()} is vectorized over \code{x}. If \code{from = NULL}, the source
-identifier type is inferred per element using
-\code{scholid::detect_scholid_type()}.
-Inputs that cannot be classified or normalized yield \code{NA_character_}.
-
-Provider-/ID-specific logic lives in internal helpers named
-\verb{.convert_<from>_to_<to>()} (e.g. \code{.convert_pmid_to_doi()}), which are
-dispatched to from this front-door function.
+Convert scholarly identifiers across registries, for example from PMID to
+DOI.
+}
+\details{
+\code{id_convert()} is vectorized over \code{x}. If \code{from = NULL}, the type of each
+input identifier is inferred individually. Inputs that cannot be
+identified, normalized, or converted return \code{NA_character_}.
 }
 \examples{
-\dontrun{
-id_convert("12345678", to = "doi", from = "pmid")
-id_convert(c("10.1000/182", "PMC12345"), to = "pmid")
+\donttest{
+  id_convert("12345678", to = "doi", from = "pmid")
+  id_convert("10.1038/nature12373", to = "pmid", from = "doi")
 }
 
 }

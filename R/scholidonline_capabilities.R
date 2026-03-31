@@ -1,14 +1,14 @@
 #' Supported scholidonline capabilities
 #'
 #' @description
-#' Return a registry-backed summary of the capabilities supported by the
-#' scholidonline package.
+#' Return a summary of the capabilities supported by the scholidonline package.
 #'
-#' The returned table describes, for each supported identifier type, which
-#' unary operations are available (`exists`, `links`, `meta`), which
-#' identifier conversions are available, which providers support each
-#' capability, and which provider is used by default when
-#' `provider = "auto"`.
+#' The returned table describes, for each supported identifier type:
+#' - which single-identifier operations are available
+#'   (`exists`, `links`, `meta`),
+#' - which identifier conversions are available,
+#' - which providers support each capability, and
+#' - which provider is used by default when `provider = "auto"`.
 #'
 #' This function is useful for discovering what scholidonline can do for a
 #' given identifier type or conversion pair.
@@ -19,24 +19,20 @@
 #'   \item `type`: source identifier type
 #'   \item `operation`: operation name (`exists`, `links`, `meta`,
 #'     or `convert`)
-#'   \item `target`: target identifier type for conversions, otherwise `NA`
-#'   \item `providers`: comma-separated provider names
+#'   \item `target`: target identifier type for conversion operations,
+#'    otherwise `NA`
+#'   \item `providers`: comma-separated names of providers supporting the
+#'    capability
 #'   \item `default_provider`: default provider used when
 #'     `provider = "auto"`
 #' }
 #'
 #' @examples
-#' scholidonline_capabilities()
+#' caps <- scholidonline_capabilities()
 #'
-#' subset(
-#'   scholidonline_capabilities(),
-#'   type == "pmid" & operation == "convert"
-#' )
+#' subset(caps, type == "pmid" & operation == "convert")
 #'
-#' subset(
-#'   scholidonline_capabilities(),
-#'   type == "doi" & target == "pmcid"
-#' )
+#' subset(caps, type == "doi" & target == "pmcid")
 #'
 #' @export
 scholidonline_capabilities <- function() {
