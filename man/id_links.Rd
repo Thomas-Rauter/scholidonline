@@ -51,7 +51,8 @@ Trivial self-links are excluded from the result.
 }
 \examples{
 \donttest{
-  id_links("31452104", provider = "epmc")
+  out <- id_links("31452104", provider = "epmc")
+  knitr::kable(out)
 }
 
 }

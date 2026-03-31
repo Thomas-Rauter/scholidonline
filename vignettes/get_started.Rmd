@@ -7,8 +7,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+is_pkgdown <- identical(Sys.getenv("IN_PKGDOWN"), "true")
+```
+
 `scholidonline` provides online utilities for working with scholarly
-identifiers. It builds on `scholid` for structural detection and
+identifiers. It builds on
+[`scholid`](https://thomas-rauter.github.io/scholid/)
+for structural detection and
 normalization, and adds registry-backed functionality such as:
 
 - Existence checks
@@ -65,7 +76,8 @@ scholidonline::scholidonline_types()
 operations, conversions, and providers:
 
 ```{r scholidonline capabilities, eval = TRUE}
-scholidonline::scholidonline_capabilities()
+out <- scholidonline::scholidonline_capabilities()
+knitr::kable(out)
 ```
 
 
@@ -75,7 +87,7 @@ scholidonline::scholidonline_capabilities()
 `id_exists()` verifies whether identifiers exist in their respective
 registries.
 
-```{r id_exists 1, eval = TRUE}
+```{r id_exists 1, eval = is_pkgdown}
 scholidonline::id_exists(
   x    = "10.1000/182",
   type = "doi"
@@ -84,7 +96,7 @@ scholidonline::id_exists(
 
 If `type = NULL`, the type is inferred automatically:
 
-```{r description, eval = TRUE}
+```{r description, eval = is_pkgdown}
 scholidonline::id_exists(
   x = c(
     "10.1000/182",
@@ -111,7 +123,7 @@ Common examples:
 - PMCID → PMID
 - DOI → PMCID
 
-```{r conversion 1, eval = TRUE}
+```{r conversion 1, eval = is_pkgdown}
 scholidonline::id_convert(
   x    = "12345678",
   from = "pmid",
@@ -121,7 +133,7 @@ scholidonline::id_convert(
 
 If `from = NULL`, the source type is inferred per element:
 
-```{r conversion 2, eval = TRUE}
+```{r conversion 2, eval = is_pkgdown}
 scholidonline::id_convert(
   x = c("12345678", "PMC1234567"),
   to = "doi"
@@ -136,11 +148,12 @@ Unresolvable mappings return `NA_character_`.
 
 `id_metadata()` retrieves harmonized metadata from external registries.
 
-```{r metadata 1, eval = TRUE}
-scholidonline::id_metadata(
-  x    = "10.1000/182",
+```{r metadata 1, eval = is_pkgdown}
+out <- scholidonline::id_metadata(
+  x    = "10.1038/nature12373",
   type = "doi"
 )
+knitr::kable(out)
 ```
 
 Returned metadata is registry-derived and minimally harmonized
@@ -163,11 +176,13 @@ Metadata completeness depends on the external authority.
 
 You can restrict returned fields:
 
-```{r metadata 2, eval = TRUE}
-scholidonline::id_metadata(
-  x = "10.1000/182",
+```{r metadata 2, eval = is_pkgdown}
+out <- scholidonline::id_metadata(
+  x = "10.1038/nature12373",
+  type = "doi",
   fields = c("title", "year", "doi")
 )
+knitr::kable(out)
 ```
 
 
@@ -177,11 +192,12 @@ scholidonline::id_metadata(
 `id_links()` returns related identifiers discovered via registry
 queries.
 
-```{r id_links 1, eval = TRUE}
-scholidonline::id_links(
+```{r id_links 1, eval = is_pkgdown}
+out <- scholidonline::id_links(
   x    = "PMC1234567",
   type = "pmcid"
 )
+knitr::kable(out)
 ```
 
 This may reveal:
@@ -206,10 +222,10 @@ A common workflow for messy identifier columns:
 
 Example:
 
-```{r mixed data, eval = TRUE}
+```{r mixed data, eval = is_pkgdown}
 x <- c(
   "https://doi.org/10.1000/182",
-  "PMID: 12345678",
+  "PMCID: PMC1234567",
   "not an id"
 )
 
@@ -243,11 +259,17 @@ registry logic (`scholidonline`) clearly distinct.
 
 Most functions accept a `provider` argument.
 
-```{r provider selection, eval = TRUE}
+```{r provider selection, eval = is_pkgdown}
 scholidonline::id_exists(
   x        = "10.1000/182",
   type     = "doi",
   provider = "crossref"
+)
+
+scholidonline::id_exists(
+  x        = "10.1000/182",
+  type     = "doi",
+  provider = "doi.org"
 )
 ```
 

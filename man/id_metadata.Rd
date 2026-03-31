@@ -52,9 +52,15 @@ linked DOI, PMID, PMCID, and a canonical URL when available.
 }
 \examples{
 \donttest{
-  id_metadata("10.1038/nature12373", type = "doi")
-  id_metadata(c("31452104", "PMC6821181"))
-  id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
+  out <- id_metadata("10.1038/nature12373", type = "doi")
+  knitr::kable(out)
+  out <- id_metadata(c("31452104", "PMC6821181"))
+  knitr::kable(out)
+  out <- id_metadata(
+    "10.1038/nature12373",
+     fields = c("title", "year", "doi")
+     )
+  knitr::kable(out)
 }
 
 }

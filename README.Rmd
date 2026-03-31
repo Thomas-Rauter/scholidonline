@@ -5,13 +5,21 @@ editor_options:
     wrap: 72
 ---
 
+```{r setup, include = FALSE}
+is_pkgdown <- identical(Sys.getenv("IN_PKGDOWN"), "true")
+is_build_readme <- identical(Sys.getenv("BUILD_README"), "true")
+run_live_readme <- is_pkgdown || is_build_readme
+```
+
 # scholidonline
 
 [![R-CMD-check](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&logo=codecov)](https://app.codecov.io/gh/Thomas-Rauter/scholidonline)
 
 `scholidonline` provides lightweight **online** utilities for working with
-scholarly identifiers in R. It builds on `scholid` for identifier detection
+scholarly identifiers in R. It builds on 
+[`scholid`](https://thomas-rauter.github.io/scholid/)
+for identifier detection
 and normalization, and adds minimal-dependency functions to query external
 registries.
 
@@ -61,7 +69,7 @@ User-available functions:
 
 ## Examples
 
-```{r examples, eval = TRUE}
+```{r examples, eval = run_live_readme}
 # List supported scholidonline identifier types
 scholidonline::scholidonline_types()
 
