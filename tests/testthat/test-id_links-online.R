@@ -32,6 +32,7 @@ testthat::test_that("id_links() works online for PMID via NCBI", {
   }
 })
 
+
 testthat::test_that("id_links() works online for PMCID via NCBI", {
   skip_if_no_internet_for_live_tests()
   
@@ -65,6 +66,7 @@ testthat::test_that("id_links() works online for PMCID via NCBI", {
   }
 })
 
+
 testthat::test_that("id_links() works online for PMID via Europe PMC", {
   skip_if_no_internet_for_live_tests()
   
@@ -96,6 +98,7 @@ testthat::test_that("id_links() works online for PMID via Europe PMC", {
   testthat::expect_true(any(out$linked_type %in% c("pmcid", "doi")))
 })
 
+
 testthat::test_that("id_links() works online for PMCID via Europe PMC", {
   skip_if_no_internet_for_live_tests()
   
@@ -126,6 +129,7 @@ testthat::test_that("id_links() works online for PMCID via Europe PMC", {
   ))
   testthat::expect_true(any(out$linked_type %in% c("pmid", "doi")))
 })
+
 
 testthat::test_that("id_links() auto provider works for PMID", {
   skip_if_no_internet_for_live_tests()
@@ -160,6 +164,7 @@ testthat::test_that("id_links() auto provider works for PMID", {
   }
 })
 
+
 testthat::test_that("id_links() auto provider works for PMCID", {
   skip_if_no_internet_for_live_tests()
   
@@ -192,6 +197,7 @@ testthat::test_that("id_links() auto provider works for PMCID", {
     testthat::expect_true(any(out$linked_type %in% c("pmid", "doi")))
   }
 })
+
 
 testthat::test_that(
   "id_links() vectorizes online across multiple identifiers",
@@ -236,6 +242,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_links() returns zero rows for clearly invalid identifiers online",
   {
@@ -262,6 +269,7 @@ testthat::test_that(
     testthat::expect_identical(nrow(out), 0L)
   }
 )
+
 
 testthat::test_that(
   "id_links() works online for ORCID and returns the expected schema",
@@ -296,6 +304,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_links() works online for arXiv and returns the expected schema",
   {
@@ -328,6 +337,7 @@ testthat::test_that(
     }
   }
 )
+
 
 testthat::test_that(
   "id_links() works online for DOI via Crossref with stable schema",

@@ -31,6 +31,7 @@ epmc_live_fixture <- function() {
   )
 }
 
+
 testthat::test_that(".meta_pmcid_epmc returns expected live metadata", {
   ids <- epmc_live_fixture()
   
@@ -47,6 +48,7 @@ testthat::test_that(".meta_pmcid_epmc returns expected live metadata", {
   testthat::expect_match(out$url, "europepmc.org/article/PMC/")
   testthat::expect_equal(out$provider, "epmc")
 })
+
 
 testthat::test_that(".convert_*_epmc work for a known live article", {
   ids <- epmc_live_fixture()

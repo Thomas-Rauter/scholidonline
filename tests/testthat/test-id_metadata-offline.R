@@ -5,12 +5,14 @@ testthat::test_that("id_metadata() rejects invalid x", {
   )
 })
 
+
 testthat::test_that("id_metadata() rejects invalid type", {
   testthat::expect_error(
     id_metadata("10.1038/nature12373", type = "banana"),
     regexp = "arg"
   )
 })
+
 
 testthat::test_that("id_metadata() rejects invalid provider", {
   testthat::expect_error(
@@ -19,12 +21,14 @@ testthat::test_that("id_metadata() rejects invalid provider", {
   )
 })
 
+
 testthat::test_that("id_metadata() rejects invalid quiet", {
   testthat::expect_error(
     id_metadata("10.1038/nature12373", quiet = "no"),
     regexp = "quiet"
   )
 })
+
 
 testthat::test_that("id_metadata() returns NA row for invalid identifier", {
   out <- id_metadata("not_an_identifier")
@@ -57,6 +61,7 @@ testthat::test_that("id_metadata() returns NA row for invalid identifier", {
   testthat::expect_true(is.na(out$pmcid))
   testthat::expect_true(is.na(out$url))
 })
+
 
 testthat::test_that("id_metadata() uses explicit type and normalizes x", {
   seen <- new.env(parent = emptyenv())
@@ -133,17 +138,18 @@ testthat::test_that("id_metadata() uses explicit type and normalizes x", {
   testthat::expect_equal(out$year, c(2020L, 2021L))
 })
 
+
 testthat::test_that("id_metadata() auto-detects type per element", {
   seen <- new.env(parent = emptyenv())
   
   testthat::local_mocked_bindings(
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       seen$x <- x
       seen$type <- type
@@ -195,15 +201,16 @@ testthat::test_that("id_metadata() auto-detects type per element", {
   )
 })
 
+
 testthat::test_that("id_metadata() keeps unresolved valid inputs as NA rows", {
   testthat::local_mocked_bindings(
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       list(
         data.frame(),
@@ -234,15 +241,16 @@ testthat::test_that("id_metadata() keeps unresolved valid inputs as NA rows", {
   testthat::expect_equal(out$title[2], "Resolved")
 })
 
+
 testthat::test_that("id_metadata() supports field selection", {
   testthat::local_mocked_bindings(
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       list(
         data.frame(
@@ -275,15 +283,16 @@ testthat::test_that("id_metadata() supports field selection", {
   testthat::expect_equal(out$doi, "10.1000/x")
 })
 
+
 testthat::test_that("id_metadata() ignores unknown requested fields", {
   testthat::local_mocked_bindings(
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       list(
         data.frame(
@@ -313,15 +322,16 @@ testthat::test_that("id_metadata() ignores unknown requested fields", {
   )
 })
 
+
 testthat::test_that("id_metadata() preserves input order", {
   testthat::local_mocked_bindings(
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       lapply(
         X = x,

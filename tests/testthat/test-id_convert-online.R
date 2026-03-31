@@ -14,6 +14,7 @@ testthat::test_that("id_convert() converts PMID to DOI online", {
   testthat::expect_true(grepl("^10\\.", out))
 })
 
+
 testthat::test_that("id_convert() converts DOI to PMID online", {
   skip_if_no_internet_for_live_tests()
   
@@ -29,6 +30,7 @@ testthat::test_that("id_convert() converts DOI to PMID online", {
   testthat::expect_false(is.na(out))
   testthat::expect_true(grepl("^[0-9]+$", out))
 })
+
 
 testthat::test_that("id_convert() converts PMCID to DOI online", {
   skip_if_no_internet_for_live_tests()
@@ -46,6 +48,7 @@ testthat::test_that("id_convert() converts PMCID to DOI online", {
   testthat::expect_true(grepl("^10\\.", out))
 })
 
+
 testthat::test_that("id_convert() converts PMCID to PMID online", {
   skip_if_no_internet_for_live_tests()
   
@@ -61,6 +64,7 @@ testthat::test_that("id_convert() converts PMCID to PMID online", {
   testthat::expect_false(is.na(out))
   testthat::expect_true(grepl("^[0-9]+$", out))
 })
+
 
 testthat::test_that("id_convert() supports auto source detection online", {
   skip_if_no_internet_for_live_tests()
@@ -84,6 +88,7 @@ testthat::test_that("id_convert() supports auto source detection online", {
   testthat::expect_true(grepl("^10\\.", out[2]))
   testthat::expect_true(grepl("^10\\.", out[3]))
 })
+
 
 testthat::test_that("id_convert() supports provider selection online", {
   skip_if_no_internet_for_live_tests()
@@ -135,6 +140,7 @@ testthat::test_that("id_convert() supports provider selection online", {
   testthat::expect_true(grepl("^10\\.", out_epmc))
 })
 
+
 testthat::test_that("id_convert() returns identity mapping online", {
   skip_if_no_internet_for_live_tests()
   
@@ -147,6 +153,7 @@ testthat::test_that("id_convert() returns identity mapping online", {
   
   testthat::expect_equal(out, "31452104")
 })
+
 
 testthat::test_that("id_convert() returns NA for invalid identifier online", {
   skip_if_no_internet_for_live_tests()
@@ -161,6 +168,7 @@ testthat::test_that("id_convert() returns NA for invalid identifier online", {
   testthat::expect_length(out, 1L)
   testthat::expect_true(is.na(out))
 })
+
 
 testthat::test_that("id_convert() preserves length for mixed inputs online", {
   skip_if_no_internet_for_live_tests()
@@ -181,6 +189,7 @@ testthat::test_that("id_convert() preserves length for mixed inputs online", {
   testthat::expect_true(is.na(out[2]))
   testthat::expect_false(is.na(out[3]))
 })
+
 
 testthat::test_that("id_convert() vectorizes online", {
   skip_if_no_internet_for_live_tests()

@@ -338,13 +338,13 @@ testthat::test_that(
         }
       },
       .scholidonline_run_binary_one = function(
-    x,
-    dispatcher,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+        x,
+        dispatcher,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_true(is.function(dispatcher))
         testthat::expect_identical(from, "pmid")
@@ -401,13 +401,13 @@ testthat::test_that(
         }
       },
       .scholidonline_run_binary_one = function(
-    x,
-    dispatcher,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+        x,
+        dispatcher,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
       ) {
         dispatcher(
           x = x,
@@ -485,13 +485,13 @@ testthat::test_that(
         function(x, from, to, provider, ..., quiet) "x"
       },
       .scholidonline_run_binary_one = function(
-    x,
-    dispatcher,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+        x,
+        dispatcher,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
       ) {
         called <<- TRUE
         "x"
@@ -539,13 +539,13 @@ testthat::test_that(
         function(x, from, to, provider, ..., quiet) "x"
       },
       .scholidonline_run_binary_one = function(
-    x,
-    dispatcher,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+        x,
+        dispatcher,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
       ) {
         called <<- TRUE
         "x"
@@ -592,13 +592,13 @@ testthat::test_that(
         function(x, from, to, provider, ..., quiet) "x"
       },
       .scholidonline_run_binary_one = function(
-    x,
-    dispatcher,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+        x,
+        dispatcher,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
       ) {
         called <<- TRUE
         "x"

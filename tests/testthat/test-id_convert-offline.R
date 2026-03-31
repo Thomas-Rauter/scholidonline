@@ -5,12 +5,14 @@ testthat::test_that("id_convert() rejects invalid x", {
   )
 })
 
+
 testthat::test_that("id_convert() rejects invalid to", {
   testthat::expect_error(
     id_convert("31452104", to = "banana"),
     regexp = "arg"
   )
 })
+
 
 testthat::test_that("id_convert() rejects invalid from", {
   testthat::expect_error(
@@ -19,6 +21,7 @@ testthat::test_that("id_convert() rejects invalid from", {
   )
 })
 
+
 testthat::test_that("id_convert() rejects invalid provider", {
   testthat::expect_error(
     id_convert("31452104", to = "doi", provider = "banana"),
@@ -26,12 +29,14 @@ testthat::test_that("id_convert() rejects invalid provider", {
   )
 })
 
+
 testthat::test_that("id_convert() rejects invalid quiet", {
   testthat::expect_error(
     id_convert("31452104", to = "doi", quiet = "no"),
     regexp = "quiet"
   )
 })
+
 
 testthat::test_that("id_convert() rejects unsupported declared pairs", {
   testthat::expect_error(
@@ -44,6 +49,7 @@ testthat::test_that("id_convert() rejects unsupported declared pairs", {
   )
 })
 
+
 testthat::test_that("id_convert() returns NA when no input is usable", {
   out <- id_convert(
     x = "not_an_identifier",
@@ -54,6 +60,7 @@ testthat::test_that("id_convert() returns NA when no input is usable", {
   testthat::expect_length(out, 1L)
   testthat::expect_true(is.na(out))
 })
+
 
 testthat::test_that("id_convert() uses explicit from and calls binary engine", {
   seen <- new.env(parent = emptyenv())
@@ -102,6 +109,7 @@ testthat::test_that("id_convert() uses explicit from and calls binary engine", {
   )
 })
 
+
 testthat::test_that("id_convert() auto-detects source types per element", {
   seen <- new.env(parent = emptyenv())
   
@@ -142,17 +150,18 @@ testthat::test_that("id_convert() auto-detects source types per element", {
   )
 })
 
+
 testthat::test_that("id_convert() drops unsupported auto-detected pairs", {
   seen <- new.env(parent = emptyenv())
   
   testthat::local_mocked_bindings(
     .scholidonline_run_binary = function(
-    x,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+      x,
+      from,
+      to,
+      provider,
+      ...,
+      quiet
     ) {
       seen$x <- x
       seen$from <- from
@@ -172,15 +181,16 @@ testthat::test_that("id_convert() drops unsupported auto-detected pairs", {
   testthat::expect_equal(out[2], "10.1000/a")
 })
 
+
 testthat::test_that("id_convert() preserves input order", {
   testthat::local_mocked_bindings(
     .scholidonline_run_binary = function(
-    x,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+      x,
+      from,
+      to,
+      provider,
+      ...,
+      quiet
     ) {
       paste0("converted::", x)
     }
@@ -202,15 +212,16 @@ testthat::test_that("id_convert() preserves input order", {
   )
 })
 
+
 testthat::test_that("id_convert() preserves NA for unusable mixed inputs", {
   testthat::local_mocked_bindings(
     .scholidonline_run_binary = function(
-    x,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+      x,
+      from,
+      to,
+      provider,
+      ...,
+      quiet
     ) {
       rep("10.1000/mock", length(x))
     }
@@ -226,15 +237,16 @@ testthat::test_that("id_convert() preserves NA for unusable mixed inputs", {
   testthat::expect_equal(out[3], "10.1000/mock")
 })
 
+
 testthat::test_that("id_convert() returns character vector of input length", {
   testthat::local_mocked_bindings(
     .scholidonline_run_binary = function(
-    x,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+      x,
+      from,
+      to,
+      provider,
+      ...,
+      quiet
     ) {
       rep("X", length(x))
     }
@@ -250,17 +262,18 @@ testthat::test_that("id_convert() returns character vector of input length", {
   testthat::expect_length(out, 2L)
 })
 
+
 testthat::test_that("id_convert() passes provider auto through to engine", {
   seen <- new.env(parent = emptyenv())
   
   testthat::local_mocked_bindings(
     .scholidonline_run_binary = function(
-    x,
-    from,
-    to,
-    provider,
-    ...,
-    quiet
+      x,
+      from,
+      to,
+      provider,
+      ...,
+      quiet
     ) {
       seen$provider <- provider
       rep("X", length(x))

@@ -41,6 +41,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (online): DOI normalization works against live providers",
   {
@@ -56,6 +57,7 @@ testthat::test_that(
     testthat::expect_identical(out, TRUE)
   }
 )
+
 
 testthat::test_that(
   "id_exists (online): PMID existence works via Europe PMC",
@@ -81,6 +83,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (online): PMCID existence works via Europe PMC",
   {
@@ -105,6 +108,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (online): auto fallback works for PMID existence",
   {
@@ -124,6 +128,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (online): auto fallback works for PMCID existence",
   {
@@ -142,6 +147,7 @@ testthat::test_that(
     testthat::expect_identical(out[[2]], FALSE)
   }
 )
+
 
 testthat::test_that(
   "id_exists (online): ORCID existence works",
@@ -167,6 +173,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (online): arXiv existence works",
   {
@@ -190,6 +197,7 @@ testthat::test_that(
     testthat::expect_identical(out_invalid, FALSE)
   }
 )
+
 
 testthat::test_that(
   "id_exists (online): mixed type inference works against live services",

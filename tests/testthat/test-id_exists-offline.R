@@ -3,12 +3,12 @@ testthat::test_that(
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(operation, "exists")
         testthat::expect_identical(type, "doi")
@@ -30,17 +30,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): vectorizes over declared type input",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(operation, "exists")
         testthat::expect_identical(type, rep("doi", 2L))
@@ -60,17 +61,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): infers type per element when type is NULL",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(operation, "exists")
         testthat::expect_identical(
@@ -96,17 +98,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): unsupported inferred types yield NA",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(x, c("10.1000/182", "12345678"))
         testthat::expect_identical(type, c("doi", "pmid"))
@@ -130,17 +133,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): NA inputs yield NA outputs",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(x, "10.1000/182")
         testthat::expect_identical(type, "doi")
@@ -159,17 +163,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): normalization failures yield NA",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(x, "10.1000/182")
         testthat::expect_identical(type, "doi")
@@ -187,6 +192,7 @@ testthat::test_that(
     testthat::expect_identical(out, c(TRUE, NA))
   }
 )
+
 
 testthat::test_that(
   "id_exists (CRAN/offline): returns all NA when nothing is classifiable",
@@ -210,17 +216,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): passes quiet through to unary engine",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_true(quiet)
         list(TRUE)
@@ -238,17 +245,18 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): passes explicit provider through to unary engine",
   {
     testthat::local_mocked_bindings(
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         testthat::expect_identical(provider, "crossref")
         list(TRUE)
@@ -266,6 +274,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_exists (CRAN/offline): errors on invalid type",
   {
@@ -279,6 +288,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   "id_exists (CRAN/offline): errors on invalid quiet",
@@ -294,6 +304,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   "id_exists (CRAN/offline): errors on invalid provider before dispatch",

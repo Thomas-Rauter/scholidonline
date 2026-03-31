@@ -74,6 +74,7 @@ req_json_http_bindings <- function(
   )
 }
 
+
 testthat::test_that(
   ".scholidonline_req_json() returns parsed JSON on success",
   {
@@ -123,6 +124,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_req_json() warns and returns NULL on HTTP error",
   {
@@ -152,6 +154,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_req_json() is silent on HTTP error when quiet is TRUE",
   {
@@ -179,6 +182,7 @@ testthat::test_that(
     testthat::expect_identical(mock$calls$body_n, 0L)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_epmc_search() uses defaults and forwards args",
@@ -223,6 +227,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_epmc_search() respects pageSize, format, and quiet",
   {
@@ -259,6 +264,7 @@ testthat::test_that(
     testthat::expect_true(req_json_calls$quiet)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_pmc_idconv() builds expected request",
@@ -303,6 +309,7 @@ testthat::test_that(
     testthat::expect_true(req_json_calls$quiet)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_esummary_pubmed() builds expected request",

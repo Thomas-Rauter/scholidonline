@@ -926,6 +926,7 @@ mock_httr2 <- function(resp = NULL) {
   )
 }
 
+
 testthat::test_that(
   ".meta_pmcid_epmc returns empty data.frame on failure states",
   {
@@ -953,6 +954,7 @@ testthat::test_that(
     testthat::expect_equal(nrow(out), 0L)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_epmc_first_result handles list and empty results",
@@ -987,6 +989,7 @@ testthat::test_that(
     testthat::expect_null(.scholidonline_epmc_first_result(x_empty))
   }
 )
+
 
 testthat::test_that(
   ".convert_*_epmc return NA when search is NULL or field is missing",
@@ -1051,6 +1054,7 @@ testthat::test_that(
     ))
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_epmc_first_result returns first result or NULL",

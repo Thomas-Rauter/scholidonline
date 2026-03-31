@@ -1,5 +1,3 @@
-# tests/testthat/test-input-validation.R
-
 testthat::test_that(".scholidonline_check_x validates main input classes", {
   testthat::expect_no_error(
     .scholidonline_check_x(c("a", "b"))
@@ -26,6 +24,7 @@ testthat::test_that(".scholidonline_check_x validates main input classes", {
   )
 })
 
+
 testthat::test_that(
   ".scholidonline_conversion_providers returns choices and errors",
   {
@@ -40,6 +39,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_check_provider validates provider and choices",
@@ -77,6 +77,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(".scholidonline_check_quiet validates scalar logical", {
   testthat::expect_no_error(
     .scholidonline_check_quiet(TRUE)
@@ -98,6 +99,7 @@ testthat::test_that(".scholidonline_check_quiet validates scalar logical", {
   )
 })
 
+
 testthat::test_that(
   ".scholidonline_check_type_provider accepts valid combinations",
   {
@@ -111,6 +113,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_check_type_provider errors on invalid combination",
   {
@@ -120,6 +123,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_providers returns sorted unique non-auto providers",
@@ -132,6 +136,7 @@ testthat::test_that(
     testthat::expect_true(all(c("ncbi", "epmc") %in% out))
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_check_conversion_pair handles identity and errors",
@@ -150,6 +155,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(".scholidonline_check_scalar_chr validates scalar text", {
   testthat::expect_identical(
@@ -173,6 +179,7 @@ testthat::test_that(".scholidonline_check_scalar_chr validates scalar text", {
   )
 })
 
+
 testthat::test_that(
   ".scholidonline_as_scalar_character handles coercion and trimming",
   {
@@ -191,6 +198,7 @@ testthat::test_that(
     ))
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_as_scalar_character errors on invalid inputs",

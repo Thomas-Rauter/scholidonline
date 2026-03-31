@@ -1,22 +1,27 @@
-test_that(".scholidonline_get_unary_meta() returns registry metadata", {
+testthat::test_that(
+  ".scholidonline_get_unary_meta() returns registry metadata", {
   meta <- .scholidonline_get_unary_meta(
     type = "doi",
     operation = "exists"
   )
   
-  expect_type(meta, "list")
-  expect_named(
+  testthat::expect_type(meta, "list")
+  testthat::expect_named(
     meta,
     c("providers", "default_provider", "dispatcher")
   )
-  expect_true(all(c("auto", "doi.org", "crossref") %in% meta$providers))
-  expect_identical(meta$default_provider, "doi.org")
-  expect_identical(meta$dispatcher, ".exists_doi")
+  testthat::expect_true(all(c(
+    "auto",
+    "doi.org",
+    "crossref"
+    ) %in% meta$providers))
+  testthat::expect_identical(meta$default_provider, "doi.org")
+  testthat::expect_identical(meta$dispatcher, ".exists_doi")
 })
 
 
-test_that(".scholidonline_get_unary_meta() errors on unknown type", {
-  expect_error(
+testthat::test_that(".scholidonline_get_unary_meta() errors on unknown type", {
+  testthat::expect_error(
     .scholidonline_get_unary_meta(
       type = "not_a_type",
       operation = "exists"
@@ -26,8 +31,9 @@ test_that(".scholidonline_get_unary_meta() errors on unknown type", {
 })
 
 
-test_that(".scholidonline_get_unary_meta() errors on unsupported operation", {
-  expect_error(
+testthat::test_that(
+  ".scholidonline_get_unary_meta() errors on unsupported operation", {
+  testthat::expect_error(
     .scholidonline_get_unary_meta(
       type = "doi",
       operation = "not_an_operation"
@@ -37,8 +43,9 @@ test_that(".scholidonline_get_unary_meta() errors on unsupported operation", {
 })
 
 
-test_that(".scholidonline_get_unary_meta() errors on missing providers", {
-  local_mocked_bindings(
+testthat::test_that(
+  ".scholidonline_get_unary_meta() errors on missing providers", {
+  testthat::local_mocked_bindings(
     .scholidonline_registry = function() {
       list(
         doi = list(
@@ -51,7 +58,7 @@ test_that(".scholidonline_get_unary_meta() errors on missing providers", {
     }
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_get_unary_meta(
       type = "doi",
       operation = "exists"
@@ -61,8 +68,9 @@ test_that(".scholidonline_get_unary_meta() errors on missing providers", {
 })
 
 
-test_that(".scholidonline_get_unary_meta() errors on missing default_provider", {
-  local_mocked_bindings(
+testthat::test_that(
+  ".scholidonline_get_unary_meta() errors on missing default_provider", {
+  testthat::local_mocked_bindings(
     .scholidonline_registry = function() {
       list(
         doi = list(
@@ -75,7 +83,7 @@ test_that(".scholidonline_get_unary_meta() errors on missing default_provider", 
     }
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_get_unary_meta(
       type = "doi",
       operation = "exists"
@@ -85,8 +93,9 @@ test_that(".scholidonline_get_unary_meta() errors on missing default_provider", 
 })
 
 
-test_that(".scholidonline_get_unary_meta() errors on missing dispatcher", {
-  local_mocked_bindings(
+testthat::test_that(
+  ".scholidonline_get_unary_meta() errors on missing dispatcher", {
+  testthat::local_mocked_bindings(
     .scholidonline_registry = function() {
       list(
         doi = list(
@@ -99,7 +108,7 @@ test_that(".scholidonline_get_unary_meta() errors on missing dispatcher", {
     }
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_get_unary_meta(
       type = "doi",
       operation = "exists"
@@ -109,24 +118,25 @@ test_that(".scholidonline_get_unary_meta() errors on missing dispatcher", {
 })
 
 
-test_that(".scholidonline_resolve_unary_provider() validates inputs", {
+testthat::test_that(
+  ".scholidonline_resolve_unary_provider() validates inputs", {
   meta <- list(
     providers = c("auto", "ncbi", "epmc"),
     default_provider = "ncbi",
     dispatcher = ".exists_pmid"
   )
   
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_resolve_unary_provider("auto", meta),
     "auto"
   )
   
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_resolve_unary_provider("ncbi", meta),
     "ncbi"
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_resolve_unary_provider(
       provider = c("ncbi", "epmc"),
       meta = meta
@@ -134,7 +144,7 @@ test_that(".scholidonline_resolve_unary_provider() validates inputs", {
     "`provider` must be a single, non-missing character string\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_resolve_unary_provider(
       provider = NA_character_,
       meta = meta
@@ -152,8 +162,9 @@ test_that(".scholidonline_resolve_unary_provider() validates inputs", {
 })
 
 
-test_that(".scholidonline_resolve_unary_provider() checks meta structure", {
-  expect_error(
+testthat::test_that(
+  ".scholidonline_resolve_unary_provider() checks meta structure", {
+  testthat::expect_error(
     .scholidonline_resolve_unary_provider(
       provider = "auto",
       meta = "not_a_list"
@@ -161,7 +172,7 @@ test_that(".scholidonline_resolve_unary_provider() checks meta structure", {
     "`meta` must be a list\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_resolve_unary_provider(
       provider = "auto",
       meta = list(default_provider = "ncbi")
@@ -171,75 +182,78 @@ test_that(".scholidonline_resolve_unary_provider() checks meta structure", {
 })
 
 
-test_that(".scholidonline_unary_return_mode() maps known operations", {
-  expect_identical(
+testthat::test_that(
+  ".scholidonline_unary_return_mode() maps known operations", {
+  testthat::expect_identical(
     .scholidonline_unary_return_mode("exists"),
     "logical_scalar"
   )
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_unary_return_mode("meta"),
     "list_scalar"
   )
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_unary_return_mode("links"),
     "list_scalar"
   )
 })
 
 
-test_that(".scholidonline_unary_return_mode() rejects bad input", {
-  expect_error(
+testthat::test_that(".scholidonline_unary_return_mode() rejects bad input", {
+  testthat::expect_error(
     .scholidonline_unary_return_mode(c("exists", "meta")),
     "`operation` must be a single, non-missing character string\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_unary_return_mode(NA_character_),
     "`operation` must be a single, non-missing character string\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_unary_return_mode("nope"),
     "Unknown unary operation: `nope`\\."
   )
 })
 
 
-test_that(".scholidonline_as_list_scalar() accepts NULL, data.frame, scalar list", {
-  expect_equal(
+testthat::test_that(
+  ".scholidonline_as_list_scalar() accepts NULL, data.frame, scalar list", {
+  testthat::expect_equal(
     .scholidonline_as_list_scalar(NULL),
     data.frame()
   )
   
   df <- data.frame(a = 1, stringsAsFactors = FALSE)
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_as_list_scalar(df),
     df
   )
   
   lst <- list(a = 1)
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_as_list_scalar(lst),
     lst
   )
 })
 
 
-test_that(".scholidonline_as_list_scalar() rejects invalid inputs", {
-  expect_error(
+testthat::test_that(".scholidonline_as_list_scalar() rejects invalid inputs", {
+  testthat::expect_error(
     .scholidonline_as_list_scalar(list(a = 1, b = 2)),
     "`x` must be a data.frame, NULL, or a scalar list object\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_as_list_scalar("abc"),
     "`x` must be a data.frame, NULL, or a scalar list object\\."
   )
 })
 
 
-test_that(".scholidonline_validate_unary_result() dispatches by return mode", {
-  expect_identical(
+testthat::test_that(
+  ".scholidonline_validate_unary_result() dispatches by return mode", {
+  testthat::expect_identical(
     .scholidonline_validate_unary_result(
       x = TRUE,
       return_mode = "logical_scalar"
@@ -248,7 +262,7 @@ test_that(".scholidonline_validate_unary_result() dispatches by return mode", {
   )
   
   df <- data.frame(a = 1, stringsAsFactors = FALSE)
-  expect_identical(
+  testthat::expect_identical(
     .scholidonline_validate_unary_result(
       x = df,
       return_mode = "list_scalar"
@@ -258,8 +272,9 @@ test_that(".scholidonline_validate_unary_result() dispatches by return mode", {
 })
 
 
-test_that(".scholidonline_validate_unary_result() rejects bad return_mode", {
-  expect_error(
+testthat::test_that(
+  ".scholidonline_validate_unary_result() rejects bad return_mode", {
+  testthat::expect_error(
     .scholidonline_validate_unary_result(
       x = TRUE,
       return_mode = NA_character_
@@ -267,7 +282,7 @@ test_that(".scholidonline_validate_unary_result() rejects bad return_mode", {
     "`return_mode` must be a single, non-missing character string\\."
   )
   
-  expect_error(
+  testthat::expect_error(
     .scholidonline_validate_unary_result(
       x = TRUE,
       return_mode = "not_a_mode"
@@ -277,11 +292,12 @@ test_that(".scholidonline_validate_unary_result() rejects bad return_mode", {
 })
 
 
-test_that(".scholidonline_run_unary_one() calls dispatcher and validates exists", {
+testthat::test_that(
+  ".scholidonline_run_unary_one() calls dispatcher and validates exists", {
   dispatcher <- function(x, provider, ..., quiet) {
-    expect_identical(x, "12345")
-    expect_identical(provider, "ncbi")
-    expect_identical(quiet, TRUE)
+    testthat::expect_identical(x, "12345")
+    testthat::expect_identical(provider, "ncbi")
+    testthat::expect_identical(quiet, TRUE)
     TRUE
   }
   
@@ -293,15 +309,16 @@ test_that(".scholidonline_run_unary_one() calls dispatcher and validates exists"
     quiet = TRUE
   )
   
-  expect_identical(out, TRUE)
+  testthat::expect_identical(out, TRUE)
 })
 
 
-test_that(".scholidonline_run_unary_one() calls dispatcher and validates meta", {
+testthat::test_that(
+  ".scholidonline_run_unary_one() calls dispatcher and validates meta", {
   dispatcher <- function(x, provider, ..., quiet) {
-    expect_identical(x, "10.1000/test")
-    expect_identical(provider, "crossref")
-    expect_identical(quiet, FALSE)
+    testthat::expect_identical(x, "10.1000/test")
+    testthat::expect_identical(provider, "crossref")
+    testthat::expect_identical(quiet, FALSE)
     data.frame(title = "A paper", stringsAsFactors = FALSE)
   }
   
@@ -313,13 +330,14 @@ test_that(".scholidonline_run_unary_one() calls dispatcher and validates meta", 
     quiet = FALSE
   )
   
-  expect_s3_class(out, "data.frame")
-  expect_identical(out$title, "A paper")
+  testthat::expect_s3_class(out, "data.frame")
+  testthat::expect_identical(out$title, "A paper")
 })
 
 
-test_that(".scholidonline_run_unary_one() rejects non-function dispatcher", {
-  expect_error(
+testthat::test_that(
+  ".scholidonline_run_unary_one() rejects non-function dispatcher", {
+  testthat::expect_error(
     .scholidonline_run_unary_one(
       x = "12345",
       dispatcher = "not_a_function",
@@ -332,11 +350,12 @@ test_that(".scholidonline_run_unary_one() rejects non-function dispatcher", {
 })
 
 
-test_that(".scholidonline_run_unary() expands scalar type and runs elementwise", {
-  local_mocked_bindings(
+testthat::test_that(
+  ".scholidonline_run_unary() expands scalar type and runs elementwise", {
+  testthat::local_mocked_bindings(
     .scholidonline_get_unary_meta = function(type, operation) {
-      expect_identical(type, "pmid")
-      expect_identical(operation, "exists")
+      testthat::expect_identical(type, "pmid")
+      testthat::expect_identical(operation, "exists")
       list(
         providers = c("auto", "ncbi"),
         default_provider = "ncbi",
@@ -344,29 +363,34 @@ test_that(".scholidonline_run_unary() expands scalar type and runs elementwise",
       )
     },
     .scholidonline_resolve_unary_provider = function(provider, meta) {
-      expect_identical(provider, "auto")
-      expect_true(is.list(meta))
+      testthat::expect_identical(provider, "auto")
+      testthat::expect_true(is.list(meta))
       "auto"
     },
     .scholidonline_get_dispatcher = function(name) {
-      expect_identical(name, ".exists_pmid")
+      testthat::expect_identical(name, ".exists_pmid")
       function(x, provider, ..., quiet) {
         identical(x, "1")
       }
     },
     .scholidonline_run_unary_one = function(
-    x,
-    dispatcher,
-    provider,
-    operation,
-    ...,
-    quiet
+      x,
+      dispatcher,
+      provider,
+      operation,
+      ...,
+      quiet
     ) {
-      expect_true(is.function(dispatcher))
-      expect_identical(provider, "auto")
-      expect_identical(operation, "exists")
-      expect_identical(quiet, TRUE)
-      dispatcher(x = x, provider = provider, quiet = quiet, ...)
+      testthat::expect_true(is.function(dispatcher))
+      testthat::expect_identical(provider, "auto")
+      testthat::expect_identical(operation, "exists")
+      testthat::expect_identical(quiet, TRUE)
+      dispatcher(
+        x = x,
+        provider = provider,
+        quiet = quiet,
+        ...
+        )
     }
   )
   
@@ -378,12 +402,13 @@ test_that(".scholidonline_run_unary() expands scalar type and runs elementwise",
     quiet = TRUE
   )
   
-  expect_identical(out, list(TRUE, FALSE))
+  testthat::expect_identical(out, list(TRUE, FALSE))
 })
 
 
-test_that(".scholidonline_run_unary() accepts type vector matching x", {
-  local_mocked_bindings(
+testthat::test_that(
+  ".scholidonline_run_unary() accepts type vector matching x", {
+  testthat::local_mocked_bindings(
     .scholidonline_get_unary_meta = function(type, operation) {
       list(
         providers = c("auto", "stub"),
@@ -400,14 +425,19 @@ test_that(".scholidonline_run_unary() accepts type vector matching x", {
       }
     },
     .scholidonline_run_unary_one = function(
-    x,
-    dispatcher,
-    provider,
-    operation,
-    ...,
-    quiet
+      x,
+      dispatcher,
+      provider,
+      operation,
+      ...,
+      quiet
     ) {
-      dispatcher(x = x, provider = provider, quiet = quiet, ...)
+      dispatcher(
+        x = x,
+        provider = provider,
+        quiet = quiet,
+        ...
+        )
     }
   )
   
@@ -419,16 +449,17 @@ test_that(".scholidonline_run_unary() accepts type vector matching x", {
     quiet = FALSE
   )
   
-  expect_length(out, 2)
-  expect_identical(out[[1]]$name, ".dispatch_doi_meta")
-  expect_identical(out[[2]]$name, ".dispatch_pmid_meta")
-  expect_identical(out[[1]]$x, "a")
-  expect_identical(out[[2]]$x, "b")
+  testthat::expect_length(out, 2)
+  testthat::expect_identical(out[[1]]$name, ".dispatch_doi_meta")
+  testthat::expect_identical(out[[2]]$name, ".dispatch_pmid_meta")
+  testthat::expect_identical(out[[1]]$x, "a")
+  testthat::expect_identical(out[[2]]$x, "b")
 })
 
 
-test_that(".scholidonline_run_unary() errors on invalid type length", {
-  expect_error(
+testthat::test_that(
+  ".scholidonline_run_unary() errors on invalid type length", {
+  testthat::expect_error(
     .scholidonline_run_unary(
       x = c("a", "b"),
       operation = "exists",
@@ -441,10 +472,11 @@ test_that(".scholidonline_run_unary() errors on invalid type length", {
 })
 
 
-test_that(".scholidonline_run_unary() returns NA for NA x without dispatch", {
+testthat::test_that(
+  ".scholidonline_run_unary() returns NA for NA x without dispatch", {
   called <- FALSE
   
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     .scholidonline_get_unary_meta = function(type, operation) {
       called <<- TRUE
       list(
@@ -462,12 +494,12 @@ test_that(".scholidonline_run_unary() returns NA for NA x without dispatch", {
       function(x, provider, ..., quiet) TRUE
     },
     .scholidonline_run_unary_one = function(
-    x,
-    dispatcher,
-    provider,
-    operation,
-    ...,
-    quiet
+      x,
+      dispatcher,
+      provider,
+      operation,
+      ...,
+      quiet
     ) {
       called <<- TRUE
       TRUE
@@ -482,15 +514,16 @@ test_that(".scholidonline_run_unary() returns NA for NA x without dispatch", {
     quiet = TRUE
   )
   
-  expect_identical(out, list(NA))
-  expect_false(called)
+  testthat::expect_identical(out, list(NA))
+  testthat::expect_false(called)
 })
 
 
-test_that(".scholidonline_run_unary() returns NA for NA type without dispatch", {
+testthat::test_that(
+  ".scholidonline_run_unary() returns NA for NA type without dispatch", {
   called <- FALSE
   
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     .scholidonline_get_unary_meta = function(type, operation) {
       called <<- TRUE
       list(
@@ -508,12 +541,12 @@ test_that(".scholidonline_run_unary() returns NA for NA type without dispatch", 
       function(x, provider, ..., quiet) TRUE
     },
     .scholidonline_run_unary_one = function(
-    x,
-    dispatcher,
-    provider,
-    operation,
-    ...,
-    quiet
+      x,
+      dispatcher,
+      provider,
+      operation,
+      ...,
+      quiet
     ) {
       called <<- TRUE
       TRUE
@@ -528,12 +561,12 @@ test_that(".scholidonline_run_unary() returns NA for NA type without dispatch", 
     quiet = TRUE
   )
   
-  expect_identical(out, list(NA))
-  expect_false(called)
+  testthat::expect_identical(out, list(NA))
+  testthat::expect_false(called)
 })
 
 
-test_that(".scholidonline_run_unary() handles zero-length input", {
+testthat::test_that(".scholidonline_run_unary() handles zero-length input", {
   out <- .scholidonline_run_unary(
     x = character(),
     operation = "exists",
@@ -542,5 +575,5 @@ test_that(".scholidonline_run_unary() handles zero-length input", {
     quiet = TRUE
   )
   
-  expect_identical(out, list())
+  testthat::expect_identical(out, list())
 })

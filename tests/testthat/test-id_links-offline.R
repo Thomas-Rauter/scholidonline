@@ -5,6 +5,7 @@ testthat::test_that("id_links() errors for invalid x", {
   )
 })
 
+
 testthat::test_that(
   "id_links() returns typed zero-row data.frame when no inputs are usable",
   {
@@ -64,6 +65,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   paste(
     "id_links() infers types, normalizes inputs,",
@@ -96,12 +98,12 @@ testthat::test_that(
         )
       },
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         captured$x <- x
         captured$operation <- operation
@@ -185,6 +187,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that("id_links() uses declared type for all elements", {
   captured <- new.env(parent = emptyenv())
   
@@ -214,12 +217,12 @@ testthat::test_that("id_links() uses declared type for all elements", {
       )
     },
     .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+      x,
+      operation,
+      type,
+      provider,
+      ...,
+      quiet
     ) {
       captured$x <- x
       captured$type <- type
@@ -267,6 +270,7 @@ testthat::test_that("id_links() uses declared type for all elements", {
   )
 })
 
+
 testthat::test_that(
   "id_links() drops elements with normalization failure before engine call",
   {
@@ -296,12 +300,12 @@ testthat::test_that(
         )
       },
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         captured$x <- x
         captured$type <- type
@@ -339,6 +343,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "id_links() drops empty per-input results from engine output",
   {
@@ -366,12 +371,12 @@ testthat::test_that(
         )
       },
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         list(
           data.frame(
@@ -410,6 +415,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   paste(
     "id_links() returns zero-row data.frame",
@@ -440,12 +446,12 @@ testthat::test_that(
         )
       },
       .scholidonline_run_unary = function(
-    x,
-    operation,
-    type,
-    provider,
-    ...,
-    quiet
+        x,
+        operation,
+        type,
+        provider,
+        ...,
+        quiet
       ) {
         list(
           data.frame(

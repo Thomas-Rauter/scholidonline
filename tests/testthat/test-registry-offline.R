@@ -36,6 +36,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_exists_meta() errors when exists is unsupported",
   {
@@ -66,6 +67,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_conversion_meta() returns metadata for supported pair",
@@ -112,6 +114,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_conversion_meta() errors for unsupported pair",
   {
@@ -145,6 +148,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_match_type() returns matched type unchanged",
   {
@@ -163,6 +167,7 @@ testthat::test_that(
     testthat::expect_identical(out, "doi")
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_match_type() supports partial matching via match.arg()",
@@ -183,6 +188,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_match_type() errors for non-character input",
   {
@@ -196,6 +202,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_match_type() errors for zero-length character",
@@ -211,6 +218,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_match_type() errors for length > 1 character",
   {
@@ -225,6 +233,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_match_type() errors for missing character input",
   {
@@ -238,6 +247,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_match_type() errors for unsupported type",

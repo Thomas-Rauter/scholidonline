@@ -13,6 +13,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_get_dispatcher() errors for non-character input",
   {
@@ -25,6 +26,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_get_dispatcher() errors for character vector length 0",
@@ -39,6 +41,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_get_dispatcher() errors for character vector length > 1",
   {
@@ -51,6 +54,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_get_dispatcher() errors for NA_character_",
@@ -65,6 +69,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_get_dispatcher() errors for missing implementation",
   {
@@ -78,6 +83,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_as_logical_scalar() returns TRUE unchanged",
   {
@@ -88,6 +94,7 @@ testthat::test_that(
     testthat::expect_identical(out, TRUE)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_as_logical_scalar() returns FALSE unchanged",
@@ -100,6 +107,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_as_logical_scalar() returns NA unchanged",
   {
@@ -110,6 +118,7 @@ testthat::test_that(
     testthat::expect_identical(out, NA)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_as_logical_scalar() errors for logical vector",
@@ -124,6 +133,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_as_logical_scalar() errors for non-logical input",
   {
@@ -137,6 +147,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_as_character_scalar() returns scalar unchanged",
   {
@@ -148,6 +159,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".scholidonline_as_character_scalar() returns NA_character_ unchanged",
   {
@@ -158,6 +170,7 @@ testthat::test_that(
     testthat::expect_identical(out, NA_character_)
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_as_character_scalar() errors for character vector",
@@ -171,6 +184,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   ".scholidonline_as_character_scalar() errors for non-character input",

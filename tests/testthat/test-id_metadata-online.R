@@ -17,6 +17,7 @@ testthat::test_that("id_metadata() retrieves DOI metadata online", {
   )
 })
 
+
 testthat::test_that("id_metadata() retrieves PMID metadata online", {
   skip_if_no_internet_for_live_tests()
   
@@ -36,6 +37,7 @@ testthat::test_that("id_metadata() retrieves PMID metadata online", {
   )
 })
 
+
 testthat::test_that("id_metadata() retrieves PMCID metadata online", {
   skip_if_no_internet_for_live_tests()
   
@@ -54,6 +56,7 @@ testthat::test_that("id_metadata() retrieves PMCID metadata online", {
     nzchar(out$title)
   )
 })
+
 
 testthat::test_that("id_metadata() retrieves arXiv metadata online", {
   skip_if_no_internet_for_live_tests()
@@ -80,6 +83,7 @@ testthat::test_that("id_metadata() retrieves arXiv metadata online", {
   }
 })
 
+
 testthat::test_that("id_metadata() retrieves ORCID metadata online", {
   skip_if_no_internet_for_live_tests()
   
@@ -98,6 +102,7 @@ testthat::test_that("id_metadata() retrieves ORCID metadata online", {
     nzchar(out$title)
   )
 })
+
 
 testthat::test_that("id_metadata() supports auto type detection online", {
   skip_if_no_internet_for_live_tests()
@@ -132,6 +137,7 @@ testthat::test_that("id_metadata() supports auto type detection online", {
   testthat::expect_equal(sum(arxiv_row), 1L)
 })
 
+
 testthat::test_that("id_metadata() supports provider selection online", {
   skip_if_no_internet_for_live_tests()
   
@@ -165,6 +171,7 @@ testthat::test_that("id_metadata() supports provider selection online", {
   testthat::expect_equal(out_epmc$provider, "epmc")
 })
 
+
 testthat::test_that("id_metadata() returns NA metadata for bad input online", {
   skip_if_no_internet_for_live_tests()
   
@@ -177,6 +184,7 @@ testthat::test_that("id_metadata() returns NA metadata for bad input online", {
   testthat::expect_true(is.na(out$provider))
   testthat::expect_true(is.na(out$title))
 })
+
 
 testthat::test_that("id_metadata() supports field selection online", {
   skip_if_no_internet_for_live_tests()

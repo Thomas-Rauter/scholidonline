@@ -1,5 +1,3 @@
-# tests/testthat/test-convert-dispatchers.R
-
 mock_scalar_chr_check <- function() {
   testthat::local_mocked_bindings(
     .scholidonline_check_scalar_chr = function(x) invisible(x)
@@ -51,6 +49,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "PMID -> DOI auto warns and returns NA if no provider succeeds",
   {
@@ -91,6 +90,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "explicit provider dispatch works for DOI -> PMID",
   {
@@ -127,6 +127,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "unknown provider aborts for PMCID -> PMID and DOI -> PMCID",
   {
@@ -153,6 +154,7 @@ testthat::test_that(
     )
   }
 )
+
 
 testthat::test_that(
   "auto fallback logic works for PMCID -> DOI and PMID -> PMCID",
@@ -196,6 +198,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   "auto fallback logic works for PMCID -> PMID and DOI -> PMCID",
   {
@@ -238,11 +241,13 @@ testthat::test_that(
   }
 )
 
+
 mock_scalar_chr_check <- function() {
   testthat::local_mocked_bindings(
     .scholidonline_check_scalar_chr = function(x) invisible(x)
   )
 }
+
 
 testthat::test_that(
   ".convert_doi_to_pmid auto falls back to epmc and can warn",
@@ -303,6 +308,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".convert_pmcid_to_pmid explicit providers and quiet NA branch work",
   {
@@ -360,6 +366,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".convert_pmcid_to_doi explicit providers and warn branch work",
   {
@@ -416,6 +423,7 @@ testthat::test_that(
     testthat::expect_true(is.na(out))
   }
 )
+
 
 testthat::test_that(
   ".convert_pmid_to_pmcid falls back, warns, and dispatches explicitly",
@@ -493,6 +501,7 @@ testthat::test_that(
   }
 )
 
+
 testthat::test_that(
   ".convert_doi_to_pmcid explicit providers and warn branch work",
   {
@@ -549,6 +558,7 @@ testthat::test_that(
     testthat::expect_true(is.na(out))
   }
 )
+
 
 testthat::test_that(
   "all convert dispatchers abort on unknown provider",
