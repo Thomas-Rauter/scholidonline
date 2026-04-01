@@ -64,15 +64,16 @@ links.
 
 Trivial self-links are excluded from the result.
 
-If `type = "auto"`, the identifier type is inferred for each element of
-`x`. Inputs that cannot be identified or normalized yield zero rows.
-
 ## Examples
 
 ``` r
 # \donttest{
-  id_links("31452104", provider = "epmc")
-#>      query query_type linked_type                    linked_id provider
-#> 2 31452104       pmid         doi 10.1007/978-1-4939-9752-7_10     epmc
+  out <- id_links("31452104", provider = "epmc")
+  knitr::kable(out)
+#> 
+#> 
+#> |   |query    |query_type |linked_type |linked_id                    |provider |
+#> |:--|:--------|:----------|:-----------|:----------------------------|:--------|
+#> |2  |31452104 |pmid       |doi         |10.1007/978-1-4939-9752-7_10 |epmc     |
 # }
 ```

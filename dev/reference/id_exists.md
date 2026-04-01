@@ -49,12 +49,6 @@ A logical vector. `TRUE` indicates that the identifier was found,
 `FALSE` indicates that it was not found, and `NA` indicates that the
 input could not be identified, normalized, or checked reliably.
 
-## Details
-
-`id_exists()` is vectorized over `x`. If `type = "auto"`, the type of
-each input identifier is inferred individually. Inputs that cannot be
-identified, normalized, or checked reliably return `NA`.
-
 ## Examples
 
 ``` r

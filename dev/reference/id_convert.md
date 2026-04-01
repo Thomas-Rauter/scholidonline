@@ -54,12 +54,6 @@ id_convert(
 A character vector of converted identifiers. Elements that cannot be
 identified, normalized, or converted return `NA_character_`.
 
-## Details
-
-`id_convert()` is vectorized over `x`. If `from = NULL`, the type of
-each input identifier is inferred individually. Inputs that cannot be
-identified, normalized, or converted return `NA_character_`.
-
 ## Examples
 
 ``` r

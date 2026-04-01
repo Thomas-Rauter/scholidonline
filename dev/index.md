@@ -5,7 +5,8 @@
 coverage](https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&logo=codecov)](https://app.codecov.io/gh/Thomas-Rauter/scholidonline)
 
 `scholidonline` provides lightweight **online** utilities for working
-with scholarly identifiers in R. It builds on `scholid` for identifier
+with scholarly identifiers in R. It builds on
+[`scholid`](https://thomas-rauter.github.io/scholid/) for identifier
 detection and normalization, and adds minimal-dependency functions to
 query external registries.
 
@@ -58,35 +59,39 @@ User-available functions:
 scholidonline::scholidonline_types()
 ```
 
-    ## [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"
+``` R
+## [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"
+```
 
 ``` r
 # List scholidonline capabilities
 scholidonline::scholidonline_capabilities()
 ```
 
-    ##     type operation target               providers default_provider
-    ## 1  arxiv    exists   <NA>             auto, arxiv            arxiv
-    ## 2  arxiv     links   <NA>             auto, arxiv            arxiv
-    ## 3  arxiv      meta   <NA>             auto, arxiv            arxiv
-    ## 4    doi    exists   <NA> auto, doi.org, crossref          doi.org
-    ## 5    doi     links   <NA>          auto, crossref         crossref
-    ## 6    doi      meta   <NA> auto, crossref, doi.org         crossref
-    ## 7    doi   convert   pmid        auto, ncbi, epmc             ncbi
-    ## 8    doi   convert  pmcid        auto, ncbi, epmc             ncbi
-    ## 9  orcid    exists   <NA>             auto, orcid            orcid
-    ## 10 orcid     links   <NA>             auto, orcid            orcid
-    ## 11 orcid      meta   <NA>             auto, orcid            orcid
-    ## 12 pmcid    exists   <NA>        auto, ncbi, epmc             ncbi
-    ## 13 pmcid     links   <NA>        auto, ncbi, epmc             ncbi
-    ## 14 pmcid      meta   <NA>        auto, ncbi, epmc             ncbi
-    ## 15 pmcid   convert   pmid        auto, ncbi, epmc             ncbi
-    ## 16 pmcid   convert    doi        auto, ncbi, epmc             ncbi
-    ## 17  pmid    exists   <NA>        auto, ncbi, epmc             ncbi
-    ## 18  pmid     links   <NA>        auto, ncbi, epmc             ncbi
-    ## 19  pmid      meta   <NA>        auto, ncbi, epmc             ncbi
-    ## 20  pmid   convert    doi        auto, ncbi, epmc             ncbi
-    ## 21  pmid   convert  pmcid        auto, ncbi, epmc             ncbi
+``` R
+##     type operation target               providers default_provider
+## 1  arxiv    exists   <NA>             auto, arxiv            arxiv
+## 2  arxiv     links   <NA>             auto, arxiv            arxiv
+## 3  arxiv      meta   <NA>             auto, arxiv            arxiv
+## 4    doi    exists   <NA> auto, doi.org, crossref          doi.org
+## 5    doi     links   <NA>          auto, crossref         crossref
+## 6    doi      meta   <NA> auto, crossref, doi.org         crossref
+## 7    doi   convert   pmid        auto, ncbi, epmc             ncbi
+## 8    doi   convert  pmcid        auto, ncbi, epmc             ncbi
+## 9  orcid    exists   <NA>             auto, orcid            orcid
+## 10 orcid     links   <NA>             auto, orcid            orcid
+## 11 orcid      meta   <NA>             auto, orcid            orcid
+## 12 pmcid    exists   <NA>        auto, ncbi, epmc             ncbi
+## 13 pmcid     links   <NA>        auto, ncbi, epmc             ncbi
+## 14 pmcid      meta   <NA>        auto, ncbi, epmc             ncbi
+## 15 pmcid   convert   pmid        auto, ncbi, epmc             ncbi
+## 16 pmcid   convert    doi        auto, ncbi, epmc             ncbi
+## 17  pmid    exists   <NA>        auto, ncbi, epmc             ncbi
+## 18  pmid     links   <NA>        auto, ncbi, epmc             ncbi
+## 19  pmid      meta   <NA>        auto, ncbi, epmc             ncbi
+## 20  pmid   convert    doi        auto, ncbi, epmc             ncbi
+## 21  pmid   convert  pmcid        auto, ncbi, epmc             ncbi
+```
 
 ``` r
 # Check if an ID exists online
@@ -96,7 +101,9 @@ scholidonline::id_exists(
   )
 ```
 
-    ## [1] TRUE
+``` R
+## [1] TRUE
+```
 
 ``` r
 # Convert identifiers across systems
@@ -107,7 +114,9 @@ scholidonline::id_convert(
   )
 ```
 
-    ## [1] "10.1234/2013/999990"
+``` R
+## [1] "10.1234/2013/999990"
+```
 
 ``` r
 # Retrieve scholarly metadata
@@ -128,14 +137,15 @@ knitr::kable(out)
 # Return linked scholarly identifiers
 out <- scholidonline::id_links(
   "31452104",
-  provider = "ncbi"
+  provider = "epmc"
   )
 
 knitr::kable(out)
 ```
 
-| input | input_type | linked_type | linked_value | provider |
-|-------|------------|-------------|--------------|----------|
+|     | query    | query_type | linked_type | linked_id                    | provider |
+|:----|:---------|:-----------|:------------|:-----------------------------|:---------|
+| 2   | 31452104 | pmid       | doi         | 10.1007/978-1-4939-9752-7_10 | epmc     |
 
 ## Relationship to scholid
 

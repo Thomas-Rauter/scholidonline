@@ -102,37 +102,36 @@ per input identifier.</p>
 <p>The function returns a consistent cross-provider subset of core
 bibliographic metadata, such as title, publication year, container title,
 linked DOI, PMID, PMCID, and a canonical URL when available.</p>
-<p>If <code>type = "auto"</code>, the identifier type is inferred for each element of
-<code>x</code>. Inputs that cannot be identified, normalized, or resolved are returned
-as rows with missing metadata fields.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span>  <span class="fu">id_metadata</span><span class="op">(</span><span class="st">"10.1038/nature12373"</span>, type <span class="op">=</span> <span class="st">"doi"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 input type provider</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 10.1038/nature12373  doi crossref</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          title year container</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Nanometre-scale thermometry in a living cell 2013    Nature</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   doi pmid pmcid                                 url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 10.1038/nature12373 &lt;NA&gt;  &lt;NA&gt; https://doi.org/10.1038/nature12373</span>
-<span class="r-in"><span>  <span class="fu">id_metadata</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"31452104"</span>, <span class="st">"PMC6821181"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        input  type provider</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   31452104  pmid     ncbi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 PMC6821181 pmcid     ncbi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                      title year</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                      Molegro Virtual Docker for Docking. 2019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Figure and caption extraction from biomedical documents. 2019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          container  doi     pmid      pmcid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Methods Mol Biol &lt;NA&gt; 31452104       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   Bioinformatics &lt;NA&gt;     &lt;NA&gt; PMC6821181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1             https://pubmed.ncbi.nlm.nih.gov/31452104/</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/</span>
-<span class="r-in"><span>  <span class="fu">id_metadata</span><span class="op">(</span><span class="st">"10.1038/nature12373"</span>, fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"year"</span>, <span class="st">"doi"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                          title year                 doi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Nanometre-scale thermometry in a living cell 2013 10.1038/nature12373</span>
+<span class="r-in"><span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">id_metadata</span><span class="op">(</span><span class="st">"10.1038/nature12373"</span>, type <span class="op">=</span> <span class="st">"doi"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |input               |type |provider |title                                        | year|container |doi                 |pmid |pmcid |url                                 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:-------------------|:----|:--------|:--------------------------------------------|----:|:---------|:-------------------|:----|:-----|:-----------------------------------|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |10.1038/nature12373 |doi  |crossref |Nanometre-scale thermometry in a living cell | 2013|Nature    |10.1038/nature12373 |NA   |NA    |https://doi.org/10.1038/nature12373 |</span>
+<span class="r-in"><span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">id_metadata</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"31452104"</span>, <span class="st">"PMC6821181"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |input      |type  |provider |title                                                    | year|container        |doi |pmid     |pmcid      |url                                                   |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:----------|:-----|:--------|:--------------------------------------------------------|----:|:----------------|:---|:--------|:----------|:-----------------------------------------------------|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |31452104   |pmid  |ncbi     |Molegro Virtual Docker for Docking.                      | 2019|Methods Mol Biol |NA  |31452104 |NA         |https://pubmed.ncbi.nlm.nih.gov/31452104/             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |PMC6821181 |pmcid |ncbi     |Figure and caption extraction from biomedical documents. | 2019|Bioinformatics   |NA  |NA       |PMC6821181 |https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/ |</span>
+<span class="r-in"><span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">id_metadata</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"10.1038/nature12373"</span>,</span></span>
+<span class="r-in"><span>     fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"year"</span>, <span class="st">"doi"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |title                                        | year|doi                 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:--------------------------------------------|----:|:-------------------|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Nanometre-scale thermometry in a living cell | 2013|10.1038/nature12373 |</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

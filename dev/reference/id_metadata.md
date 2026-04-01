@@ -66,36 +66,34 @@ The function returns a consistent cross-provider subset of core
 bibliographic metadata, such as title, publication year, container
 title, linked DOI, PMID, PMCID, and a canonical URL when available.
 
-If `type = "auto"`, the identifier type is inferred for each element of
-`x`. Inputs that cannot be identified, normalized, or resolved are
-returned as rows with missing metadata fields.
-
 ## Examples
 
 ``` r
 # \donttest{
-  id_metadata("10.1038/nature12373", type = "doi")
-#>                 input type provider
-#> 1 10.1038/nature12373  doi crossref
-#>                                          title year container
-#> 1 Nanometre-scale thermometry in a living cell 2013    Nature
-#>                   doi pmid pmcid                                 url
-#> 1 10.1038/nature12373 <NA>  <NA> https://doi.org/10.1038/nature12373
-  id_metadata(c("31452104", "PMC6821181"))
-#>        input  type provider
-#> 1   31452104  pmid     ncbi
-#> 2 PMC6821181 pmcid     ncbi
-#>                                                      title year
-#> 1                      Molegro Virtual Docker for Docking. 2019
-#> 2 Figure and caption extraction from biomedical documents. 2019
-#>          container  doi     pmid      pmcid
-#> 1 Methods Mol Biol <NA> 31452104       <NA>
-#> 2   Bioinformatics <NA>     <NA> PMC6821181
-#>                                                     url
-#> 1             https://pubmed.ncbi.nlm.nih.gov/31452104/
-#> 2 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/
-  id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
-#>                                          title year                 doi
-#> 1 Nanometre-scale thermometry in a living cell 2013 10.1038/nature12373
+  out <- id_metadata("10.1038/nature12373", type = "doi")
+  knitr::kable(out)
+#> 
+#> 
+#> |input               |type |provider |title                                        | year|container |doi                 |pmid |pmcid |url                                 |
+#> |:-------------------|:----|:--------|:--------------------------------------------|----:|:---------|:-------------------|:----|:-----|:-----------------------------------|
+#> |10.1038/nature12373 |doi  |crossref |Nanometre-scale thermometry in a living cell | 2013|Nature    |10.1038/nature12373 |NA   |NA    |https://doi.org/10.1038/nature12373 |
+  out <- id_metadata(c("31452104", "PMC6821181"))
+  knitr::kable(out)
+#> 
+#> 
+#> |input      |type  |provider |title                                                    | year|container        |doi |pmid     |pmcid      |url                                                   |
+#> |:----------|:-----|:--------|:--------------------------------------------------------|----:|:----------------|:---|:--------|:----------|:-----------------------------------------------------|
+#> |31452104   |pmid  |ncbi     |Molegro Virtual Docker for Docking.                      | 2019|Methods Mol Biol |NA  |31452104 |NA         |https://pubmed.ncbi.nlm.nih.gov/31452104/             |
+#> |PMC6821181 |pmcid |ncbi     |Figure and caption extraction from biomedical documents. | 2019|Bioinformatics   |NA  |NA       |PMC6821181 |https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/ |
+  out <- id_metadata(
+    "10.1038/nature12373",
+     fields = c("title", "year", "doi")
+     )
+  knitr::kable(out)
+#> 
+#> 
+#> |title                                        | year|doi                 |
+#> |:--------------------------------------------|----:|:-------------------|
+#> |Nanometre-scale thermometry in a living cell | 2013|10.1038/nature12373 |
 # }
 ```
