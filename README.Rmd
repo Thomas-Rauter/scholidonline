@@ -5,12 +5,6 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include = FALSE}
-is_pkgdown <- identical(Sys.getenv("IN_PKGDOWN"), "true")
-is_build_readme <- identical(Sys.getenv("BUILD_README"), "true")
-run_live_readme <- is_pkgdown || is_build_readme
-```
-
 # scholidonline
 
 [![R-CMD-check](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml)
@@ -69,7 +63,7 @@ User-available functions:
 
 ## Examples
 
-```{r examples, eval = run_live_readme}
+```{r examples}
 # List supported scholidonline identifier types
 scholidonline::scholidonline_types()
 

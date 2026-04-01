@@ -33,8 +33,6 @@ level.
 
 `scholidonline` operates at the registry level.
 
-These are fundamentally different layers.
-
 ---
 
 # Structural vs Registry Validity
@@ -92,8 +90,3 @@ Registry validation:
 - Can change over time
 
 A structurally valid identifier may still fail registry validation.
-
-
-```{r session info, eval = TRUE}
-sessionInfo()
-```

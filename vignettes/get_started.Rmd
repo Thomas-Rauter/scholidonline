@@ -44,21 +44,10 @@ install.packages("scholidonline")
 
 - `scholidonline_types()`
 - `scholidonline_capabilities()`
-- `id_exists(x, type = NULL)`
-- `id_convert(x, to, from = NULL)`
-- `id_metadata(x, type = NULL)`
-- `id_links(x, type = NULL)`
-
-All functions are:
-
-- Vectorized
-- Type-stable
-- Designed for use in pipelines
-- Backed by external registries
-
-Identifier detection and normalization are delegated internally to
-`scholid`.
-
+- `id_exists()`
+- `id_convert()`
+- `id_metadata()`
+- `id_links()`
 
 
 ## Supported identifier types
@@ -156,23 +145,7 @@ out <- scholidonline::id_metadata(
 knitr::kable(out)
 ```
 
-Returned metadata is registry-derived and minimally harmonized
-across providers.
-
-Typical columns include:
-
-- input
-- type
-- provider
-- title
-- year
-- container
-- doi
-- pmid
-- pmcid
-- url
-
-Metadata completeness depends on the external authority.
+Metadata completeness depends on the registry.
 
 You can restrict returned fields:
 
@@ -200,13 +173,6 @@ out <- scholidonline::id_links(
 knitr::kable(out)
 ```
 
-This may reveal:
-
-- DOI
-- PMID
-- PMCID
-- Other linked identifiers
-
 The result is a long data.frame with one row per link.
 
 
@@ -218,7 +184,6 @@ A common workflow for messy identifier columns:
 1. Detect identifier types (via `scholid`)
 2. Normalize identifiers
 3. Check registry existence
-4. Convert or enrich with metadata
 
 Example:
 
@@ -249,9 +214,6 @@ x_norm
 
 scholidonline::id_exists(x)
 ```
-
-This separation keeps structural logic (`scholid`) and
-registry logic (`scholidonline`) clearly distinct.
 
 
 
@@ -328,11 +290,3 @@ Together they form a two-layer design:
 
 - Layer 1: Syntax and canonical form
 - Layer 2: External registry interaction
-
-
-
-## Session information
-
-```{r session info, eval = TRUE}
-sessionInfo()
-```

@@ -8,12 +8,11 @@ Authors@R:
            email = "rauterthomas0@gmail.com",
            role = c("aut", "cre", "fnd"),
            comment = c(ORCID = "0009-0004-5578-3628"))
-Description: Utilities for scholarly identifiers, building on 'scholid'
-    for detection and normalization. Provides functions to check
-    identifier existence in external registries, convert identifiers
-    across systems, retrieve bibliographic metadata, and discover
-    linked identifiers. Designed as a small, stable building block
-    with minimal dependencies and CRAN-friendly network usage.
+Description: Enables querying of scholarly identifier services to
+    verify identifier existence, convert identifiers across systems,
+    retrieve bibliographic metadata, and discover linked identifiers.
+    Supports common identifier types including DOI, PMID, PMCID,
+    arXiv, and ORCID.
 License: MIT + file LICENSE
 URL: https://thomas-rauter.github.io/scholidonline/
 BugReports: https://github.com/Thomas-Rauter/scholidonline/issues
