@@ -282,24 +282,3 @@ Examples:
 
 Other identifiers (e.g., ISBN, ISSN) are structurally supported by
 `scholid`, but do not always have stable, open registry APIs.
-
-## Relationship to scholid
-
-`scholid` handles:
-
-- Detection
-- Normalization
-- Classification
-- Extraction
-
-`scholidonline` handles:
-
-- Registry-backed validation
-- Cross-system conversion
-- Metadata retrieval
-- Link discovery
-
-Together they form a two-layer design:
-
-- Layer 1: Syntax and canonical form
-- Layer 2: External registry interaction

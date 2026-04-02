@@ -10,7 +10,7 @@ GitHub).
 - [`id_exists()`](https://thomas-rauter.github.io/scholidonline/reference/id_exists.md)
   : Check whether scholarly identifiers exist
 - [`id_links()`](https://thomas-rauter.github.io/scholidonline/reference/id_links.md)
-  : Return linked scholarly identifiers
+  : Return identifiers linked to the same scholarly record
 - [`id_metadata()`](https://thomas-rauter.github.io/scholidonline/reference/id_metadata.md)
   : Retrieve scholarly metadata
 - [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
