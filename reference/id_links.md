@@ -1,4 +1,4 @@
-# Return linked scholarly identifiers
+# Return identifiers linked to the same scholarly record
 
 Return identifiers that external registries link to the same scholarly
 record or to a closely corresponding version of it.

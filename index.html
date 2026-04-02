@@ -95,28 +95,28 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>scholidonline_types</code></td>
+<td><code><a href="reference/scholidonline_types.html">scholidonline_types()</a></code></td>
 <td>Supported scholidonline identifier types</td>
 </tr>
 <tr class="even">
-<td><code>scholidonline_capabilities</code></td>
+<td><code><a href="reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code></td>
 <td>Supported scholidonline capabilities</td>
 </tr>
 <tr class="odd">
-<td><code>id_exists(x, type = NULL)</code></td>
+<td><code><a href="reference/id_exists.html">id_exists()</a></code></td>
 <td>Check whether identifiers exist in their respective registries</td>
 </tr>
 <tr class="even">
-<td><code>id_convert(x, to, from = NULL)</code></td>
+<td><code><a href="reference/id_convert.html">id_convert()</a></code></td>
 <td>Convert identifiers across systems (e.g., PMID → DOI)</td>
 </tr>
 <tr class="odd">
-<td><code>id_metadata(x, type = NULL)</code></td>
+<td><code><a href="reference/id_metadata.html">id_metadata()</a></code></td>
 <td>Retrieve basic structured metadata</td>
 </tr>
 <tr class="even">
-<td><code>id_links(x, type = NULL)</code></td>
-<td>Discover linked identifiers</td>
+<td><code><a href="reference/id_links.html">id_links()</a></code></td>
+<td>Discover identifiers linked to the same scholarly record</td>
 </tr>
 </tbody>
 </table>
@@ -216,7 +216,7 @@
 </tr></tbody>
 </table>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Return linked scholarly identifiers</span></span>
+<code class="sourceCode R"><span><span class="co"># Return identifiers linked to the same scholarly record</span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_links.html">id_links</a></span><span class="op">(</span></span>
 <span>  <span class="st">"31452104"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"epmc"</span></span>
