@@ -33,18 +33,35 @@
     is_error = function(resp) FALSE
   )
   
-  resp <- .scholidonline_req_perform_safe(req = req)
+  max_attempts <- 2L
+  attempt <- 1L
   
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("arXiv request failed.")
+  repeat {
+    
+    resp <- .scholidonline_req_perform_safe(req = req)
+    
+    if (is.null(resp)) {
+      if (!isTRUE(quiet)) {
+        rlang::warn("arXiv request failed.")
+      }
+      return(NA)
     }
-    return(NA)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
+    
+    status <- .scholidonline_resp_status(resp = resp)
+    
+    if (status >= 200L && status < 300L) {
+      break
+    }
+    
+    if (status == 429L && attempt < max_attempts) {
+      if (!isTRUE(quiet)) {
+        rlang::warn("arXiv request rate-limited (HTTP 429); retrying once.")
+      }
+      attempt <- attempt + 1L
+      Sys.sleep(1)
+      next
+    }
+    
     if (!isTRUE(quiet)) {
       rlang::warn(paste0("arXiv request returned HTTP ", status, "."))
     }

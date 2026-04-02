@@ -1,4 +1,4 @@
-#' Return linked scholarly identifiers
+#' Return identifiers linked to the same scholarly record
 #'
 #' @description
 #' Return identifiers that external registries link to the same scholarly

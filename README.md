@@ -46,12 +46,12 @@ User-available functions:
 
 | Function | Purpose |
 |----|----|
-| `scholidonline_types` | Supported scholidonline identifier types |
-| `scholidonline_capabilities` | Supported scholidonline capabilities |
-| `id_exists(x, type = NULL)` | Check whether identifiers exist in their respective registries |
-| `id_convert(x, to, from = NULL)` | Convert identifiers across systems (e.g., PMID → DOI) |
-| `id_metadata(x, type = NULL)` | Retrieve basic structured metadata |
-| `id_links(x, type = NULL)` | Discover linked identifiers |
+| `scholidonline_types()` | Supported scholidonline identifier types |
+| `scholidonline_capabilities()` | Supported scholidonline capabilities |
+| `id_exists()` | Check whether identifiers exist in their respective registries |
+| `id_convert()` | Convert identifiers across systems (e.g., PMID → DOI) |
+| `id_metadata()` | Retrieve basic structured metadata |
+| `id_links()` | Discover identifiers linked to the same scholarly record |
 
 ## Examples
 
@@ -127,7 +127,7 @@ knitr::kable(out)
 | 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
 ``` r
-# Return linked scholarly identifiers
+# Return identifiers linked to the same scholarly record
 out <- scholidonline::id_links(
   "31452104",
   provider = "epmc"

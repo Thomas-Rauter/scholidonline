@@ -2,7 +2,7 @@
 % Please edit documentation in R/id_links.R
 \name{id_links}
 \alias{id_links}
-\title{Return linked scholarly identifiers}
+\title{Return identifiers linked to the same scholarly record}
 \usage{
 id_links(
   x,
