@@ -3,23 +3,6 @@
 Retrieve structured metadata for scholarly identifiers from external
 registries.
 
-`id_metadata()` is vectorized over `x` and returns a data.frame with one
-row per input element.
-
-The function returns a stable cross-provider subset of record-level
-metadata for the queried identifier. It is intended to expose core
-bibliographic fields such as title, publication year, container title,
-linked DOI, PMID, and PMCID when available, and a canonical URL.
-
-If `type = "auto"`, the identifier type is inferred per element using
-[`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
-Inputs that cannot be classified or normalized are returned as rows with
-`NA` metadata fields.
-
-Provider-/ID-specific logic lives in internal helpers named
-`.meta_<type>()` (e.g. `.meta_pmid()`), which are dispatched to from
-this front-end function.
-
 ## Usage
 
 ``` r
@@ -48,13 +31,14 @@ id_metadata(
 
 - provider:
 
-  A single provider string. Use `"auto"` to use the default provider for
-  the resolved identifier type.
+  A single provider string specifying which online service to use. Use
+  `"auto"` to use the default provider for the resolved identifier type.
+  In most cases, `"auto"` is appropriate.
 
 - fields:
 
-  An optional character vector of column names to return. If `NULL`, all
-  default metadata columns are returned.
+  An optional character vector naming the columns to return. If `NULL`,
+  all default columns are returned. Unknown field names are ignored.
 
 - ...:
 
@@ -62,21 +46,54 @@ id_metadata(
 
 - quiet:
 
-  A single logical value; if `TRUE`, suppress provider warnings/messages
-  where possible.
+  A single logical value; if `TRUE`, suppress provider warnings and
+  messages where possible.
 
 ## Value
 
 A data.frame with one row per input identifier. By default, the returned
 columns are `input`, `type`, `provider`, `title`, `year`, `container`,
-`doi`, `pmid`, `pmcid`, and `url`.
+`doi`, `pmid`, `pmcid`, and `url`. Inputs that cannot be identified,
+normalized, or resolved are returned as rows with missing metadata
+fields.
+
+## Details
+
+`id_metadata()` is vectorized over `x` and returns a data.frame with one
+row per input identifier.
+
+The function returns a consistent cross-provider subset of core
+bibliographic metadata, such as title, publication year, container
+title, linked DOI, PMID, PMCID, and a canonical URL when available.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-id_metadata("10.1038/nature12373", type = "doi")
-id_metadata(c("31452104", "PMC6821181"))
-id_metadata("10.1038/nature12373", fields = c("title", "year", "doi"))
-} # }
+# \donttest{
+  out <- id_metadata("10.1038/nature12373", type = "doi")
+  knitr::kable(out)
+#> 
+#> 
+#> |input               |type |provider |title                                        | year|container |doi                 |pmid |pmcid |url                                 |
+#> |:-------------------|:----|:--------|:--------------------------------------------|----:|:---------|:-------------------|:----|:-----|:-----------------------------------|
+#> |10.1038/nature12373 |doi  |crossref |Nanometre-scale thermometry in a living cell | 2013|Nature    |10.1038/nature12373 |NA   |NA    |https://doi.org/10.1038/nature12373 |
+  out <- id_metadata(c("31452104", "PMC6821181"))
+  knitr::kable(out)
+#> 
+#> 
+#> |input      |type  |provider |title                                                    | year|container        |doi |pmid     |pmcid      |url                                                   |
+#> |:----------|:-----|:--------|:--------------------------------------------------------|----:|:----------------|:---|:--------|:----------|:-----------------------------------------------------|
+#> |31452104   |pmid  |ncbi     |Molegro Virtual Docker for Docking.                      | 2019|Methods Mol Biol |NA  |31452104 |NA         |https://pubmed.ncbi.nlm.nih.gov/31452104/             |
+#> |PMC6821181 |pmcid |ncbi     |Figure and caption extraction from biomedical documents. | 2019|Bioinformatics   |NA  |NA       |PMC6821181 |https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821181/ |
+  out <- id_metadata(
+    "10.1038/nature12373",
+     fields = c("title", "year", "doi")
+     )
+  knitr::kable(out)
+#> 
+#> 
+#> |title                                        | year|doi                 |
+#> |:--------------------------------------------|----:|:-------------------|
+#> |Nanometre-scale thermometry in a living cell | 2013|10.1038/nature12373 |
+# }
 ```

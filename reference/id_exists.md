@@ -1,16 +1,7 @@
 # Check whether scholarly identifiers exist
 
-Check whether identifiers resolve or are found in their respective
+Check whether scholarly identifiers are found in their respective
 registries.
-
-`id_exists()` is vectorized over `x`. If `type = "auto"`, the identifier
-type is inferred per element using
-[`scholid::detect_scholid_type()`](https://thomas-rauter.github.io/scholid/reference/detect_scholid_type.html).
-Inputs that cannot be classified or normalized yield `NA`.
-
-Provider-/ID-specific logic lives in internal helpers named
-`.exists_<type>()` (e.g. `.exists_doi()`), which are dispatched to from
-this front-end function.
 
 ## Usage
 
@@ -39,8 +30,9 @@ id_exists(
 
 - provider:
 
-  A single provider string. Use `"auto"` to use the default provider for
-  the resolved identifier type.
+  A single provider string specifying which online service to use for
+  the lookup. Use `"auto"` to use the default provider for the resolved
+  identifier type. In most cases, `"auto"` is appropriate.
 
 - ...:
 
@@ -48,20 +40,22 @@ id_exists(
 
 - quiet:
 
-  A single logical value; if `TRUE`, suppress provider warnings/messages
-  where possible.
+  A single logical value; if `TRUE`, suppress provider warnings and
+  messages where possible.
 
 ## Value
 
-A logical vector. `TRUE` indicates that the identifier exists, `FALSE`
-indicates that it was confirmed not found, and `NA` indicates that the
-input could not be classified, normalized, or checked reliably.
+A logical vector. `TRUE` indicates that the identifier was found,
+`FALSE` indicates that it was not found, and `NA` indicates that the
+input could not be identified, normalized, or checked reliably.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-id_exists("10.1000/182", type = "doi")
-id_exists(c("12345678", "PMC12345"))
-} # }
+# \donttest{
+  id_exists("10.1038/nature12373", type = "doi")
+#> [1] TRUE
+  id_exists(c("31452104", "PMC6784763"))
+#> [1] TRUE TRUE
+# }
 ```
