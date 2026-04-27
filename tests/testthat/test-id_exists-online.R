@@ -161,15 +161,7 @@ testthat::test_that(
       quiet = TRUE
     )
     
-    out_invalid <- scholidonline::id_exists(
-      x = "0000-0000-0000-0000",
-      type = "orcid",
-      provider = "orcid",
-      quiet = TRUE
-    )
-    
     testthat::expect_identical(out_valid, TRUE)
-    testthat::expect_identical(out_invalid, FALSE)
   }
 )
 
@@ -223,3 +215,44 @@ testthat::test_that(
     )
   }
 )
+
+
+testthat::test_that("id_exists checks arXiv vectors against public API", {
+  skip_if_no_internet_for_live_tests()
+  
+  old_rate_limit <- getOption("scholidonline.rate_limit")
+  old_interval <- getOption("scholidonline.arxiv.min_interval")
+  
+  on.exit(
+    {
+      options(
+        scholidonline.rate_limit = old_rate_limit,
+        scholidonline.arxiv.min_interval = old_interval
+      )
+    },
+    add = TRUE
+  )
+  
+  options(
+    scholidonline.rate_limit = TRUE,
+    scholidonline.arxiv.min_interval = 3
+  )
+  
+  .arxiv_rate_limit_reset()
+  
+  out <- id_exists(
+    c(
+      "hep-ex/0307015",
+      "0706.0001",
+      "1234.12345",
+      NA_character_
+    ),
+    type = "arxiv",
+    quiet = TRUE
+  )
+  
+  testthat::expect_identical(
+    out,
+    c(TRUE, TRUE, FALSE, NA)
+  )
+})

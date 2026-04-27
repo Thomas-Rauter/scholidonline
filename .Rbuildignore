@@ -11,3 +11,4 @@
 ^\.gitignore$
 ^\.Rprofile$
 ^LICENSE\.md$
+^tarball_storage$

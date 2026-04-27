@@ -320,3 +320,28 @@ testthat::test_that(
     )
   }
 )
+
+
+# tests/testthat/test-id_exists-arxiv-batch.R
+
+testthat::test_that("id_exists uses arXiv batch helper for vectors", {
+  testthat::local_mocked_bindings(
+    .exists_arxiv_arxiv_batch = function(x, ..., quiet = FALSE) {
+      testthat::expect_identical(
+        x,
+        c("hep-ex/0307015", "0706.0001", "1234.12345")
+      )
+      
+      c(TRUE, TRUE, FALSE)
+    }
+  )
+  
+  testthat::expect_identical(
+    id_exists(
+      c("hep-ex/0307015", "0706.0001", "1234.12345", NA_character_),
+      type = "arxiv",
+      quiet = TRUE
+    ),
+    c(TRUE, TRUE, FALSE, NA)
+  )
+})

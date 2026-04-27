@@ -7,7 +7,11 @@ skip_if_no_internet_for_live_tests <- function() {
   
   if (!identical(Sys.getenv("RUN_LIVE_TESTS"), "true")) {
     testthat::skip(
-      "Skipping live internet tests; set RUN_LIVE_TESTS=true to enable."
+      paste(
+        "Skipping live internet tests.",
+        "To enable them in this R session, run:",
+        'Sys.setenv(RUN_LIVE_TESTS = "true")'
+      )
     )
   } else{
     invisible(NULL)
