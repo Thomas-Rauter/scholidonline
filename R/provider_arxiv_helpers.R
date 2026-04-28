@@ -342,3 +342,223 @@
   
   out
 }
+
+
+#' arXiv: extract XML entry blocks
+#'
+#' @param txt A single arXiv API response body string.
+#'
+#' @return A character vector of XML entry blocks.
+#'
+#' @noRd
+.arxiv_extract_entry_blocks <- function(txt) {
+  if (!is.character(txt) || length(txt) != 1L || is.na(txt) || !nzchar(txt)) {
+    return(character())
+  }
+  
+  matches <- gregexpr(
+    "<entry[^>]*>[\\s\\S]*?</entry>",
+    txt,
+    perl = TRUE
+  )
+  
+  entries <- regmatches(txt, matches)[[1L]]
+  
+  if (length(entries) < 1L || identical(entries, character(0))) {
+    return(character())
+  }
+  
+  entries
+}
+
+
+#' arXiv: extract first XML element text
+#'
+#' @param txt A single XML string.
+#' @param tag A single XML tag name.
+#'
+#' @return A single character value, or `NA_character_`.
+#'
+#' @noRd
+.arxiv_extract_first_element_text <- function(txt, tag) {
+  if (!is.character(txt) || length(txt) != 1L || is.na(txt) || !nzchar(txt)) {
+    return(NA_character_)
+  }
+  
+  if (!is.character(tag) || length(tag) != 1L || is.na(tag) || !nzchar(tag)) {
+    stop("`tag` must be a single non-missing character string.", call. = FALSE)
+  }
+  
+  pattern <- paste0(
+    "<",
+    tag,
+    "[^>]*>[[:space:]]*(.*?)[[:space:]]*</",
+    tag,
+    ">"
+  )
+  
+  match <- regexpr(
+    pattern,
+    txt,
+    perl = TRUE
+  )
+  
+  if (match[[1L]] < 0L) {
+    return(NA_character_)
+  }
+  
+  out <- regmatches(txt, match)
+  out <- sub(
+    paste0("^<", tag, "[^>]*>[[:space:]]*"),
+    "",
+    out,
+    perl = TRUE
+  )
+  out <- sub(
+    paste0("[[:space:]]*</", tag, ">$"),
+    "",
+    out,
+    perl = TRUE
+  )
+  
+  trimws(out)
+}
+
+
+#' arXiv: parse one metadata entry
+#'
+#' @param entry A single arXiv API XML entry block.
+#'
+#' @return A one-row data.frame containing arXiv metadata, or an empty
+#'   data.frame for non-article entries.
+#'
+#' @noRd
+.arxiv_parse_meta_entry <- function(entry) {
+  entry_id <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "id"
+  )
+  
+  if (
+    is.na(entry_id) ||
+    !grepl("^https?://arxiv\\.org/abs/", entry_id)
+  ) {
+    return(data.frame())
+  }
+  
+  entry_title <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "title"
+  )
+  
+  entry_published <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "published"
+  )
+  
+  entry_year <- if (
+    !is.na(entry_published) &&
+    grepl("^[0-9]{4}(-|$)", entry_published)
+  ) {
+    as.integer(substr(entry_published, 1L, 4L))
+  } else {
+    NA_integer_
+  }
+  
+  entry_doi <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "arxiv:doi"
+  )
+  
+  if (is.na(entry_doi) || !nzchar(entry_doi)) {
+    entry_doi <- NA_character_
+  }
+  
+  data.frame(
+    arxiv_id = .arxiv_entry_urls_to_ids(entry_id),
+    title = entry_title,
+    year = entry_year,
+    container = "arXiv",
+    doi = entry_doi,
+    pmid = NA_character_,
+    pmcid = NA_character_,
+    url = entry_id,
+    provider = "arxiv",
+    stringsAsFactors = FALSE
+  )
+}
+
+
+#' arXiv: retrieve metadata using one batch request
+#'
+#' @description
+#' Performs one arXiv API request for a vector of normalized arXiv identifiers
+#' and returns one provider metadata row per resolvable arXiv record.
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param ... Unused.
+#' @param quiet Logical.
+#'
+#' @return A data.frame containing provider metadata rows.
+#'
+#' @noRd
+.meta_arxiv_arxiv_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  rlang::check_dots_empty()
+  
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(data.frame())
+  }
+  
+  x_valid <- x[valid]
+  
+  txt <- .arxiv_query_id_list(
+    x = x_valid,
+    quiet = quiet
+  )
+  
+  if (is.null(txt)) {
+    return(data.frame())
+  }
+  
+  entries <- .arxiv_extract_entry_blocks(txt = txt)
+  
+  if (length(entries) < 1L) {
+    return(data.frame())
+  }
+  
+  out <- lapply(
+    entries,
+    .arxiv_parse_meta_entry
+  )
+  
+  out <- do.call(
+    rbind,
+    out
+  )
+  
+  if (is.null(out) || nrow(out) < 1L) {
+    return(data.frame())
+  }
+  
+  query_no_version <- .arxiv_strip_version(x_valid)
+  found_no_version <- .arxiv_strip_version(out$arxiv_id)
+  
+  keep <- found_no_version %in% query_no_version
+  out <- out[keep, , drop = FALSE]
+  
+  if (nrow(out) < 1L) {
+    return(data.frame())
+  }
+  
+  out
+}

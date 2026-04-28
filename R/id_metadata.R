@@ -7,6 +7,10 @@
 #' @details
 #' `id_metadata()` is vectorized over `x` and returns a data.frame with one row
 #' per input identifier.
+#' 
+#' For providers that support batch lookup, such as arXiv, multiple identifiers
+#' may be resolved using a single provider request. This does not change the
+#' public return shape: the output still contains one row per input identifier.
 #'
 #' The function returns a consistent cross-provider subset of core
 #' bibliographic metadata, such as title, publication year, container title,
@@ -99,10 +103,55 @@ id_metadata <- function(
   
   if (!any(ok)) return(base_df)
   
+  x_ok <- x_norm[ok]
+  type_ok <- type_vec[ok]
+  
+  if (
+    all(type_ok == "arxiv") &&
+    provider %in% c("auto", "arxiv")
+  ) {
+    res <- .meta_arxiv_arxiv_batch(
+      x = x_ok,
+      ...,
+      quiet = quiet
+    )
+    
+    ok_idx <- which(ok)
+    
+    if (!is.null(res) && nrow(res) > 0L) {
+      res_key <- .arxiv_strip_version(res$arxiv_id)
+      query_key <- .arxiv_strip_version(x_ok)
+      
+      for (j in seq_along(x_ok)) {
+        hit <- match(query_key[j], res_key)
+        
+        if (is.na(hit)) {
+          next
+        }
+        
+        base_df$provider[ok_idx[j]] <- res$provider[hit]
+        base_df$title[ok_idx[j]] <- res$title[hit]
+        base_df$year[ok_idx[j]] <- res$year[hit]
+        base_df$container[ok_idx[j]] <- res$container[hit]
+        base_df$doi[ok_idx[j]] <- res$doi[hit]
+        base_df$pmid[ok_idx[j]] <- res$pmid[hit]
+        base_df$pmcid[ok_idx[j]] <- res$pmcid[hit]
+        base_df$url[ok_idx[j]] <- res$url[hit]
+      }
+    }
+    
+    if (!is.null(fields)) {
+      keep <- fields[fields %in% names(base_df)]
+      base_df <- base_df[, keep, drop = FALSE]
+    }
+    
+    return(base_df)
+  }
+  
   res <- .scholidonline_run_unary(
-    x = x_norm[ok],
+    x = x_ok,
     operation = "meta",
-    type = type_vec[ok],
+    type = type_ok,
     provider = provider,
     ...,
     quiet = quiet
