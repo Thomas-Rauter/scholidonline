@@ -562,3 +562,178 @@
   
   out
 }
+
+
+#' arXiv: extract first DOI from an entry
+#'
+#' @param entry A single arXiv API XML entry block.
+#'
+#' @return A single DOI string, or `NA_character_`.
+#'
+#' @noRd
+.arxiv_extract_entry_doi <- function(entry) {
+  doi <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "arxiv:doi"
+  )
+  
+  if (!is.na(doi) && nzchar(doi)) {
+    return(doi)
+  }
+  
+  match <- regexpr(
+    '<link[^>]+title=["\\\']doi["\\\'][^>]+>',
+    entry,
+    perl = TRUE
+  )
+  
+  if (match[[1L]] < 0L) {
+    match <- regexpr(
+      '<link[^>]+href=["\\\'][^"\\\']*doi\\.org/[^"\\\']+["\\\'][^>]*>',
+      entry,
+      perl = TRUE
+    )
+  }
+  
+  if (match[[1L]] < 0L) {
+    return(NA_character_)
+  }
+  
+  link <- regmatches(entry, match)
+  
+  href_match <- regexpr(
+    'href=["\\\'][^"\\\']+["\\\']',
+    link,
+    perl = TRUE
+  )
+  
+  if (href_match[[1L]] < 0L) {
+    return(NA_character_)
+  }
+  
+  href <- regmatches(link, href_match)
+  href <- sub('^href=["\\\']', "", href, perl = TRUE)
+  href <- sub('["\\\']$', "", href, perl = TRUE)
+  
+  doi <- sub("^https?://(dx\\.)?doi\\.org/", "", href)
+  doi <- trimws(doi)
+  
+  if (!nzchar(doi)) {
+    return(NA_character_)
+  }
+  
+  doi
+}
+
+
+#' arXiv: parse linked identifiers from one entry
+#'
+#' @param entry A single arXiv API XML entry block.
+#'
+#' @return A data.frame containing linked identifiers for one arXiv entry.
+#'
+#' @noRd
+.arxiv_parse_links_entry <- function(entry) {
+  entry_id <- .arxiv_extract_first_element_text(
+    txt = entry,
+    tag = "id"
+  )
+  
+  if (
+    is.na(entry_id) ||
+    !grepl("^https?://arxiv\\.org/abs/", entry_id)
+  ) {
+    return(data.frame())
+  }
+  
+  arxiv_id <- .arxiv_entry_urls_to_ids(entry_id)
+  doi <- .arxiv_extract_entry_doi(entry = entry)
+  
+  if (is.na(doi) || !nzchar(doi)) {
+    return(data.frame())
+  }
+  
+  data.frame(
+    arxiv_id = arxiv_id,
+    linked_type = "doi",
+    linked_value = doi,
+    provider = "arxiv",
+    stringsAsFactors = FALSE
+  )
+}
+
+
+#' arXiv: return linked identifiers using one batch request
+#'
+#' @description
+#' Performs one arXiv API request for a vector of normalized arXiv identifiers
+#' and returns linked identifiers exposed by arXiv records.
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param ... Unused.
+#' @param quiet Logical.
+#'
+#' @return A data.frame with columns `arxiv_id`, `linked_type`,
+#'   `linked_value`, and `provider`.
+#'
+#' @noRd
+.links_arxiv_arxiv_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  rlang::check_dots_empty()
+  
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(data.frame())
+  }
+  
+  x_valid <- x[valid]
+  
+  txt <- .arxiv_query_id_list(
+    x = x_valid,
+    quiet = quiet
+  )
+  
+  if (is.null(txt)) {
+    return(data.frame())
+  }
+  
+  entries <- .arxiv_extract_entry_blocks(txt = txt)
+  
+  if (length(entries) < 1L) {
+    return(data.frame())
+  }
+  
+  out <- lapply(
+    entries,
+    .arxiv_parse_links_entry
+  )
+  
+  out <- do.call(
+    rbind,
+    out
+  )
+  
+  if (is.null(out) || nrow(out) < 1L) {
+    return(data.frame())
+  }
+  
+  query_no_version <- .arxiv_strip_version(x_valid)
+  found_no_version <- .arxiv_strip_version(out$arxiv_id)
+  
+  keep <- found_no_version %in% query_no_version
+  out <- out[keep, , drop = FALSE]
+  
+  if (nrow(out) < 1L) {
+    return(data.frame())
+  }
+  
+  out
+}

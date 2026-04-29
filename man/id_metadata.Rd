@@ -46,6 +46,10 @@ registries.
 \code{id_metadata()} is vectorized over \code{x} and returns a data.frame with one row
 per input identifier.
 
+For providers that support batch lookup, such as arXiv, multiple identifiers
+may be resolved using a single provider request. This does not change the
+public return shape: the output still contains one row per input identifier.
+
 The function returns a consistent cross-provider subset of core
 bibliographic metadata, such as title, publication year, container title,
 linked DOI, PMID, PMCID, and a canonical URL when available.
