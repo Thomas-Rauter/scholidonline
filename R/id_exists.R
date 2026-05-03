@@ -97,6 +97,32 @@ id_exists <- function(
     return(out)
   }
   
+  if (
+    all(type_ok == "pmid") &&
+    provider %in% c("auto", "ncbi")
+  ) {
+    out[ok] <- .exists_pmid_ncbi_batch(
+      x = x_ok,
+      ...,
+      quiet = quiet
+    )
+    
+    return(out)
+  }
+  
+  if (
+    all(type_ok == "pmcid") &&
+    provider %in% c("auto", "ncbi")
+  ) {
+    out[ok] <- .exists_pmcid_ncbi_batch(
+      x = x_ok,
+      ...,
+      quiet = quiet
+    )
+    
+    return(out)
+  }
+  
   res <- .scholidonline_run_unary(
     x = x_ok,
     operation = "exists",

@@ -91,6 +91,172 @@
 }
 
 
+#' NCBI: check whether PMIDs exist using one batch request
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param ... Passed to NCBI E-utilities.
+#' @param quiet Logical.
+#'
+#' @return A logical vector with one value per input.
+#'
+#' @noRd
+.exists_pmid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  out <- rep(NA, length(x))
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(out)
+  }
+  
+  x_valid <- x[valid]
+  
+  js <- .scholidonline_esummary_pubmed(
+    id = paste(x_valid, collapse = ","),
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js) || is.null(js$result)) {
+    return(out)
+  }
+  
+  uids <- character()
+  
+  if (!is.null(js$result$uids)) {
+    uids <- unlist(
+      js$result$uids,
+      use.names = FALSE
+    )
+  }
+  
+  out_valid <- rep(NA, length(x_valid))
+  
+  for (i in seq_along(x_valid)) {
+    xi <- x_valid[[i]]
+    rec <- js$result[[xi]]
+    
+    if (is.null(rec)) {
+      if (length(uids) > 0L && !xi %in% uids) {
+        out_valid[[i]] <- FALSE
+      }
+      
+      next
+    }
+    
+    if (!is.null(rec$error)) {
+      out_valid[[i]] <- FALSE
+      next
+    }
+    
+    uid <- rec$uid %||% NA_character_
+    
+    out_valid[[i]] <- is.character(uid) &&
+      length(uid) == 1L &&
+      identical(uid, xi)
+  }
+  
+  out[valid] <- out_valid
+  
+  out
+}
+
+
+#' NCBI: check whether PMCIDs exist using one batch request
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param ... Passed to PMC ID Converter.
+#' @param quiet Logical.
+#'
+#' @return A logical vector with one value per input.
+#'
+#' @noRd
+.exists_pmcid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  out <- rep(NA, length(x))
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(out)
+  }
+  
+  x_valid <- x[valid]
+  
+  js <- .scholidonline_pmc_idconv(
+    ids = paste(x_valid, collapse = ","),
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js) || is.null(js$records) || length(js$records) < 1L) {
+    return(out)
+  }
+  
+  records <- js$records
+  
+  rec_key <- vapply(
+    records,
+    function(rec) {
+      if (!is.null(rec$requested_id) && nzchar(rec$requested_id)) {
+        return(rec$requested_id)
+      }
+      
+      if (!is.null(rec$pmcid) && nzchar(rec$pmcid)) {
+        return(rec$pmcid)
+      }
+      
+      NA_character_
+    },
+    character(1)
+  )
+  
+  out_valid <- rep(NA, length(x_valid))
+  
+  for (i in seq_along(x_valid)) {
+    xi <- x_valid[[i]]
+    hit <- match(xi, rec_key)
+    
+    if (is.na(hit)) {
+      next
+    }
+    
+    rec <- records[[hit]]
+    
+    if (!is.null(rec$status) && identical(rec$status, "error")) {
+      out_valid[[i]] <- FALSE
+      next
+    }
+    
+    if (!is.null(rec$pmcid) && nzchar(rec$pmcid)) {
+      out_valid[[i]] <- TRUE
+      next
+    }
+    
+    out_valid[[i]] <- FALSE
+  }
+  
+  out[valid] <- out_valid
+  
+  out
+}
+
+
 # id_links() provider functions ------------------------------------------------
 
 
