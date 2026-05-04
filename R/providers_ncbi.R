@@ -572,6 +572,132 @@
 }
 
 
+#' NCBI: retrieve metadata for PMIDs using one batch request
+#'
+#' @description
+#' Provider implementation for retrieving metadata for multiple PMIDs using
+#' one NCBI E-utilities (esummary) API request.
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata rows for resolved PMIDs.
+#'
+#' @noRd
+.meta_pmid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  rlang::check_dots_empty()
+  
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(data.frame())
+  }
+  
+  x_valid <- x[valid]
+  
+  url <- paste0(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+    "?db=pubmed&id=",
+    utils::URLencode(
+      paste(x_valid, collapse = ","),
+      reserved = TRUE
+    ),
+    "&retmode=json"
+  )
+  
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- .scholidonline_req_perform_safe(req = req)
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI request failed.")
+    }
+    return(data.frame())
+  }
+  
+  status <- .scholidonline_resp_status(resp = resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
+    }
+    return(data.frame())
+  }
+  
+  obj <- .scholidonline_resp_body_json(
+    resp = resp,
+    simplifyVector = TRUE
+  )
+  
+  if (is.null(obj$result)) {
+    return(data.frame())
+  }
+  
+  rows <- lapply(
+    x_valid,
+    function(xi) {
+      rec <- obj$result[[xi]]
+      
+      if (is.null(rec) || !is.null(rec$error)) {
+        return(data.frame())
+      }
+      
+      data.frame(
+        pmid_key = xi,
+        title = rec$title %||% NA_character_,
+        year = if (!is.null(rec$pubdate)) {
+          as.integer(substr(rec$pubdate, 1, 4))
+        } else {
+          NA_integer_
+        },
+        container = rec$source %||% NA_character_,
+        doi = if (!is.null(rec$elocationid) &&
+                  grepl("^10\\.", rec$elocationid)) {
+          rec$elocationid
+        } else {
+          NA_character_
+        },
+        pmid = xi,
+        pmcid = NA_character_,
+        url = paste0(
+          "https://pubmed.ncbi.nlm.nih.gov/",
+          xi,
+          "/"
+        ),
+        provider = "ncbi",
+        stringsAsFactors = FALSE
+      )
+    }
+  )
+  
+  rows <- rows[vapply(rows, nrow, integer(1)) > 0L]
+  
+  if (length(rows) < 1L) {
+    return(data.frame())
+  }
+  
+  do.call(
+    rbind,
+    rows
+  )
+}
+
+
 #' NCBI: retrieve metadata for a PMCID
 #'
 #' @description
@@ -807,10 +933,21 @@
     return(NA_character_)
   }
   
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
-    simplifyVector = FALSE
+  js <- tryCatch(
+    .scholidonline_resp_body_json(
+      resp = resp,
+      simplifyVector = FALSE
+    ),
+    error = function(e) NULL
   )
+  
+  if (is.null(js)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI response could not be parsed as JSON.")
+    }
+    
+    return(NA_character_)
+  }
   
   ids <- js$esearchresult$idlist
   

@@ -148,6 +148,48 @@ id_metadata <- function(
     return(base_df)
   }
   
+  if (
+    all(type_ok == "pmid") &&
+    provider %in% c("auto", "ncbi")
+  ) {
+    res <- .meta_pmid_ncbi_batch(
+      x = x_ok,
+      ...,
+      quiet = quiet
+    )
+    
+    ok_idx <- which(ok)
+    
+    if (!is.null(res) && nrow(res) > 0L) {
+      res_key <- res$pmid_key
+      query_key <- x_ok
+      
+      for (j in seq_along(x_ok)) {
+        hit <- match(query_key[j], res_key)
+        
+        if (is.na(hit)) {
+          next
+        }
+        
+        base_df$provider[ok_idx[j]] <- res$provider[hit]
+        base_df$title[ok_idx[j]] <- res$title[hit]
+        base_df$year[ok_idx[j]] <- res$year[hit]
+        base_df$container[ok_idx[j]] <- res$container[hit]
+        base_df$doi[ok_idx[j]] <- res$doi[hit]
+        base_df$pmid[ok_idx[j]] <- res$pmid[hit]
+        base_df$pmcid[ok_idx[j]] <- res$pmcid[hit]
+        base_df$url[ok_idx[j]] <- res$url[hit]
+      }
+    }
+    
+    if (!is.null(fields)) {
+      keep <- fields[fields %in% names(base_df)]
+      base_df <- base_df[, keep, drop = FALSE]
+    }
+    
+    return(base_df)
+  }
+  
   res <- .scholidonline_run_unary(
     x = x_ok,
     operation = "meta",
