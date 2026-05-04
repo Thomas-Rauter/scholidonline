@@ -18,6 +18,7 @@ website](https://thomas-rauter.github.io/scholidonline/).
 Install the released version from CRAN:
 
 ``` r
+
 install.packages("scholidonline")
 ```
 
@@ -43,18 +44,19 @@ It provides registry-backed functionality such as:
 
 User-available functions:
 
-| Function                                                                                                                    | Purpose                                                        |
-|-----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/dev/reference/scholidonline_types.md)               | Supported scholidonline identifier types                       |
-| [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/dev/reference/scholidonline_capabilities.md) | Supported scholidonline capabilities                           |
-| [`id_exists()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_exists.md)                                   | Check whether identifiers exist in their respective registries |
-| [`id_convert()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_convert.md)                                 | Convert identifiers across systems (e.g., PMID → DOI)          |
-| [`id_metadata()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_metadata.md)                               | Retrieve basic structured metadata                             |
-| [`id_links()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_links.md)                                     | Discover identifiers linked to the same scholarly record       |
+| Function | Purpose |
+|----|----|
+| [`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/dev/reference/scholidonline_types.md) | Supported scholidonline identifier types |
+| [`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/dev/reference/scholidonline_capabilities.md) | Supported scholidonline capabilities |
+| [`id_exists()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_exists.md) | Check whether identifiers exist in their respective registries |
+| [`id_convert()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_convert.md) | Convert identifiers across systems (e.g., PMID → DOI) |
+| [`id_metadata()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_metadata.md) | Retrieve basic structured metadata |
+| [`id_links()`](https://thomas-rauter.github.io/scholidonline/dev/reference/id_links.md) | Discover identifiers linked to the same scholarly record |
 
 ## Examples
 
 ``` r
+
 # List supported scholidonline identifier types
 scholidonline::scholidonline_types()
 ```
@@ -64,6 +66,7 @@ scholidonline::scholidonline_types()
 ```
 
 ``` r
+
 # List scholidonline capabilities
 scholidonline::scholidonline_capabilities()
 ```
@@ -94,6 +97,7 @@ scholidonline::scholidonline_capabilities()
 ```
 
 ``` r
+
 # Check if an ID exists online
 scholidonline::id_exists(
   "10.1000/182",
@@ -106,6 +110,7 @@ scholidonline::id_exists(
 ```
 
 ``` r
+
 # Convert identifiers across systems
 scholidonline::id_convert(
   "12345678",
@@ -119,6 +124,7 @@ scholidonline::id_convert(
 ```
 
 ``` r
+
 # Retrieve scholarly metadata
 out <- scholidonline::id_metadata(
   "10.1038/nature12373",
@@ -129,11 +135,12 @@ out <- scholidonline::id_metadata(
 knitr::kable(out)
 ```
 
-| input               | type | provider | title                                        | year | container | doi                 | pmid | pmcid | url                                   |
-|:--------------------|:-----|:---------|:---------------------------------------------|-----:|:----------|:--------------------|:-----|:------|:--------------------------------------|
-| 10.1038/nature12373 | doi  | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature    | 10.1038/nature12373 | NA   | NA    | <https://doi.org/10.1038/nature12373> |
+| input | type | provider | title | year | container | doi | pmid | pmcid | url |
+|:---|:---|:---|:---|---:|:---|:---|:---|:---|:---|
+| 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
 ``` r
+
 # Return identifiers linked to the same scholarly record
 out <- scholidonline::id_links(
   "31452104",
