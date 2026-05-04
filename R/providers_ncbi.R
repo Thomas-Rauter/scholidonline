@@ -793,6 +793,153 @@
 }
 
 
+#' NCBI: retrieve metadata for PMCIDs using one batch request
+#'
+#' @description
+#' Provider implementation for retrieving metadata for multiple PMCIDs using
+#' one NCBI E-utilities (esummary) API request.
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame containing metadata rows for resolved PMCIDs.
+#'
+#' @noRd
+.meta_pmcid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  rlang::check_dots_empty()
+  
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(data.frame())
+  }
+  
+  x_valid <- x[valid]
+  keys <- gsub("^PMC", "", x_valid)
+  
+  url <- paste0(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+    "?db=pmc&id=",
+    utils::URLencode(
+      paste(keys, collapse = ","),
+      reserved = TRUE
+    ),
+    "&retmode=json"
+  )
+  
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- .scholidonline_req_perform_safe(req = req)
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI request failed.")
+    }
+    return(data.frame())
+  }
+  
+  status <- .scholidonline_resp_status(resp = resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
+    }
+    return(data.frame())
+  }
+  
+  obj <- tryCatch(
+    .scholidonline_resp_body_json(
+      resp = resp,
+      simplifyVector = TRUE
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(obj) || is.null(obj$result)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI response could not be parsed as JSON.")
+    }
+    return(data.frame())
+  }
+  
+  rows <- lapply(
+    seq_along(x_valid),
+    function(i) {
+      xi <- x_valid[[i]]
+      key <- keys[[i]]
+      rec <- obj$result[[key]]
+      
+      if (is.null(rec)) {
+        return(data.frame())
+      }
+      
+      if (!is.null(rec$error)) {
+        return(data.frame())
+      }
+      
+      if (
+        (is.null(rec$title) || is.na(rec$title) || !nzchar(rec$title)) &&
+        (is.null(rec$source) || is.na(rec$source) || !nzchar(rec$source)) &&
+        (is.null(rec$pubdate) || is.na(rec$pubdate) || !nzchar(rec$pubdate))
+      ) {
+        return(data.frame())
+      }
+      
+      data.frame(
+        pmcid_key = xi,
+        title = rec$title %||% NA_character_,
+        year = if (!is.null(rec$pubdate)) {
+          as.integer(substr(rec$pubdate, 1, 4))
+        } else {
+          NA_integer_
+        },
+        container = rec$source %||% NA_character_,
+        doi = if (!is.null(rec$elocationid) &&
+                  grepl("^10\\.", rec$elocationid)) {
+          rec$elocationid
+        } else {
+          NA_character_
+        },
+        pmid = rec$pmid %||% NA_character_,
+        pmcid = xi,
+        url = paste0(
+          "https://www.ncbi.nlm.nih.gov/pmc/articles/",
+          xi,
+          "/"
+        ),
+        provider = "ncbi",
+        stringsAsFactors = FALSE
+      )
+    }
+  )
+  
+  rows <- rows[vapply(rows, nrow, integer(1)) > 0L]
+  
+  if (length(rows) < 1L) {
+    return(data.frame())
+  }
+  
+  do.call(
+    rbind,
+    rows
+  )
+}
+
+
 # id_convert() provider functions ----------------------------------------------
 
 
