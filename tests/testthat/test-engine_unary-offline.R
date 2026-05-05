@@ -352,57 +352,60 @@ testthat::test_that(
 
 testthat::test_that(
   ".scholidonline_run_unary() expands scalar type and runs elementwise", {
-  testthat::local_mocked_bindings(
-    .scholidonline_get_unary_meta = function(type, operation) {
-      testthat::expect_identical(type, "pmid")
-      testthat::expect_identical(operation, "exists")
-      list(
-        providers = c("auto", "ncbi"),
-        default_provider = "ncbi",
-        dispatcher = ".exists_pmid"
-      )
-    },
-    .scholidonline_resolve_unary_provider = function(provider, meta) {
-      testthat::expect_identical(provider, "auto")
-      testthat::expect_true(is.list(meta))
-      "auto"
-    },
-    .scholidonline_get_dispatcher = function(name) {
-      testthat::expect_identical(name, ".exists_pmid")
-      function(x, provider, ..., quiet) {
-        identical(x, "1")
-      }
-    },
-    .scholidonline_run_unary_one = function(
-      x,
-      dispatcher,
-      provider,
-      operation,
-      ...,
-      quiet
-    ) {
-      testthat::expect_true(is.function(dispatcher))
-      testthat::expect_identical(provider, "auto")
-      testthat::expect_identical(operation, "exists")
-      testthat::expect_identical(quiet, TRUE)
-      dispatcher(
-        x = x,
-        provider = provider,
-        quiet = quiet,
-        ...
+    testthat::local_mocked_bindings(
+      .scholidonline_get_unary_meta = function(type, operation) {
+        testthat::expect_identical(type, "pmid")
+        testthat::expect_identical(operation, "exists")
+        list(
+          providers = c("auto", "ncbi"),
+          default_provider = "ncbi",
+          dispatcher = ".exists_pmid"
         )
-    }
-  )
-  
-  out <- .scholidonline_run_unary(
-    x = c("1", "2"),
-    operation = "exists",
-    type = "pmid",
-    provider = "auto",
-    quiet = TRUE
-  )
-  
-  testthat::expect_identical(out, list(TRUE, FALSE))
+      },
+      .scholidonline_resolve_unary_provider = function(provider, meta) {
+        testthat::expect_identical(provider, "auto")
+        testthat::expect_true(is.list(meta))
+        "auto"
+      },
+      .get_unary_batch_dispatcher = function(meta) {
+        NULL
+      },
+      .scholidonline_get_dispatcher = function(name) {
+        testthat::expect_identical(name, ".exists_pmid")
+        function(x, provider, ..., quiet) {
+          identical(x, "1")
+        }
+      },
+      .scholidonline_run_unary_one = function(
+    x,
+    dispatcher,
+    provider,
+    operation,
+    ...,
+    quiet
+      ) {
+        testthat::expect_true(is.function(dispatcher))
+        testthat::expect_identical(provider, "auto")
+        testthat::expect_identical(operation, "exists")
+        testthat::expect_identical(quiet, TRUE)
+        dispatcher(
+          x = x,
+          provider = provider,
+          quiet = quiet,
+          ...
+        )
+      }
+    )
+    
+    out <- .scholidonline_run_unary(
+      x = c("1", "2"),
+      operation = "exists",
+      type = "pmid",
+      provider = "auto",
+      quiet = TRUE
+    )
+    
+    testthat::expect_identical(out, list(TRUE, FALSE))
 })
 
 

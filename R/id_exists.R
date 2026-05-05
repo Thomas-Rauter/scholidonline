@@ -84,45 +84,6 @@ id_exists <- function(
   x_ok <- x_norm[ok]
   type_ok <- type_vec[ok]
   
-  if (
-    all(type_ok == "arxiv") &&
-    provider %in% c("auto", "arxiv")
-  ) {
-    out[ok] <- .exists_arxiv_arxiv_batch(
-      x = x_ok,
-      ...,
-      quiet = quiet
-    )
-    
-    return(out)
-  }
-  
-  if (
-    all(type_ok == "pmid") &&
-    provider %in% c("auto", "ncbi")
-  ) {
-    out[ok] <- .exists_pmid_ncbi_batch(
-      x = x_ok,
-      ...,
-      quiet = quiet
-    )
-    
-    return(out)
-  }
-  
-  if (
-    all(type_ok == "pmcid") &&
-    provider %in% c("auto", "ncbi")
-  ) {
-    out[ok] <- .exists_pmcid_ncbi_batch(
-      x = x_ok,
-      ...,
-      quiet = quiet
-    )
-    
-    return(out)
-  }
-  
   res <- .scholidonline_run_unary(
     x = x_ok,
     operation = "exists",

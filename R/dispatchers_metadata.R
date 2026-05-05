@@ -125,6 +125,53 @@
 }
 
 
+#' Retrieve metadata for PMIDs in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving metadata for PMIDs.
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.meta_pmid_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+  
+  switch(
+    provider,
+    ncbi = {
+      res <- .meta_pmid_ncbi_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .meta_pmid_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
+  )
+}
+
+
 #' Return metadata for a PMCID
 #'
 #' @description
@@ -201,6 +248,53 @@
 }
 
 
+#' Retrieve metadata for PMCIDs in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving metadata for PMCIDs.
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.meta_pmcid_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+  
+  switch(
+    provider,
+    ncbi = {
+      res <- .meta_pmcid_ncbi_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .meta_pmcid_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
+  )
+}
+
+
 #' Return metadata for an arXiv record
 #'
 #' @description
@@ -238,6 +332,53 @@
       quiet = quiet
     ),
     rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
+#' Retrieve metadata for arXiv identifiers in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving metadata for arXiv identifiers.
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.meta_arxiv_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "arxiv"
+  }
+  
+  switch(
+    provider,
+    arxiv = {
+      res <- .meta_arxiv_arxiv_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .meta_arxiv_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
   )
 }
 
@@ -280,4 +421,173 @@
     ),
     rlang::abort(paste0("Unknown provider: ", provider))
   )
+}
+
+
+# Level 1 functions (functions called by level 2 functions) --------------------
+
+
+#' Split arXiv metadata batch output by query
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param res A data.frame returned by the arXiv metadata batch provider.
+#'
+#' @return A list with one data.frame per input element.
+#'
+#' @noRd
+.meta_arxiv_batch_split <- function(
+    x,
+    res
+) {
+  out <- vector(
+    mode = "list",
+    length = length(x)
+  )
+  
+  if (is.null(res) || nrow(res) == 0L) {
+    for (i in seq_along(out)) {
+      out[[i]] <- data.frame()
+    }
+    
+    return(out)
+  }
+  
+  res_key <- .arxiv_strip_version(res$arxiv_id)
+  query_key <- .arxiv_strip_version(x)
+  
+  for (i in seq_along(x)) {
+    hit <- match(query_key[[i]], res_key)
+    
+    if (is.na(hit)) {
+      out[[i]] <- data.frame()
+      next
+    }
+    
+    out[[i]] <- res[
+      hit,
+      c(
+        "title",
+        "year",
+        "container",
+        "doi",
+        "pmid",
+        "pmcid",
+        "url",
+        "provider"
+      ),
+      drop = FALSE
+    ]
+  }
+  
+  out
+}
+
+
+#' Split NCBI PMID metadata batch output by query
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param res A data.frame returned by the NCBI PMID metadata batch provider.
+#'
+#' @return A list with one data.frame per input element.
+#'
+#' @noRd
+.meta_pmid_batch_split <- function(
+    x,
+    res
+) {
+  out <- vector(
+    mode = "list",
+    length = length(x)
+  )
+  
+  if (is.null(res) || nrow(res) == 0L) {
+    for (i in seq_along(out)) {
+      out[[i]] <- data.frame()
+    }
+    
+    return(out)
+  }
+  
+  res_key <- res$pmid_key
+  
+  for (i in seq_along(x)) {
+    hit <- match(x[[i]], res_key)
+    
+    if (is.na(hit)) {
+      out[[i]] <- data.frame()
+      next
+    }
+    
+    out[[i]] <- res[
+      hit,
+      c(
+        "title",
+        "year",
+        "container",
+        "doi",
+        "pmid",
+        "pmcid",
+        "url",
+        "provider"
+      ),
+      drop = FALSE
+    ]
+  }
+  
+  out
+}
+
+
+#' Split NCBI PMCID metadata batch output by query
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param res A data.frame returned by the NCBI PMCID metadata batch provider.
+#'
+#' @return A list with one data.frame per input element.
+#'
+#' @noRd
+.meta_pmcid_batch_split <- function(
+    x,
+    res
+) {
+  out <- vector(
+    mode = "list",
+    length = length(x)
+  )
+  
+  if (is.null(res) || nrow(res) == 0L) {
+    for (i in seq_along(out)) {
+      out[[i]] <- data.frame()
+    }
+    
+    return(out)
+  }
+  
+  res_key <- res$pmcid_key
+  
+  for (i in seq_along(x)) {
+    hit <- match(x[[i]], res_key)
+    
+    if (is.na(hit)) {
+      out[[i]] <- data.frame()
+      next
+    }
+    
+    out[[i]] <- res[
+      hit,
+      c(
+        "title",
+        "year",
+        "container",
+        "doi",
+        "pmid",
+        "pmcid",
+        "url",
+        "provider"
+      ),
+      drop = FALSE
+    ]
+  }
+  
+  out
 }

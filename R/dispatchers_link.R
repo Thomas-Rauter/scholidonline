@@ -45,6 +45,52 @@
 }
 
 
+#' Return linked identifiers for arXiv records in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving identifiers linked to arXiv records.
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.links_arxiv_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "arxiv"
+  }
+  
+  switch(
+    provider,
+    arxiv = {
+      res <- .links_arxiv_arxiv_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .links_arxiv_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
+  )
+}
+
 
 #' Return linked identifiers for a DOI
 #'
@@ -394,6 +440,53 @@
 
 
 # Level 2 function (functions called by level 1 functions) ---------------------
+
+
+#' Split arXiv linked-identifier batch output by query
+#'
+#' @param x A character vector of normalized arXiv identifiers.
+#' @param res A data.frame returned by the arXiv links batch provider.
+#'
+#' @return A list with one data.frame per input element.
+#'
+#' @noRd
+.links_arxiv_batch_split <- function(
+    x,
+    res
+) {
+  out <- vector(
+    mode = "list",
+    length = length(x)
+  )
+  
+  if (is.null(res) || nrow(res) == 0L) {
+    for (i in seq_along(out)) {
+      out[[i]] <- data.frame()
+    }
+    
+    return(out)
+  }
+  
+  res_key <- .arxiv_strip_version(res$arxiv_id)
+  query_key <- .arxiv_strip_version(x)
+  
+  for (i in seq_along(x)) {
+    hits <- which(res_key == query_key[[i]])
+    
+    if (length(hits) < 1L) {
+      out[[i]] <- data.frame()
+      next
+    }
+    
+    out[[i]] <- res[
+      hits,
+      c("linked_type", "linked_value", "provider"),
+      drop = FALSE
+    ]
+  }
+  
+  out
+}
 
 
 #' Split NCBI linked-identifier batch output by query
