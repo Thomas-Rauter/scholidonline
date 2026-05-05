@@ -64,6 +64,19 @@
     length = n
   )
   
+  batch <- .run_unary_batch(
+    x = x,
+    operation = operation,
+    type = type_vec,
+    provider = provider,
+    ...,
+    quiet = quiet
+  )
+  
+  if (!is.null(batch)) {
+    return(batch)
+  }
+  
   for (i in seq_len(n)) {
     
     xi <- x[[i]]
@@ -352,6 +365,125 @@
 }
 
 
+#' Get a unary batch dispatcher
+#'
+#' @description
+#' Internal helper used by the unary engine to resolve an optional batch
+#' dispatcher for a unary operation/type/provider combination.
+#'
+#' Batch dispatcher names follow the scalar dispatcher naming convention with
+#' a `_batch` suffix. For example, `.links_pmid_batch`.
+#'
+#' @param meta A named list of unary operation metadata.
+#'
+#' @return A function if a batch dispatcher exists, otherwise `NULL`.
+#'
+#' @noRd
+.get_unary_batch_dispatcher <- function(meta) {
+  if (!is.list(meta)) {
+    rlang::abort("`meta` must be a list.")
+  }
+  
+  if (is.null(meta$dispatcher)) {
+    rlang::abort("`meta` must contain `dispatcher`.")
+  }
+  
+  name <- paste0(meta$dispatcher, "_batch")
+  
+  if (!exists(name, mode = "function", inherits = TRUE)) {
+    return(NULL)
+  }
+  
+  get(name, mode = "function", inherits = TRUE)
+}
+
+
+#' Run a unary scholidonline operation in batch mode
+#'
+#' @description
+#' Internal helper used by `.scholidonline_run_unary()` to execute a unary
+#' operation through an optional batch dispatcher.
+#'
+#' Batch execution is only attempted when all inputs have the same identifier
+#' type and resolve to the same provider. If no batch dispatcher exists, this
+#' helper returns `NULL` and the scalar engine path is used.
+#'
+#' @param x A character vector of normalized identifiers.
+#' @param operation A single unary operation string.
+#' @param type A character vector of identifier types with length `length(x)`.
+#' @param provider Provider choice or `"auto"`.
+#' @param ... Passed to the batch dispatcher.
+#' @param quiet Logical flag forwarded to the batch dispatcher.
+#'
+#' @return A list of scalar results, one per input, or `NULL` if no batch path
+#'   is available.
+#'
+#' @noRd
+.run_unary_batch <- function(
+    x,
+    operation,
+    type,
+    provider,
+    ...,
+    quiet
+) {
+  n <- length(x)
+  
+  if (n < 1L) {
+    return(NULL)
+  }
+  
+  if (length(type) != n) {
+    rlang::abort("`type` must have length `length(x)`.")
+  }
+  
+  if (any(is.na(x)) || any(is.na(type))) {
+    return(NULL)
+  }
+  
+  if (length(unique(type)) != 1L) {
+    return(NULL)
+  }
+  
+  type_i <- type[[1L]]
+  
+  meta <- .scholidonline_get_unary_meta(
+    type = type_i,
+    operation = operation
+  )
+  
+  provider_i <- .scholidonline_resolve_unary_provider(
+    provider = provider,
+    meta = meta
+  )
+  
+  dispatcher <- .get_unary_batch_dispatcher(
+    meta = meta
+  )
+  
+  if (is.null(dispatcher)) {
+    return(NULL)
+  }
+  
+  out <- dispatcher(
+    x = x,
+    provider = provider_i,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(out)) {
+    return(NULL)
+  }
+  
+  .validate_unary_batch_result(
+    x = out,
+    operation = operation,
+    n = n
+  )
+}
+
+
 # Level 3 function (functions called by level 2 functions) definitions ---------
 
 
@@ -386,6 +518,49 @@
     rlang::abort(
       paste0("Unknown unary `return_mode`: `", return_mode, "`.")
     )
+  )
+}
+
+
+#' Validate a unary batch result
+#'
+#' @description
+#' Internal helper used by the unary engine to validate and standardize the
+#' return value of a batch dispatcher.
+#'
+#' Batch dispatchers must return a list with one element per input. Each element
+#' is validated against the scalar return contract for the operation.
+#'
+#' @param x The value returned by a unary batch dispatcher.
+#' @param operation A single unary operation string.
+#' @param n Expected output length.
+#'
+#' @return A validated list with one element per input.
+#'
+#' @noRd
+.validate_unary_batch_result <- function(
+    x,
+    operation,
+    n
+) {
+  if (!is.list(x) || is.data.frame(x)) {
+    rlang::abort("Unary batch dispatchers must return a list.")
+  }
+  
+  if (length(x) != n) {
+    rlang::abort(
+      "Unary batch dispatcher output must have length `length(x)`."
+    )
+  }
+  
+  return_mode <- .scholidonline_unary_return_mode(
+    operation = operation
+  )
+  
+  lapply(
+    x,
+    .scholidonline_validate_unary_result,
+    return_mode = return_mode
   )
 }
 

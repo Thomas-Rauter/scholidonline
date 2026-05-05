@@ -476,6 +476,209 @@
 }
 
 
+#' NCBI: return linked identifiers using one batch request
+#'
+#' @description
+#' Provider adapter retrieving identifiers linked to PMIDs or PMCIDs using one
+#' NCBI ID Converter API request.
+#'
+#' @param x A character vector of normalized PMID or PMCID strings.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages.
+#'
+#' @return A data.frame with columns `query_id`, `linked_type`,
+#'   `linked_value`, and `provider`.
+#'
+#' @noRd
+.links_ncbi_idconv_batch <- function(
+    x,
+    query_type,
+    ...,
+    quiet = FALSE
+) {
+  rlang::check_dots_empty()
+  
+  if (
+    !is.character(query_type) ||
+    length(query_type) != 1L ||
+    is.na(query_type) ||
+    !query_type %in% c("pmid", "pmcid")
+  ) {
+    stop(
+      "`query_type` must be either \"pmid\" or \"pmcid\".",
+      call. = FALSE
+    )
+  }
+  
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(data.frame())
+  }
+  
+  x_valid <- x[valid]
+  
+  url <- paste0(
+    "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=",
+    utils::URLencode(
+      paste(x_valid, collapse = ","),
+      reserved = TRUE
+    ),
+    "&format=json"
+  )
+  
+  req <- .scholidonline_request(url)
+  req <- .scholidonline_req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- .scholidonline_req_perform_safe(req = req)
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI request failed.")
+    }
+    return(data.frame())
+  }
+  
+  status <- .scholidonline_resp_status(resp = resp)
+  
+  if (!(status >= 200L && status < 300L)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn(
+        paste0("NCBI request returned HTTP ", status, ".")
+      )
+    }
+    return(data.frame())
+  }
+  
+  json <- tryCatch(
+    .scholidonline_resp_body_json(resp = resp),
+    error = function(e) NULL
+  )
+  
+  if (is.null(json)) {
+    return(data.frame())
+  }
+  
+  records <- json$records
+  
+  if (is.null(records) || length(records) == 0L) {
+    return(data.frame())
+  }
+  
+  rows <- list()
+  
+  for (rec in records) {
+    if (!is.null(rec$status) && identical(rec$status, "error")) {
+      next
+    }
+    
+    query_id <- if (identical(query_type, "pmid")) {
+      rec$pmid %||% NA_character_
+    } else {
+      rec$pmcid %||% NA_character_
+    }
+    
+    if (is.na(query_id) || !nzchar(query_id)) {
+      next
+    }
+    
+    if (!is.null(rec$pmid)) {
+      rows[[length(rows) + 1L]] <- data.frame(
+        query_id = query_id,
+        linked_type = "pmid",
+        linked_value = as.character(rec$pmid),
+        provider = "ncbi",
+        stringsAsFactors = FALSE
+      )
+    }
+    
+    if (!is.null(rec$pmcid)) {
+      rows[[length(rows) + 1L]] <- data.frame(
+        query_id = query_id,
+        linked_type = "pmcid",
+        linked_value = as.character(rec$pmcid),
+        provider = "ncbi",
+        stringsAsFactors = FALSE
+      )
+    }
+    
+    if (!is.null(rec$doi)) {
+      rows[[length(rows) + 1L]] <- data.frame(
+        query_id = query_id,
+        linked_type = "doi",
+        linked_value = as.character(rec$doi),
+        provider = "ncbi",
+        stringsAsFactors = FALSE
+      )
+    }
+  }
+  
+  if (length(rows) == 0L) {
+    return(data.frame())
+  }
+  
+  do.call(
+    rbind,
+    rows
+  )
+}
+
+
+#' NCBI: return identifiers linked to PMIDs using one batch request
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages.
+#'
+#' @return A data.frame with columns `query_id`, `linked_type`,
+#'   `linked_value`, and `provider`.
+#'
+#' @noRd
+.links_pmid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .links_ncbi_idconv_batch(
+    x = x,
+    query_type = "pmid",
+    ...,
+    quiet = quiet
+  )
+}
+
+
+#' NCBI: return identifiers linked to PMCIDs using one batch request
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param ... Unused.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages.
+#'
+#' @return A data.frame with columns `query_id`, `linked_type`,
+#'   `linked_value`, and `provider`.
+#'
+#' @noRd
+.links_pmcid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .links_ncbi_idconv_batch(
+    x = x,
+    query_type = "pmcid",
+    ...,
+    quiet = quiet
+  )
+}
+
+
 # id_metadata() provider functions ---------------------------------------------
 
 

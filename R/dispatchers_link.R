@@ -297,3 +297,144 @@
     )
   )
 }
+
+
+#' Return linked identifiers for PMIDs in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving identifiers linked to PMIDs.
+#'
+#' @param x A character vector of normalized PMID strings.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.links_pmid_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+  
+  switch(
+    provider,
+    ncbi = {
+      res <- .links_pmid_ncbi_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .links_ncbi_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
+  )
+}
+
+
+#' Return linked identifiers for PMCIDs in batch
+#'
+#' @description
+#' Internal batch dispatcher for retrieving identifiers linked to PMCIDs.
+#'
+#' @param x A character vector of normalized PMCID strings.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A list with one data.frame per input.
+#'
+#' @noRd
+.links_pmcid_batch <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+  
+  switch(
+    provider,
+    ncbi = {
+      res <- .links_pmcid_ncbi_batch(
+        x = x,
+        ...,
+        quiet = quiet
+      )
+      
+      .links_ncbi_batch_split(
+        x = x,
+        res = res
+      )
+    },
+    NULL
+  )
+}
+
+
+# Level 2 function (functions called by level 1 functions) ---------------------
+
+
+#' Split NCBI linked-identifier batch output by query
+#'
+#' @param x A character vector of normalized query identifiers.
+#' @param res A data.frame returned by an NCBI links batch provider.
+#'
+#' @return A list with one data.frame per input element.
+#'
+#' @noRd
+.links_ncbi_batch_split <- function(
+    x,
+    res
+) {
+  out <- vector(
+    mode = "list",
+    length = length(x)
+  )
+  
+  if (is.null(res) || nrow(res) == 0L) {
+    for (i in seq_along(out)) {
+      out[[i]] <- data.frame()
+    }
+    
+    return(out)
+  }
+  
+  for (i in seq_along(x)) {
+    hits <- which(res$query_id == x[[i]])
+    
+    if (length(hits) < 1L) {
+      out[[i]] <- data.frame()
+      next
+    }
+    
+    out[[i]] <- res[
+      hits,
+      c("linked_type", "linked_value", "provider"),
+      drop = FALSE
+    ]
+  }
+  
+  out
+}
