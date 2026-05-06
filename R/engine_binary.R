@@ -63,6 +63,19 @@
     times = n
   )
   
+  batch <- .run_binary_batch(
+    x = x,
+    from = from_vec,
+    to = to,
+    provider = provider,
+    ...,
+    quiet = quiet
+  )
+  
+  if (!is.null(batch)) {
+    return(batch)
+  }
+  
   for (i in seq_len(n)) {
     
     xi <- x[[i]]
@@ -258,6 +271,99 @@
 }
 
 
+#' Run a binary scholidonline operation in batch mode
+#'
+#' @description
+#' Internal helper used by `.scholidonline_run_binary()` to execute a binary
+#' operation through an optional batch dispatcher.
+#'
+#' Batch execution is only attempted when all inputs have the same source
+#' identifier type, the conversion is not an identity mapping, and a batch
+#' dispatcher exists. If no batch dispatcher exists, this helper returns
+#' `NULL` and the scalar engine path is used.
+#'
+#' @param x A character vector of normalized identifiers.
+#' @param from A character vector of source identifier types with length
+#'   `length(x)`.
+#' @param to A single target identifier type string.
+#' @param provider Provider choice or `"auto"`.
+#' @param ... Passed to the batch dispatcher.
+#' @param quiet Logical flag forwarded to the batch dispatcher.
+#'
+#' @return A character vector with one value per input, or `NULL` if no batch
+#'   path is available.
+#'
+#' @noRd
+.run_binary_batch <- function(
+    x,
+    from,
+    to,
+    provider,
+    ...,
+    quiet
+) {
+  n <- length(x)
+  
+  if (n < 1L) {
+    return(NULL)
+  }
+  
+  if (length(from) != n) {
+    rlang::abort("`from` must have length `length(x)`.")
+  }
+  
+  if (any(is.na(x)) || any(is.na(from))) {
+    return(NULL)
+  }
+  
+  if (length(unique(from)) != 1L) {
+    return(NULL)
+  }
+  
+  from_i <- from[[1L]]
+  
+  if (.scholidonline_binary_identity(from = from_i, to = to)) {
+    return(NULL)
+  }
+  
+  meta <- .scholidonline_get_binary_meta(
+    from = from_i,
+    to = to
+  )
+  
+  provider_i <- .scholidonline_resolve_binary_provider(
+    provider = provider,
+    meta = meta
+  )
+  
+  dispatcher <- .get_binary_batch_dispatcher(
+    meta = meta
+  )
+  
+  if (is.null(dispatcher)) {
+    return(NULL)
+  }
+  
+  out <- dispatcher(
+    x = x,
+    from = from_i,
+    to = to,
+    provider = provider_i,
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(out)) {
+    return(NULL)
+  }
+  
+  .validate_binary_batch_result(
+    x = out,
+    n = n
+  )
+}
+
+
 #' Check whether a binary scholidonline operation is an identity mapping
 #'
 #' @description
@@ -342,4 +448,72 @@
   )
   
   .scholidonline_as_character_scalar(result)
+}
+
+
+# Level 2 functions (functions called by level 1 functions) --------------------
+
+
+#' Get a binary batch dispatcher
+#'
+#' @description
+#' Internal helper used by the binary engine to resolve an optional batch
+#' dispatcher for a source/target/provider conversion combination.
+#'
+#' Batch dispatcher names follow the scalar dispatcher naming convention with
+#' a `_batch` suffix. For example, `.convert_pmid_to_pmcid_batch`.
+#'
+#' @param meta A named list of binary operation metadata.
+#'
+#' @return A function if a batch dispatcher exists, otherwise `NULL`.
+#'
+#' @noRd
+.get_binary_batch_dispatcher <- function(meta) {
+  if (!is.list(meta)) {
+    rlang::abort("`meta` must be a list.")
+  }
+  
+  if (is.null(meta$dispatcher)) {
+    rlang::abort("`meta` must contain `dispatcher`.")
+  }
+  
+  name <- paste0(meta$dispatcher, "_batch")
+  
+  if (!exists(name, mode = "function", inherits = TRUE)) {
+    return(NULL)
+  }
+  
+  get(name, mode = "function", inherits = TRUE)
+}
+
+
+#' Validate a binary batch result
+#'
+#' @description
+#' Internal helper used by the binary engine to validate and standardize the
+#' return value of a batch dispatcher.
+#'
+#' Batch dispatchers must return a character vector with one value per input.
+#'
+#' @param x The value returned by a binary batch dispatcher.
+#' @param n Expected output length.
+#'
+#' @return A character vector with one value per input.
+#'
+#' @noRd
+.validate_binary_batch_result <- function(
+    x,
+    n
+) {
+  if (!is.character(x)) {
+    rlang::abort("Binary batch dispatchers must return a character vector.")
+  }
+  
+  if (length(x) != n) {
+    rlang::abort(
+      "Binary batch dispatcher output must have length `length(x)`."
+    )
+  }
+  
+  x
 }

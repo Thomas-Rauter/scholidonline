@@ -1145,6 +1145,8 @@
 
 # id_convert() provider functions ----------------------------------------------
 
+## Level 3 functions (functions called by level 2 functions) --------------------
+
 
 #' NCBI: PMID -> DOI
 #'
@@ -1586,4 +1588,301 @@
   }
   
   as.character(val)
+}
+
+
+#' NCBI: PMID -> PMCID in batch
+#'
+#' @param x A character vector of PMID strings.
+#' @param ... Passed to PMC ID Converter.
+#' @param quiet Logical.
+#'
+#' @return A character vector of PMCID values.
+#'
+#' @noRd
+.convert_pmid_to_pmcid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .convert_ncbi_idconv_batch(
+    x = x,
+    from = "pmid",
+    to = "pmcid",
+    ...,
+    quiet = quiet
+  )
+}
+
+
+#' NCBI: PMCID -> PMID in batch
+#'
+#' @param x A character vector of PMCID strings.
+#' @param ... Passed to PMC ID Converter.
+#' @param quiet Logical.
+#'
+#' @return A character vector of PMID values.
+#'
+#' @noRd
+.convert_pmcid_to_pmid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .convert_ncbi_idconv_batch(
+    x = x,
+    from = "pmcid",
+    to = "pmid",
+    ...,
+    quiet = quiet
+  )
+}
+
+
+#' NCBI: PMCID -> DOI in batch
+#'
+#' @param x A character vector of PMCID strings.
+#' @param ... Passed to PMC ID Converter.
+#' @param quiet Logical.
+#'
+#' @return A character vector of DOI values.
+#'
+#' @noRd
+.convert_pmcid_to_doi_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .convert_ncbi_idconv_batch(
+    x = x,
+    from = "pmcid",
+    to = "doi",
+    ...,
+    quiet = quiet
+  )
+}
+
+
+#' NCBI: DOI -> PMCID in batch
+#'
+#' @param x A character vector of DOI strings.
+#' @param ... Passed to PMC ID Converter.
+#' @param quiet Logical.
+#'
+#' @return A character vector of PMCID values.
+#'
+#' @noRd
+.convert_doi_to_pmcid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  .convert_ncbi_idconv_batch(
+    x = x,
+    from = "doi",
+    to = "pmcid",
+    ...,
+    quiet = quiet
+  )
+}
+
+
+## Level 4 functions (functions called by level 3 functions) --------------------
+
+
+#' NCBI ID Converter: batch convert identifiers
+#'
+#' @description
+#' Internal helper for batch conversions through the NCBI PMC ID Converter API.
+#'
+#' @param x A character vector of normalized identifiers.
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#' @param ... Passed to the NCBI ID Converter API.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages.
+#'
+#' @return A character vector with one value per input.
+#'
+#' @noRd
+.convert_ncbi_idconv_batch <- function(
+    x,
+    from,
+    to,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (
+    !is.character(from) ||
+    length(from) != 1L ||
+    is.na(from) ||
+    !from %in% c("pmid", "pmcid", "doi")
+  ) {
+    stop(
+      "`from` must be one of \"pmid\", \"pmcid\", or \"doi\".",
+      call. = FALSE
+    )
+  }
+  
+  if (
+    !is.character(to) ||
+    length(to) != 1L ||
+    is.na(to) ||
+    !to %in% c("pmid", "pmcid", "doi")
+  ) {
+    stop(
+      "`to` must be one of \"pmid\", \"pmcid\", or \"doi\".",
+      call. = FALSE
+    )
+  }
+  
+  out <- rep(NA_character_, length(x))
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(out)
+  }
+  
+  x_valid <- x[valid]
+  
+  js <- .scholidonline_pmc_idconv(
+    ids = paste(x_valid, collapse = ","),
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js) || is.null(js$records) || length(js$records) < 1L) {
+    return(out)
+  }
+  
+  records <- js$records
+  source_key <- .convert_ncbi_idconv_source_key(
+    records = records,
+    from = from
+  )
+  
+  out_valid <- rep(NA_character_, length(x_valid))
+  query_key <- .convert_ncbi_idconv_normalize_key(
+    x = x_valid,
+    type = from
+  )
+  
+  for (i in seq_along(x_valid)) {
+    hit <- match(query_key[[i]], source_key)
+    
+    if (is.na(hit)) {
+      next
+    }
+    
+    rec <- records[[hit]]
+    
+    if (!is.null(rec$status) && identical(rec$status, "error")) {
+      next
+    }
+    
+    value <- .convert_ncbi_idconv_record_value(
+      rec = rec,
+      type = to
+    )
+    
+    if (!is.na(value) && nzchar(value)) {
+      out_valid[[i]] <- value
+    }
+  }
+  
+  out[valid] <- out_valid
+  
+  out
+}
+
+
+## Level 5 functions (functions called by level 4 functions) --------------------
+
+
+#' NCBI ID Converter: extract source keys from records
+#'
+#' @param records A list of NCBI ID Converter records.
+#' @param from A single source identifier type string.
+#'
+#' @return A character vector of source keys.
+#'
+#' @noRd
+.convert_ncbi_idconv_source_key <- function(
+    records,
+    from
+) {
+  vapply(
+    records,
+    function(rec) {
+      value <- .convert_ncbi_idconv_record_value(
+        rec = rec,
+        type = from
+      )
+      
+      .convert_ncbi_idconv_normalize_key(
+        x = value,
+        type = from
+      )
+    },
+    character(1)
+  )
+}
+
+
+## Level 6 functions (functions called by level 5 functions) --------------------
+
+
+#' NCBI ID Converter: extract typed value from one record
+#'
+#' @param rec A single NCBI ID Converter record.
+#' @param type A single identifier type string.
+#'
+#' @return A single character value, or `NA_character_`.
+#'
+#' @noRd
+.convert_ncbi_idconv_record_value <- function(
+    rec,
+    type
+) {
+  value <- switch(
+    type,
+    pmid = rec$pmid %||% NA_character_,
+    pmcid = rec$pmcid %||% NA_character_,
+    doi = rec$doi %||% NA_character_,
+    NA_character_
+  )
+  
+  if (is.null(value) || length(value) < 1L || is.na(value[[1L]])) {
+    return(NA_character_)
+  }
+  
+  as.character(value[[1L]])
+}
+
+
+#' NCBI ID Converter: normalize matching keys
+#'
+#' @param x A character vector.
+#' @param type A single identifier type string.
+#'
+#' @return A character vector.
+#'
+#' @noRd
+.convert_ncbi_idconv_normalize_key <- function(
+    x,
+    type
+) {
+  out <- as.character(x)
+  
+  out[is.na(out)] <- NA_character_
+  
+  if (identical(type, "doi")) {
+    out <- tolower(out)
+  }
+  
+  out
 }
