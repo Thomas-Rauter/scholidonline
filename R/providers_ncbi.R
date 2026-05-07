@@ -1209,27 +1209,68 @@
     return(NA_character_)
   }
   
-  ids <- rec$articleids
-  
-  if (is.data.frame(ids) && "idtype" %in% names(ids)) {
-    hit <- ids[ids$idtype == "doi", , drop = FALSE]
-    
-    if (nrow(hit) < 1L) {
-      return(NA_character_)
-    }
-    
-    return(as.character(hit$value[[1]]))
+  .convert_ncbi_articleids_to_doi(
+    ids = rec$articleids
+  )
+}
+
+
+#' NCBI: PMID -> DOI in batch
+#'
+#' @param x A character vector of PMID strings.
+#' @param ... Passed to NCBI E-utilities.
+#' @param quiet Logical.
+#'
+#' @return A character vector of DOI values.
+#'
+#' @noRd
+.convert_pmid_to_doi_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
   }
   
-  if (is.list(ids)) {
-    for (i in seq_along(ids)) {
-      if (isTRUE(ids[[i]]$idtype == "doi")) {
-        return(as.character(ids[[i]]$value))
-      }
-    }
+  out <- rep(NA_character_, length(x))
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(out)
   }
   
-  NA_character_
+  x_valid <- x[valid]
+  
+  js <- .scholidonline_esummary_pubmed(
+    id = paste(x_valid, collapse = ","),
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js) || is.null(js$result)) {
+    return(out)
+  }
+  
+  out_valid <- rep(NA_character_, length(x_valid))
+  
+  for (i in seq_along(x_valid)) {
+    xi <- x_valid[[i]]
+    rec <- js$result[[xi]]
+    
+    if (is.null(rec) || !is.null(rec$error)) {
+      next
+    }
+    
+    out_valid[[i]] <- .convert_ncbi_articleids_to_doi(
+      ids = rec$articleids
+    )
+  }
+  
+  out[valid] <- out_valid
+  
+  out
 }
 
 
@@ -1688,6 +1729,52 @@
 
 
 ## Level 4 functions (functions called by level 3 functions) --------------------
+
+
+#' NCBI PubMed ESummary: extract DOI from article IDs
+#'
+#' @param ids An `articleids` object from an NCBI PubMed ESummary record.
+#'
+#' @return A single DOI string, or `NA_character_`.
+#'
+#' @noRd
+.convert_ncbi_articleids_to_doi <- function(ids) {
+  if (is.null(ids)) {
+    return(NA_character_)
+  }
+  
+  if (is.data.frame(ids) && "idtype" %in% names(ids)) {
+    hit <- ids[ids$idtype == "doi", , drop = FALSE]
+    
+    if (nrow(hit) < 1L || !"value" %in% names(hit)) {
+      return(NA_character_)
+    }
+    
+    value <- hit$value[[1L]]
+    
+    if (is.null(value) || is.na(value) || !nzchar(value)) {
+      return(NA_character_)
+    }
+    
+    return(as.character(value))
+  }
+  
+  if (is.list(ids)) {
+    for (i in seq_along(ids)) {
+      if (isTRUE(ids[[i]]$idtype == "doi")) {
+        value <- ids[[i]]$value
+        
+        if (is.null(value) || is.na(value) || !nzchar(value)) {
+          return(NA_character_)
+        }
+        
+        return(as.character(value))
+      }
+    }
+  }
+  
+  NA_character_
+}
 
 
 #' NCBI ID Converter: batch convert identifiers

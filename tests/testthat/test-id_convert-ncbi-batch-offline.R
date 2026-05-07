@@ -111,3 +111,34 @@ testthat::test_that("id_convert batches DOI to PMCID through NCBI", {
     c("PMC6784763", NA_character_, NA_character_)
   )
 })
+
+
+testthat::test_that("id_convert batches PMID to DOI through NCBI", {
+  testthat::local_mocked_bindings(
+    .convert_pmid_to_doi_ncbi_batch = function(x, ..., quiet = FALSE) {
+      testthat::expect_identical(
+        x,
+        c("31469695", "999999999")
+      )
+      
+      c("10.1097/EDE.0000000000001091", NA_character_)
+    }
+  )
+  
+  out <- id_convert(
+    c("31469695", "999999999", NA_character_),
+    from = "pmid",
+    to = "doi",
+    provider = "ncbi",
+    quiet = TRUE
+  )
+  
+  testthat::expect_identical(
+    out,
+    c(
+      "10.1097/EDE.0000000000001091",
+      NA_character_,
+      NA_character_
+    )
+  )
+})

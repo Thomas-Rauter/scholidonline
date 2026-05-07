@@ -331,6 +331,10 @@ testthat::test_that(
         testthat::expect_true(is.list(meta))
         "auto"
       },
+      .get_binary_batch_dispatcher = function(meta) {
+        testthat::expect_true(is.list(meta))
+        NULL
+      },
       .scholidonline_get_dispatcher = function(name) {
         testthat::expect_identical(name, ".convert_pmid_to_doi")
         function(x, from, to, provider, ..., quiet) {

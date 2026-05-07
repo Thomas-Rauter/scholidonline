@@ -21,13 +21,28 @@ testthat::test_that("arXiv batch helper works against public API", {
   
   .arxiv_rate_limit_reset()
   
+  x <- c(
+    "hep-ex/0307015",
+    "0706.0001",
+    "1234.12345",
+    NA_character_
+  )
+  
+  txt <- .arxiv_query_id_list(
+    x,
+    quiet = TRUE
+  )
+  
+  skip_if_arxiv_live_unavailable(txt)
+  
+  testthat::local_mocked_bindings(
+    .arxiv_query_id_list = function(x, ..., quiet = FALSE) {
+      txt
+    }
+  )
+  
   out <- .exists_arxiv_arxiv_batch(
-    c(
-      "hep-ex/0307015",
-      "0706.0001",
-      "1234.12345",
-      NA_character_
-    ),
+    x,
     quiet = TRUE
   )
   
@@ -64,6 +79,8 @@ testthat::test_that("arXiv batch query returns article entry IDs", {
     c("hep-ex/0307015", "0706.0001", "1234.12345"),
     quiet = TRUE
   )
+  
+  skip_if_arxiv_live_unavailable(txt)
   
   ids <- .arxiv_extract_entry_ids(txt)
   

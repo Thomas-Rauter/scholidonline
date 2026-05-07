@@ -167,34 +167,42 @@ testthat::test_that(
 
 
 testthat::test_that(
-  "id_exists (online): arXiv existence works",
-  {
-    skip_if_no_internet_for_live_tests()
-    
-    out_valid <- scholidonline::id_exists(
-      x = "2203.00001",
-      type = "arxiv",
-      provider = "arxiv",
-      quiet = TRUE
-    )
-    
-    out_invalid <- scholidonline::id_exists(
-      x = "9999.99999",
-      type = "arxiv",
-      provider = "arxiv",
-      quiet = TRUE
-    )
-    
-    testthat::expect_identical(out_valid, TRUE)
-    testthat::expect_identical(out_invalid, FALSE)
-  }
-)
-
-
-testthat::test_that(
   "id_exists (online): mixed type inference works against live services",
   {
     skip_if_no_internet_for_live_tests()
+    
+    old_rate_limit <- getOption("scholidonline.rate_limit")
+    old_interval <- getOption("scholidonline.arxiv.min_interval")
+    
+    on.exit(
+      {
+        options(
+          scholidonline.rate_limit = old_rate_limit,
+          scholidonline.arxiv.min_interval = old_interval
+        )
+      },
+      add = TRUE
+    )
+    
+    options(
+      scholidonline.rate_limit = TRUE,
+      scholidonline.arxiv.min_interval = 3
+    )
+    
+    .arxiv_rate_limit_reset()
+    
+    arxiv_txt <- .arxiv_query_id_list(
+      "2203.00001",
+      quiet = TRUE
+    )
+    
+    skip_if_arxiv_live_unavailable(arxiv_txt)
+    
+    testthat::local_mocked_bindings(
+      .arxiv_query_id_list = function(x, ..., quiet = FALSE) {
+        arxiv_txt
+      }
+    )
     
     out <- scholidonline::id_exists(
       x = c(
@@ -240,13 +248,28 @@ testthat::test_that("id_exists checks arXiv vectors against public API", {
   
   .arxiv_rate_limit_reset()
   
+  x <- c(
+    "hep-ex/0307015",
+    "0706.0001",
+    "1234.12345",
+    NA_character_
+  )
+  
+  txt <- .arxiv_query_id_list(
+    x,
+    quiet = TRUE
+  )
+  
+  skip_if_arxiv_live_unavailable(txt)
+  
+  testthat::local_mocked_bindings(
+    .arxiv_query_id_list = function(x, ..., quiet = FALSE) {
+      txt
+    }
+  )
+  
   out <- id_exists(
-    c(
-      "hep-ex/0307015",
-      "0706.0001",
-      "1234.12345",
-      NA_character_
-    ),
+    x,
     type = "arxiv",
     quiet = TRUE
   )
