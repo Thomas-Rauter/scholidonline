@@ -21,14 +21,29 @@ testthat::test_that("id_links checks arXiv vectors against public API", {
   
   .arxiv_rate_limit_reset()
   
+  x <- c(
+    "hep-ex/0307015",
+    "0706.0001",
+    "1503.07589",
+    "1234.12345",
+    NA_character_
+  )
+  
+  txt <- .arxiv_query_id_list(
+    x,
+    quiet = TRUE
+  )
+  
+  skip_if_arxiv_live_unavailable(txt)
+  
+  testthat::local_mocked_bindings(
+    .arxiv_query_id_list = function(x, ..., quiet = FALSE) {
+      txt
+    }
+  )
+  
   out <- id_links(
-    c(
-      "hep-ex/0307015",
-      "0706.0001",
-      "1503.07589",
-      "1234.12345",
-      NA_character_
-    ),
+    x,
     type = "arxiv",
     quiet = TRUE
   )

@@ -221,6 +221,68 @@
 }
 
 
+#' Convert DOIs to PMIDs in batch
+#'
+#' @description
+#' Internal batch dispatcher for converting DOIs to PMIDs.
+#'
+#' @param x A character vector of normalized DOI strings.
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A character vector with one value per input.
+#'
+#' @noRd
+.convert_doi_to_pmid_batch <- function(
+    x,
+    from,
+    to,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  if (identical(provider, "auto")) {
+    out <- .convert_doi_to_pmid_ncbi_batch(
+      x = x,
+      ...,
+      quiet = TRUE
+    )
+    
+    missing <- is.na(out)
+    
+    if (any(missing)) {
+      out[missing] <- vapply(
+        x[missing],
+        .convert_doi_to_pmid_epmc,
+        character(1),
+        ...,
+        quiet = TRUE
+      )
+    }
+    
+    return(out)
+  }
+  
+  switch(
+    provider,
+    ncbi = .convert_doi_to_pmid_ncbi_batch(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    NULL
+  )
+}
+
+
 #' Convert a PMCID to a PMID
 #'
 #' @description

@@ -35,3 +35,23 @@ skip_if_arxiv_live_unavailable <- function(txt) {
   
   invisible(NULL)
 }
+
+
+#' Conditionally skip when NCBI live tests cannot get a usable response
+#'
+#' @param out A result vector returned by an NCBI live helper.
+#'
+#' @return Invisibly returns `NULL`.
+#' @keywords internal
+skip_if_ncbi_live_unavailable <- function(out) {
+  if (length(out) < 1L || is.na(out[[1L]])) {
+    testthat::skip(
+      paste(
+        "Skipping live NCBI test because NCBI returned no usable",
+        "response, likely due to temporary service unavailability."
+      )
+    )
+  }
+  
+  invisible(NULL)
+}

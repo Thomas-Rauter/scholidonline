@@ -1352,6 +1352,142 @@
 }
 
 
+#' NCBI: DOI -> PMID in batch
+#'
+#' @param x A character vector of DOI strings.
+#' @param ... Passed to NCBI E-utilities.
+#' @param quiet Logical.
+#'
+#' @return A character vector of PMID values.
+#'
+#' @noRd
+.convert_doi_to_pmid_ncbi_batch <- function(
+    x,
+    ...,
+    quiet = FALSE
+) {
+  if (!is.character(x)) {
+    stop("`x` must be a character vector.", call. = FALSE)
+  }
+  
+  out <- rep(NA_character_, length(x))
+  
+  valid <- !is.na(x) & nzchar(x)
+  
+  if (!any(valid)) {
+    return(out)
+  }
+  
+  x_valid <- x[valid]
+  query_key <- tolower(x_valid)
+  
+  terms <- paste0(
+    "\"",
+    x_valid,
+    "\"[DOI]"
+  )
+  
+  req <- .scholidonline_request(
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+  )
+  req <- .scholidonline_req_url_query(
+    req = req,
+    db = "pubmed",
+    term = paste(terms, collapse = " OR "),
+    retmode = "json",
+    retmax = length(x_valid),
+    !!!
+      list(...)
+  )
+  req <- .scholidonline_req_error(
+    req = req,
+    is_error = function(resp) FALSE
+  )
+  
+  resp <- .scholidonline_req_perform_safe(req = req)
+  
+  if (is.null(resp)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI request failed.")
+    }
+    return(out)
+  }
+  
+  status <- .scholidonline_resp_status(resp = resp)
+  
+  if (status < 200L || status >= 300L) {
+    if (!isTRUE(quiet)) {
+      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
+    }
+    return(out)
+  }
+  
+  search <- tryCatch(
+    .scholidonline_resp_body_json(
+      resp = resp,
+      simplifyVector = FALSE
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(search)) {
+    if (!isTRUE(quiet)) {
+      rlang::warn("NCBI response could not be parsed as JSON.")
+    }
+    
+    return(out)
+  }
+  
+  pmids <- search$esearchresult$idlist
+  
+  if (is.null(pmids) || length(pmids) < 1L) {
+    return(out)
+  }
+  
+  pmids <- as.character(pmids)
+  
+  js <- .scholidonline_esummary_pubmed(
+    id = paste(pmids, collapse = ","),
+    ...,
+    quiet = quiet
+  )
+  
+  if (is.null(js) || is.null(js$result)) {
+    return(out)
+  }
+  
+  returned_doi <- rep(NA_character_, length(pmids))
+  
+  for (i in seq_along(pmids)) {
+    rec <- js$result[[pmids[[i]]]]
+    
+    if (is.null(rec) || !is.null(rec$error)) {
+      next
+    }
+    
+    returned_doi[[i]] <- tolower(
+      .convert_ncbi_articleids_to_doi(
+        ids = rec$articleids
+      )
+    )
+  }
+  
+  out_valid <- rep(NA_character_, length(x_valid))
+  
+  for (i in seq_along(x_valid)) {
+    hit <- match(query_key[[i]], returned_doi)
+    
+    if (!is.na(hit)) {
+      out_valid[[i]] <- pmids[[hit]]
+    }
+  }
+  
+  out[valid] <- out_valid
+  
+  out
+}
+
+
 #' NCBI: PMCID -> PMID
 #'
 #' @param x A single PMCID string.
