@@ -295,6 +295,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -402,6 +404,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -536,6 +540,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -719,6 +725,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -823,6 +831,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -940,6 +950,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -1045,6 +1057,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -1180,6 +1194,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -1308,6 +1324,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -1403,6 +1421,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -1519,6 +1539,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -1588,6 +1610,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   
@@ -1659,6 +1683,8 @@
     is_error = function(resp) FALSE
   )
   
+  .ncbi_rate_limit(quiet = quiet)
+  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
@@ -1728,6 +1754,8 @@
     req = req,
     is_error = function(resp) FALSE
   )
+  
+  .ncbi_rate_limit(quiet = quiet)
   
   resp <- .scholidonline_req_perform_safe(req = req)
   

@@ -111,8 +111,16 @@
 #' @return A parsed JSON object (list), or `NULL` on failure.
 #'
 #' @noRd
-.scholidonline_pmc_idconv <- function(ids, ..., quiet = FALSE) {
+.scholidonline_pmc_idconv <- function(
+    ids,
+    ...,
+    quiet = FALSE
+) {
   dots <- list(...)
+  
+  .ncbi_rate_limit(
+    quiet = quiet
+  )
   
   .scholidonline_req_json(
     url = "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/",
@@ -149,6 +157,10 @@
     quiet = FALSE
 ) {
   dots <- list(...)
+  
+  .ncbi_rate_limit(
+    quiet = quiet
+  )
   
   .scholidonline_req_json(
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
