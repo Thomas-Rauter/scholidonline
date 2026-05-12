@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://thomas-rauter.github.io/scholidonline/dev/LICENSE-text.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/dev/LICENSE.html</loc></url>
+<url><loc>https://thomas-rauter.github.io/scholidonline/dev/articles/batching_and_throttling.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/dev/articles/get_started.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/dev/articles/index.html</loc></url>
 <url><loc>https://thomas-rauter.github.io/scholidonline/dev/articles/online_resolution.html</loc></url>
