@@ -82,6 +82,8 @@
   page_size <- dots$pageSize %||% 1L
   format <- dots$format %||% "json"
   
+  .epmc_rate_limit(quiet = quiet)
+  
   .scholidonline_req_json(
     url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
     query = list(query = query, format = format, pageSize = page_size),

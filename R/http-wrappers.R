@@ -131,6 +131,44 @@
 }
 
 
+#' HTTP JSON body safe wrapper
+#'
+#' @description
+#' Parse an HTTP response body as JSON, returning `NULL` instead of throwing
+#' when the response body cannot be parsed.
+#'
+#' This helper is intended for provider implementations where malformed or
+#' non-JSON provider responses should be treated as unavailable data rather
+#' than as package errors.
+#'
+#' @param resp An httr2 response object.
+#' @param ... Passed to `httr2::resp_body_json()`.
+#' @param quiet Logical; if `TRUE`, suppress warnings.
+#'
+#' @return A parsed JSON object, or `NULL` on parse failure.
+#'
+#' @noRd
+.scholidonline_resp_body_json_safe <- function(
+    resp,
+    ...,
+    quiet = FALSE
+) {
+  tryCatch(
+    .scholidonline_resp_body_json(
+      resp = resp,
+      ...
+    ),
+    error = function(e) {
+      if (!isTRUE(quiet)) {
+        rlang::warn("HTTP response could not be parsed as JSON.")
+      }
+      
+      NULL
+    }
+  )
+}
+
+
 #' HTTP string body wrapper
 #'
 #' @param resp An httr2 response object.

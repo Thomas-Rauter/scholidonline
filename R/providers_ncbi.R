@@ -1422,8 +1422,6 @@
     is_error = function(resp) FALSE
   )
   
-  .ncbi_rate_limit(quiet = quiet)
-  
   resp <- .scholidonline_req_perform_safe(req = req)
   
   if (is.null(resp)) {
