@@ -1,7 +1,7 @@
 Package: scholidonline
 Type: Package
 Title: Resolution, Conversion, Linking and Metadata for Scholarly Identifiers
-Version: 0.1.0.9999
+Version: 0.1.1
 Language: en-US
 Authors@R:
     person("Thomas", "Rauter",

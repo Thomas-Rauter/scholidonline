@@ -13,6 +13,7 @@ navbar:
       - get-started
       - reference
       - online-resolution
+      - batching-and-throttling
       - news
 
   components:
@@ -23,6 +24,10 @@ navbar:
     online-resolution:
       text: "Online resolution"
       href: articles/online_resolution.html
+    
+    batching-and-throttling:
+      text: "Batching and throttling"
+      href: articles/batching_and_throttling.html
 
     news:
       text: "News"

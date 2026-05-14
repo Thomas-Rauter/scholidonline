@@ -28,28 +28,38 @@ whether a provider request was scalar or batched internally.
 
 Prefer vectorized calls such as:
 
-# scholidonline::id_exists(
-#   c("31452104", "999999999"),
-#   type = "pmid",
-#   provider = "ncbi"
-# )
+```{r vectorized calls, eval = TRUE}
+scholidonline::id_exists(
+  c("31452104", "999999999"),
+  type = "pmid",
+  provider = "ncbi"
+)
+```
 
 over manual loops such as:
 
-# vapply(
-#   c("31452104", "999999999"),
-#   function(x) {
-#     scholidonline::id_exists(
-#       x,
-#       type = "pmid",
-#       provider = "ncbi"
-#     )
-#   },
-#   logical(1)
-# )
+```{r manual loops, eval = TRUE}
+vapply(
+  c("31452104", "999999999"),
+  function(x) {
+    scholidonline::id_exists(
+      x,
+      type = "pmid",
+      provider = "ncbi"
+    )
+  },
+  logical(1)
+)
+```
 
 Vectorized calls give the package an opportunity to use provider-supported
 batching and avoid unnecessary repeated requests.
+
+Provider etiquette is especially relevant for scripted workflows, large
+identifier vectors, repeated checks during development, and automated tests
+that query live services. Even when each individual request is valid, many
+rapid requests can make a provider temporarily unavailable for the current
+session or client.
 
 # Batching
 
@@ -59,44 +69,64 @@ the public API or the shape of returned objects.
 
 For example, `id_exists()` still returns one logical value per input:
 
-# scholidonline::id_exists(
-#   c("31452104", "999999999", NA_character_),
-#   type = "pmid",
-#   provider = "ncbi"
-# )
+```{r id_exists batching, eval = TRUE}
+scholidonline::id_exists(
+  c("31452104", "999999999", NA_character_),
+  type = "pmid",
+  provider = "ncbi"
+)
+```
 
 Likewise, `id_metadata()` still returns one row per input identifier:
 
-# scholidonline::id_metadata(
-#   c("31452104", "999999999", NA_character_),
-#   type = "pmid",
-#   provider = "ncbi"
-# )
+```{r id_metadata batching, eval = TRUE}
+scholidonline::id_metadata(
+  c("31452104", "999999999", NA_character_),
+  type = "pmid",
+  provider = "ncbi"
+)
+```
 
 `id_links()` still returns a long data frame of discovered links:
 
-# scholidonline::id_links(
-#   c("PMC6784763", "PMC999999999", NA_character_),
-#   type = "pmcid",
-#   provider = "ncbi"
-# )
+```{r id_links batching, eval = TRUE}
+scholidonline::id_links(
+  c("PMC6784763", "PMC999999999", NA_character_),
+  type = "pmcid",
+  provider = "ncbi"
+)
+```
 
 And `id_convert()` still returns one converted identifier per input:
 
-# scholidonline::id_convert(
-#   c("31469695", "999999999", NA_character_),
-#   from = "pmid",
-#   to = "pmcid",
-#   provider = "ncbi"
-# )
+```{r id_convert batching, eval = TRUE}
+scholidonline::id_convert(
+  c("31469695", "999999999", NA_character_),
+  from = "pmid",
+  to = "pmcid",
+  provider = "ncbi"
+)
+```
 
 Batching is provider- and operation-specific. Some providers offer clean
 multi-identifier endpoints; others do not. `scholidonline` uses batching only
 where the provider interface supports reliable mapping back to the original
 input identifiers.
 
+For example, batching is used for selected arXiv operations and for selected
+NCBI-backed PMID, PMCID, and DOI operations. These include existence checks,
+metadata retrieval, linked-identifier lookup, and supported identifier
+conversions where the provider response can be mapped safely back to the input
+vector.
+
 When batching is not available, the package falls back to scalar provider calls
-while preserving the same public return contract.
+while preserving the same public return contract. This means users can write
+the same vectorized code regardless of whether a provider currently supports a
+batch endpoint for that operation.
+
+Batching also helps with provider etiquette because one request for a vector of
+identifiers is usually preferable to one request per identifier. For this
+reason, vectorized calls should generally be preferred over manual loops.
 
 # Throttling
 
@@ -106,23 +136,42 @@ requests may wait if they occur too soon after the previous request.
 
 Package-managed rate limiting is enabled by default:
 
-# options(scholidonline.rate_limit = TRUE)
+```{r rate limit default, eval = TRUE}
+options(scholidonline.rate_limit = TRUE)
+```
 
 Users can disable package-managed waiting:
 
-# options(scholidonline.rate_limit = FALSE)
+```{r disable rate limiting, eval = TRUE}
+options(scholidonline.rate_limit = FALSE)
+```
 
 Provider-specific intervals can also be adjusted. For example, arXiv access is
 intentionally conservative:
 
-# options(scholidonline.arxiv.min_interval = 3)
+```{r arxiv throttling, eval = TRUE}
+options(scholidonline.arxiv.min_interval = 3)
+```
 
 NCBI requests use a shorter default interval:
 
-# options(scholidonline.ncbi.min_interval = 0.34)
+```{r NCBI throttling, eval = TRUE}
+options(scholidonline.ncbi.min_interval = 0.34)
+```
+
+Europe PMC requests can also be controlled separately:
+
+```{r PMC throttling, eval = TRUE}
+options(scholidonline.epmc.min_interval = 1)
+```
 
 These options affect future requests in the current R session. They do not
 change the meaning of results.
+
+The rate limiter is process-local. It tracks requests made in the current R
+session. It is not shared across parallel R sessions, background R processes,
+or separate machines. If you run highly parallel code, each R process may have
+its own rate-limit state.
 
 A provider failure is not the same as a confirmed absence. In `id_exists()`,
 the return values have distinct meanings:
@@ -134,5 +183,13 @@ the return values have distinct meanings:
   could not be normalized, the provider was unavailable, or the provider
   response could not be interpreted safely.
 
+This distinction matters for live services. A temporary rate-limit response,
+service outage, malformed response, or network failure should not be treated as
+evidence that an identifier does not exist. In such cases, `NA` is the safer
+result.
+
 For normal use, it is best to keep rate limiting enabled and to prefer
-vectorized calls over manual loops.
+vectorized calls over manual loops. Users who need stricter provider etiquette
+can increase the provider-specific intervals. Users who already manage request
+pacing externally can disable package-managed waiting with
+`options(scholidonline.rate_limit = FALSE)`.

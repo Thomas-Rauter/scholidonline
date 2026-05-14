@@ -4,6 +4,12 @@
 [![R-CMD-check](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&logo=codecov)](https://app.codecov.io/gh/Thomas-Rauter/scholidonline)
+[![CRAN
+since](https://img.shields.io/badge/CRAN%20since-April%202026-blue)](https://CRAN.R-project.org/package=scholidonline)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/scholidonline)](https://CRAN.R-project.org/package=scholidonline)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/last-month/scholidonline)](https://CRAN.R-project.org/package=scholidonline)
 
 `scholidonline` provides lightweight **online** utilities for working
 with scholarly identifiers in R. It builds on
@@ -48,7 +54,7 @@ User-available functions:
 |----|----|
 | `scholidonline_types()` | Supported scholidonline identifier types |
 | `scholidonline_capabilities()` | Supported scholidonline capabilities |
-| `id_exists()` | Check whether identifiers exist in their respective registries |
+| `id_exists()` | Check whether identifiers exist in their registries |
 | `id_convert()` | Convert identifiers across systems (e.g., PMID → DOI) |
 | `id_metadata()` | Retrieve basic structured metadata |
 | `id_links()` | Discover identifiers linked to the same scholarly record |
