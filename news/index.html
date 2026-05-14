@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,6 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/get_started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/online_resolution.html">Online resolution</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/batching_and_throttling.html">Batching and throttling</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -31,14 +32,23 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0" id="scholidonline-010">scholidonline 0.1.0<a class="anchor" aria-label="anchor" href="#scholidonline-010"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.1.1" id="scholidonline-011">scholidonline 0.1.1<a class="anchor" aria-label="anchor" href="#scholidonline-011"></a></h2>
+<ul><li>Added provider-level batching for selected arXiv and NCBI operations to reduce unnecessary live-service requests while preserving existing public return shapes.</li>
+<li>Added batched NCBI support for PMID, PMCID, and DOI metadata, linked-identifier lookup, existence checks, and supported identifier conversions.</li>
+<li>Moved batch execution into the unary and binary dispatch engines so batching is handled consistently through internal dispatchers rather than exported API functions.</li>
+<li>Added package-managed throttling for arXiv, NCBI, and Europe PMC requests, with user-configurable rate-limit options.</li>
+<li>Added a provider-etiquette vignette documenting batching, throttling, live-service behavior, and relevant user options.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="scholidonline-010">scholidonline 0.1.0<a class="anchor" aria-label="anchor" href="#scholidonline-010"></a></h2><p class="text-muted">CRAN release: 2026-04-07</p>
 <p>Initial release.</p>
 </div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

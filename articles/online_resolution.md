@@ -31,6 +31,7 @@ Structural validity answers:
 Example:
 
 ``` r
+
 scholid::is_scholid(
   "10.1000/182",
   type = "doi"
@@ -62,6 +63,7 @@ For example:
 Example:
 
 ``` r
+
 scholidonline::id_exists(
   "10.1000/182",
   type = "doi"

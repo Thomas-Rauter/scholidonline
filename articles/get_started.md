@@ -17,6 +17,7 @@ working with registry-connected identifier data.
 ## Installation
 
 ``` r
+
 install.packages("scholidonline")
 ```
 
@@ -36,6 +37,7 @@ install.packages("scholidonline")
 You can inspect which identifier types are supported:
 
 ``` r
+
 scholidonline::scholidonline_types()
 #> [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"
 ```
@@ -46,6 +48,7 @@ scholidonline::scholidonline_types()
 operations, conversions, and providers:
 
 ``` r
+
 out <- scholidonline::scholidonline_capabilities()
 knitr::kable(out)
 ```
@@ -80,6 +83,7 @@ knitr::kable(out)
 verifies whether identifiers exist in their respective registries.
 
 ``` r
+
 scholidonline::id_exists(
   x    = "10.1000/182",
   type = "doi"
@@ -90,6 +94,7 @@ scholidonline::id_exists(
 If `type = NULL`, the type is inferred automatically:
 
 ``` r
+
 scholidonline::id_exists(
   x = c(
     "10.1000/182",
@@ -116,6 +121,7 @@ Common examples:
 - DOI → PMCID
 
 ``` r
+
 scholidonline::id_convert(
   x    = "12345678",
   from = "pmid",
@@ -127,6 +133,7 @@ scholidonline::id_convert(
 If `from = NULL`, the source type is inferred per element:
 
 ``` r
+
 scholidonline::id_convert(
   x = c("12345678", "PMC1234567"),
   to = "doi"
@@ -142,6 +149,7 @@ Unresolvable mappings return `NA_character_`.
 retrieves harmonized metadata from external registries.
 
 ``` r
+
 out <- scholidonline::id_metadata(
   x    = "10.1038/nature12373",
   type = "doi"
@@ -149,15 +157,16 @@ out <- scholidonline::id_metadata(
 knitr::kable(out)
 ```
 
-| input               | type | provider | title                                        | year | container | doi                 | pmid | pmcid | url                                   |
-|:--------------------|:-----|:---------|:---------------------------------------------|-----:|:----------|:--------------------|:-----|:------|:--------------------------------------|
-| 10.1038/nature12373 | doi  | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature    | 10.1038/nature12373 | NA   | NA    | <https://doi.org/10.1038/nature12373> |
+| input | type | provider | title | year | container | doi | pmid | pmcid | url |
+|:---|:---|:---|:---|---:|:---|:---|:---|:---|:---|
+| 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
 Metadata completeness depends on the registry.
 
 You can restrict returned fields:
 
 ``` r
+
 out <- scholidonline::id_metadata(
   x = "10.1038/nature12373",
   type = "doi",
@@ -176,17 +185,19 @@ knitr::kable(out)
 returns related identifiers discovered via registry queries.
 
 ``` r
+
 out <- scholidonline::id_links(
   x    = "PMC1234567",
   type = "pmcid"
 )
+#> Waiting 0.01 seconds before NCBI request.
 knitr::kable(out)
 ```
 
-|     | query      | query_type | linked_type | linked_id                        | provider |
-|:----|:-----------|:-----------|:------------|:---------------------------------|:---------|
-| 1   | PMC1234567 | pmcid      | pmid        | 7717779                          | ncbi     |
-| 3   | PMC1234567 | pmcid      | doi         | 10.1097/00000658-199503000-00007 | ncbi     |
+|  | query | query_type | linked_type | linked_id | provider |
+|:---|:---|:---|:---|:---|:---|
+| 1 | PMC1234567 | pmcid | pmid | 7717779 | ncbi |
+| 3 | PMC1234567 | pmcid | doi | 10.1097/00000658-199503000-00007 | ncbi |
 
 The result is a long data.frame with one row per link.
 
@@ -201,6 +212,7 @@ A common workflow for messy identifier columns:
 Example:
 
 ``` r
+
 x <- c(
   "https://doi.org/10.1000/182",
   "PMCID: PMC1234567",
@@ -236,6 +248,7 @@ scholidonline::id_exists(x)
 Most functions accept a `provider` argument.
 
 ``` r
+
 scholidonline::id_exists(
   x        = "10.1000/182",
   type     = "doi",

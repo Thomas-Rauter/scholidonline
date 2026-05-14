@@ -8,16 +8,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.1/DESCRIPTION)
 
 Rauter T (2026). *scholidonline: Resolution, Conversion, Linking and
-Metadata for Scholarly Identifiers*. R package version 0.1.0,
+Metadata for Scholarly Identifiers*. R package version 0.1.1,
 <https://thomas-rauter.github.io/scholidonline/>.
 
     @Manual{,
       title = {scholidonline: Resolution, Conversion, Linking and Metadata for Scholarly Identifiers},
       author = {Thomas Rauter},
       year = {2026},
-      note = {R package version 0.1.0},
+      note = {R package version 0.1.1},
       url = {https://thomas-rauter.github.io/scholidonline/},
     }

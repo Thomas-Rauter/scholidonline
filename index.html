@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
 <li class="nav-item"><a class="nav-link" href="articles/get_started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/online_resolution.html">Online resolution</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/batching_and_throttling.html">Batching and throttling</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -51,7 +52,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="scholidonline">scholidonline<a class="anchor" aria-label="anchor" href="#scholidonline"></a>
 </h1></div>
-<p><a href="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/Thomas-Rauter/scholidonline" class="external-link"><img src="https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&amp;logo=codecov" alt="Codecov test coverage"></a></p>
+<p><a href="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Thomas-Rauter/scholidonline/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/Thomas-Rauter/scholidonline" class="external-link"><img src="https://img.shields.io/codecov/c/github/Thomas-Rauter/scholidonline?branch=main&amp;logo=codecov" alt="Codecov test coverage"></a> <a href="https://CRAN.R-project.org/package=scholidonline" class="external-link"><img src="https://img.shields.io/badge/CRAN%20since-April%202026-blue" alt="CRAN since"></a> <a href="https://CRAN.R-project.org/package=scholidonline" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/scholidonline" alt="CRAN downloads"></a> <a href="https://CRAN.R-project.org/package=scholidonline" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/scholidonline" alt="CRAN downloads"></a></p>
 <p><code>scholidonline</code> provides lightweight <strong>online</strong> utilities for working with scholarly identifiers in R. It builds on <a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a> for identifier detection and normalization, and adds minimal-dependency functions to query external registries.</p>
 <p>See the full documentation at the <a href="https://thomas-rauter.github.io/scholidonline/">scholidonline website</a>.</p>
 <div class="section level2">
@@ -89,32 +90,32 @@
 <col width="50%">
 <col width="50%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Function</th>
 <th>Purpose</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/scholidonline_types.html">scholidonline_types()</a></code></td>
 <td>Supported scholidonline identifier types</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code></td>
 <td>Supported scholidonline capabilities</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/id_exists.html">id_exists()</a></code></td>
-<td>Check whether identifiers exist in their respective registries</td>
+<td>Check whether identifiers exist in their registries</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/id_convert.html">id_convert()</a></code></td>
 <td>Convert identifiers across systems (e.g., PMID → DOI)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/id_metadata.html">id_metadata()</a></code></td>
 <td>Retrieve basic structured metadata</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/id_links.html">id_links()</a></code></td>
 <td>Discover identifiers linked to the same scholarly record</td>
 </tr>
@@ -190,7 +191,7 @@
 <col width="10%">
 <col width="10%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left">input</th>
 <th align="left">type</th>
 <th align="left">provider</th>
@@ -202,7 +203,7 @@
 <th align="left">pmcid</th>
 <th align="left">url</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td align="left">10.1038/nature12373</td>
 <td align="left">doi</td>
 <td align="left">crossref</td>
@@ -232,7 +233,7 @@
 <col width="37%">
 <col width="12%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left"></th>
 <th align="left">query</th>
 <th align="left">query_type</th>
@@ -240,7 +241,7 @@
 <th align="left">linked_id</th>
 <th align="left">provider</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td align="left">2</td>
 <td align="left">31452104</td>
 <td align="left">pmid</td>
@@ -265,6 +266,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=scholidonline" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/Thomas-Rauter/scholidonline/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/Thomas-Rauter/scholidonline/issues" class="external-link">Report a bug</a></li>
 </ul>
