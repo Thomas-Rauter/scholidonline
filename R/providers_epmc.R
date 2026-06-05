@@ -493,6 +493,47 @@
 # id_convert() provider functions ----------------------------------------------
 
 
+#' Europe PMC: convert an identifier via search and field extraction
+#'
+#' @param x A single normalized identifier string.
+#' @param query Europe PMC search query.
+#' @param field Result field to return (`"doi"`, `"pmid"`, or `"pmcid"`).
+#' @param ... Passed to Europe PMC search.
+#' @param quiet Logical.
+#'
+#' @return A single converted identifier string or `NA_character_`.
+#'
+#' @noRd
+.convert_epmc_field <- function(
+    x,
+    query,
+    field,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  js <- .scholidonline_epmc_search(
+    query = query,
+    ...,
+    quiet = quiet
+  )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
+
+  rec <- .scholidonline_epmc_first_result(x = js)
+  value <- rec[[field]] %||% NA_character_
+
+  if (is.na(value) || !nzchar(value)) {
+    return(NA_character_)
+  }
+
+  as.character(value)
+}
+
+
 #' Europe PMC: PMID -> DOI
 #'
 #' @param x A single PMID string.
@@ -507,28 +548,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("EXT_ID:", x, " AND SRC:MED")
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("EXT_ID:", x, " AND SRC:MED"),
+    field = "doi",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  doi <- rec$doi %||% NA_character_
-  
-  if (is.na(doi) || !nzchar(doi)) {
-    return(NA_character_)
-  }
-  
-  as.character(doi)
 }
 
 
@@ -546,28 +572,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("DOI:\"", x, "\"")
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("DOI:\"", x, "\""),
+    field = "pmid",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  pmid <- rec$pmid %||% NA_character_
-  
-  if (is.na(pmid) || !nzchar(pmid)) {
-    return(NA_character_)
-  }
-  
-  as.character(pmid)
 }
 
 
@@ -585,28 +596,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("PMCID:", x)
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("PMCID:", x),
+    field = "pmid",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  pmid <- rec$pmid %||% NA_character_
-  
-  if (is.na(pmid) || !nzchar(pmid)) {
-    return(NA_character_)
-  }
-  
-  as.character(pmid)
 }
 
 
@@ -624,28 +620,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("PMCID:", x)
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("PMCID:", x),
+    field = "doi",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  doi <- rec$doi %||% NA_character_
-  
-  if (is.na(doi) || !nzchar(doi)) {
-    return(NA_character_)
-  }
-  
-  as.character(doi)
 }
 
 
@@ -663,28 +644,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("EXT_ID:", x, " AND SRC:MED")
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("EXT_ID:", x, " AND SRC:MED"),
+    field = "pmcid",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  pmcid <- rec$pmcid %||% NA_character_
-  
-  if (is.na(pmcid) || !nzchar(pmcid)) {
-    return(NA_character_)
-  }
-  
-  as.character(pmcid)
 }
 
 
@@ -702,28 +668,13 @@
     ...,
     quiet = FALSE
 ) {
-  .scholidonline_check_scalar_chr(x = x)
-  
-  q <- paste0("DOI:\"", x, "\"")
-  
-  js <- .scholidonline_epmc_search(
-    query = q,
+  .convert_epmc_field(
+    x = x,
+    query = paste0("DOI:\"", x, "\""),
+    field = "pmcid",
     ...,
     quiet = quiet
   )
-  
-  if (is.null(js)) {
-    return(NA_character_)
-  }
-  
-  rec <- .scholidonline_epmc_first_result(x = js)
-  pmcid <- rec$pmcid %||% NA_character_
-  
-  if (is.na(pmcid) || !nzchar(pmcid)) {
-    return(NA_character_)
-  }
-  
-  as.character(pmcid)
 }
 
 
