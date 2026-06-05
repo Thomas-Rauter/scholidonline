@@ -2,6 +2,8 @@
 
 ## scholidonline 0.1.1
 
+CRAN release: 2026-05-14
+
 - Added provider-level batching for selected arXiv and NCBI operations
   to reduce unnecessary live-service requests while preserving existing
   public return shapes.
