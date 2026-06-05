@@ -172,8 +172,13 @@
     )
   }
   
-  providers <- pair_block$providers
-  default_provider <- pair_block$default_provider
+  conversion_meta <- .scholidonline_registry_conversion_meta(
+    from = from,
+    to = to,
+    reg = reg
+  )
+  providers <- conversion_meta$providers
+  default_provider <- conversion_meta$default_provider
   dispatcher <- pair_block$dispatcher
   
   if (is.null(providers) || !length(providers)) {

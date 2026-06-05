@@ -228,6 +228,30 @@ scholidonline_types <- function() {
 }
 
 
+#' Read existence-check metadata from a registry object
+#'
+#' @param type A single identifier type string.
+#' @param reg A scholidonline registry object.
+#'
+#' @return A list with `providers` and `default_provider`.
+#'
+#' @noRd
+.scholidonline_registry_exists_meta <- function(
+    type,
+    reg = .scholidonline_registry()
+) {
+  meta <- reg[[type]]$exists
+
+  if (is.null(meta)) {
+    rlang::abort(
+      paste0("Existence checking is not supported for `", type, "`.")
+    )
+  }
+
+  meta
+}
+
+
 #' Get existence-check metadata for an identifier type
 #'
 #' @param type A single identifier type string.
@@ -237,15 +261,32 @@ scholidonline_types <- function() {
 #' @noRd
 .scholidonline_exists_meta <- function(type) {
   type <- .scholidonline_match_type(type, arg = "type")
-  reg <- .scholidonline_registry()
-  meta <- reg[[type]]$exists
-  
+  .scholidonline_registry_exists_meta(type)
+}
+
+
+#' Read conversion metadata from a registry object
+#'
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#' @param reg A scholidonline registry object.
+#'
+#' @return A list with `providers` and `default_provider`.
+#'
+#' @noRd
+.scholidonline_registry_conversion_meta <- function(
+    from,
+    to,
+    reg = .scholidonline_registry()
+) {
+  meta <- reg[[from]]$convert[[to]]
+
   if (is.null(meta)) {
     rlang::abort(
-      paste0("Existence checking is not supported for `", type, "`.")
+      paste0("Unsupported conversion: ", from, " -> ", to, ".")
     )
   }
-  
+
   meta
 }
 
@@ -264,16 +305,7 @@ scholidonline_types <- function() {
 ) {
   from <- .scholidonline_match_type(from, arg = "from")
   to   <- .scholidonline_match_type(to, arg = "to")
-  reg <- .scholidonline_registry()
-  meta <- reg[[from]]$convert[[to]]
-  
-  if (is.null(meta)) {
-    rlang::abort(
-      paste0("Unsupported conversion: ", from, " -> ", to, ".")
-    )
-  }
-  
-  meta
+  .scholidonline_registry_conversion_meta(from, to)
 }
 
 

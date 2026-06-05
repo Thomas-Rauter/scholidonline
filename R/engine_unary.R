@@ -151,23 +151,34 @@
     rlang::abort(paste0("Unknown identifier type: ", type, "."))
   }
   
-  op_block <- type_block[[operation]]
-  
-  if (is.null(op_block)) {
-    rlang::abort(
-      paste0(
-        "Operation `",
-        operation,
-        "` not supported for type `",
-        type,
-        "`."
-      )
+  if (identical(operation, "exists")) {
+    exists_meta <- .scholidonline_registry_exists_meta(
+      type = type,
+      reg = reg
     )
+    op_block <- type_block[["exists"]]
+    providers <- exists_meta$providers
+    default_provider <- exists_meta$default_provider
+    dispatcher <- op_block$dispatcher
+  } else {
+    op_block <- type_block[[operation]]
+    
+    if (is.null(op_block)) {
+      rlang::abort(
+        paste0(
+          "Operation `",
+          operation,
+          "` not supported for type `",
+          type,
+          "`."
+        )
+      )
+    }
+    
+    providers <- op_block$providers
+    default_provider <- op_block$default_provider
+    dispatcher <- op_block$dispatcher
   }
-  
-  providers <- op_block$providers
-  default_provider <- op_block$default_provider
-  dispatcher <- op_block$dispatcher
   
   if (is.null(providers) || !length(providers)) {
     rlang::abort(
