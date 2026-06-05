@@ -78,49 +78,30 @@
   .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
-    
-    out_ncbi <- .meta_pmid_ncbi(
+    return(.dispatch_ncbi_epmc_auto(
       x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.null(out_ncbi) && nrow(out_ncbi) > 0L) {
-      return(out_ncbi)
-    }
-    
-    out_epmc <- .meta_pmid_epmc(
-      x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.null(out_epmc) && nrow(out_epmc) > 0L) {
-      return(out_epmc)
-    }
-    
-    if (!isTRUE(quiet)) {
-      rlang::warn(
+      ncbi_fn = .meta_pmid_ncbi,
+      epmc_fn = .meta_pmid_epmc,
+      is_success = .dispatch_ncbi_epmc_df_success,
+      empty_value = data.frame(),
+      warn_message = paste(
         "Metadata for this PMID could not be retrieved via NCBI or Europe PMC."
-      )
-    }
-    
-    return(data.frame())
+      ),
+      quiet = quiet,
+      ...
+    ))
   }
-  
-  switch(
-    provider,
-    ncbi = .meta_pmid_ncbi(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    epmc = .meta_pmid_epmc(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    rlang::abort(paste0("Unknown provider: ", provider))
+
+  .dispatch_ncbi_epmc_provider(
+    x = x,
+    provider = provider,
+    ncbi_fn = .meta_pmid_ncbi,
+    epmc_fn = .meta_pmid_epmc,
+    on_unknown = function(p) {
+      rlang::abort(paste0("Unknown provider: ", p))
+    },
+    quiet = quiet,
+    ...
   )
 }
 
@@ -201,49 +182,30 @@
   .scholidonline_check_scalar_chr(x)
   
   if (identical(provider, "auto")) {
-    
-    out_ncbi <- .meta_pmcid_ncbi(
+    return(.dispatch_ncbi_epmc_auto(
       x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.null(out_ncbi) && nrow(out_ncbi) > 0L) {
-      return(out_ncbi)
-    }
-    
-    out_epmc <- .meta_pmcid_epmc(
-      x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.null(out_epmc) && nrow(out_epmc) > 0L) {
-      return(out_epmc)
-    }
-    
-    if (!isTRUE(quiet)) {
-      rlang::warn(
+      ncbi_fn = .meta_pmcid_ncbi,
+      epmc_fn = .meta_pmcid_epmc,
+      is_success = .dispatch_ncbi_epmc_df_success,
+      empty_value = data.frame(),
+      warn_message = paste(
         "Metadata for this PMCID could not be retrieved via NCBI or Europe PMC."
-      )
-    }
-    
-    return(data.frame())
+      ),
+      quiet = quiet,
+      ...
+    ))
   }
-  
-  switch(
-    provider,
-    ncbi = .meta_pmcid_ncbi(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    epmc = .meta_pmcid_epmc(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    rlang::abort(paste0("Unknown provider: ", provider))
+
+  .dispatch_ncbi_epmc_provider(
+    x = x,
+    provider = provider,
+    ncbi_fn = .meta_pmcid_ncbi,
+    epmc_fn = .meta_pmcid_epmc,
+    on_unknown = function(p) {
+      rlang::abort(paste0("Unknown provider: ", p))
+    },
+    quiet = quiet,
+    ...
   )
 }
 

@@ -226,54 +226,35 @@
   )
   
   if (identical(provider, "auto")) {
-    
-    out_ncbi <- .exists_pmid_ncbi(
+    return(.dispatch_ncbi_epmc_auto(
       x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.na(out_ncbi)) {
-      return(out_ncbi)
-    }
-    
-    out_epmc <- .exists_pmid_epmc(
-      x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.na(out_epmc)) {
-      return(out_epmc)
-    }
-    
-    if (!isTRUE(quiet)) {
-      warning(
-        "PMID existence could not be determined via NCBI or Europe PMC.",
+      ncbi_fn = .exists_pmid_ncbi,
+      epmc_fn = .exists_pmid_epmc,
+      is_success = function(out) !is.na(out),
+      empty_value = NA,
+      warn_message = paste(
+        "PMID existence could not be determined via NCBI or Europe PMC."
+      ),
+      warn_style = "base",
+      quiet = quiet,
+      ...
+    ))
+  }
+
+  .dispatch_ncbi_epmc_provider(
+    x = x,
+    provider = provider,
+    ncbi_fn = .exists_pmid_ncbi,
+    epmc_fn = .exists_pmid_epmc,
+    on_unknown = function(p) {
+      stop(
+        "Unknown provider: ",
+        p,
         call. = FALSE
       )
-    }
-    
-    return(NA)
-  }
-  
-  switch(
-    provider,
-    ncbi = .exists_pmid_ncbi(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    epmc = .exists_pmid_epmc(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
-    )
+    },
+    quiet = quiet,
+    ...
   )
 }
 
@@ -352,54 +333,35 @@
   )
   
   if (identical(provider, "auto")) {
-    
-    out_ncbi <- .exists_pmcid_ncbi(
+    return(.dispatch_ncbi_epmc_auto(
       x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.na(out_ncbi)) {
-      return(out_ncbi)
-    }
-    
-    out_epmc <- .exists_pmcid_epmc(
-      x = x,
-      ...,
-      quiet = TRUE
-    )
-    
-    if (!is.na(out_epmc)) {
-      return(out_epmc)
-    }
-    
-    if (!isTRUE(quiet)) {
-      warning(
-        "PMCID existence could not be determined via NCBI or Europe PMC.",
+      ncbi_fn = .exists_pmcid_ncbi,
+      epmc_fn = .exists_pmcid_epmc,
+      is_success = function(out) !is.na(out),
+      empty_value = NA,
+      warn_message = paste(
+        "PMCID existence could not be determined via NCBI or Europe PMC."
+      ),
+      warn_style = "base",
+      quiet = quiet,
+      ...
+    ))
+  }
+
+  .dispatch_ncbi_epmc_provider(
+    x = x,
+    provider = provider,
+    ncbi_fn = .exists_pmcid_ncbi,
+    epmc_fn = .exists_pmcid_epmc,
+    on_unknown = function(p) {
+      stop(
+        "Unknown provider: ",
+        p,
         call. = FALSE
       )
-    }
-    
-    return(NA)
-  }
-  
-  switch(
-    provider,
-    ncbi = .exists_pmcid_ncbi(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    epmc = .exists_pmcid_epmc(
-      x = x,
-      ...,
-      quiet = quiet
-    ),
-    stop(
-      "Unknown provider: ",
-      provider,
-      call. = FALSE
-    )
+    },
+    quiet = quiet,
+    ...
   )
 }
 
