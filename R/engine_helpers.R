@@ -48,6 +48,90 @@
 }
 
 
+#' Resolve a provider for a scholidonline operation
+#'
+#' @description
+#' Internal helper used by the unary and binary dispatch engines to validate
+#' the provider argument against registry metadata.
+#'
+#' For both engines, `"auto"` is preserved so that dispatchers can implement
+#' operation-specific fallback behavior.
+#'
+#' @param provider A single provider string or `"auto"`.
+#' @param meta A named list of operation metadata containing `providers`.
+#'
+#' @return A single validated provider string.
+#'
+#' @noRd
+.scholidonline_resolve_provider <- function(
+    provider,
+    meta
+) {
+  if (!is.list(meta)) {
+    rlang::abort("`meta` must be a list.")
+  }
+
+  if (is.null(meta$providers)) {
+    rlang::abort("`meta` must contain `providers`.")
+  }
+
+  choices <- unique(meta$providers)
+
+  if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
+    rlang::abort(
+      "`provider` must be a single, non-missing character string."
+    )
+  }
+
+  if (!provider %in% choices) {
+    rlang::abort(
+      message = paste0(
+        "Provider `",
+        provider,
+        "` is not supported. Available providers: ",
+        paste0("`", choices, "`", collapse = ", "),
+        "."
+      )
+    )
+  }
+
+  provider
+}
+
+
+#' Get a scholidonline batch dispatcher
+#'
+#' @description
+#' Internal helper used by the unary and binary engines to resolve an optional
+#' batch dispatcher for an operation.
+#'
+#' Batch dispatcher names follow the scalar dispatcher naming convention with
+#' a `_batch` suffix.
+#'
+#' @param meta A named list of operation metadata containing `dispatcher`.
+#'
+#' @return A function if a batch dispatcher exists, otherwise `NULL`.
+#'
+#' @noRd
+.scholidonline_get_batch_dispatcher <- function(meta) {
+  if (!is.list(meta)) {
+    rlang::abort("`meta` must be a list.")
+  }
+
+  if (is.null(meta$dispatcher)) {
+    rlang::abort("`meta` must contain `dispatcher`.")
+  }
+
+  name <- paste0(meta$dispatcher, "_batch")
+
+  if (!exists(name, mode = "function", inherits = TRUE)) {
+    return(NULL)
+  }
+
+  get(name, mode = "function", inherits = TRUE)
+}
+
+
 # Level 3 function (functions called by level 2 functions) definitions ---------
 
 

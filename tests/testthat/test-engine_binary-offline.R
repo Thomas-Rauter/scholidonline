@@ -139,74 +139,6 @@ testthat::test_that(
 
 
 testthat::test_that(
-  ".scholidonline_resolve_binary_provider() validates inputs",
-  {
-    meta <- list(
-      providers = c("auto", "ncbi", "epmc"),
-      default_provider = "ncbi",
-      dispatcher = ".convert_pmid_to_doi"
-    )
-    
-    testthat::expect_identical(
-      .scholidonline_resolve_binary_provider("auto", meta),
-      "auto"
-    )
-    
-    testthat::expect_identical(
-      .scholidonline_resolve_binary_provider("ncbi", meta),
-      "ncbi"
-    )
-    
-    testthat::expect_error(
-      .scholidonline_resolve_binary_provider(
-        provider = c("ncbi", "epmc"),
-        meta = meta
-      ),
-      "`provider` must be a single, non-missing character string\\."
-    )
-    
-    testthat::expect_error(
-      .scholidonline_resolve_binary_provider(
-        provider = NA_character_,
-        meta = meta
-      ),
-      "`provider` must be a single, non-missing character string\\."
-    )
-    
-    testthat::expect_error(
-      .scholidonline_resolve_binary_provider(
-        provider = "crossref",
-        meta = meta
-      ),
-      "Unknown provider: `crossref`\\."
-    )
-  }
-)
-
-
-testthat::test_that(
-  ".scholidonline_resolve_binary_provider() checks meta structure",
-  {
-    testthat::expect_error(
-      .scholidonline_resolve_binary_provider(
-        provider = "auto",
-        meta = "not_a_list"
-      ),
-      "`meta` must be a list\\."
-    )
-    
-    testthat::expect_error(
-      .scholidonline_resolve_binary_provider(
-        provider = "auto",
-        meta = list(default_provider = "ncbi")
-      ),
-      "`meta` must contain `providers`\\."
-    )
-  }
-)
-
-
-testthat::test_that(
   ".scholidonline_binary_identity() detects identity mappings",
   {
     testthat::expect_true(
@@ -326,12 +258,12 @@ testthat::test_that(
           dispatcher = ".convert_pmid_to_doi"
         )
       },
-      .scholidonline_resolve_binary_provider = function(provider, meta) {
+      .scholidonline_resolve_provider = function(provider, meta) {
         testthat::expect_identical(provider, "auto")
         testthat::expect_true(is.list(meta))
         "auto"
       },
-      .get_binary_batch_dispatcher = function(meta) {
+      .scholidonline_get_batch_dispatcher = function(meta) {
         testthat::expect_true(is.list(meta))
         NULL
       },
@@ -396,7 +328,7 @@ testthat::test_that(
           dispatcher = paste0(".dispatch_", from, "_to_", to)
         )
       },
-      .scholidonline_resolve_binary_provider = function(provider, meta) {
+      .scholidonline_resolve_provider = function(provider, meta) {
         "stub"
       },
       .scholidonline_get_dispatcher = function(name) {
@@ -480,7 +412,7 @@ testthat::test_that(
           dispatcher = ".stub"
         )
       },
-      .scholidonline_resolve_binary_provider = function(provider, meta) {
+      .scholidonline_resolve_provider = function(provider, meta) {
         called <<- TRUE
         "stub"
       },
@@ -534,7 +466,7 @@ testthat::test_that(
           dispatcher = ".stub"
         )
       },
-      .scholidonline_resolve_binary_provider = function(provider, meta) {
+      .scholidonline_resolve_provider = function(provider, meta) {
         called <<- TRUE
         "stub"
       },
@@ -587,7 +519,7 @@ testthat::test_that(
           dispatcher = ".stub"
         )
       },
-      .scholidonline_resolve_binary_provider = function(provider, meta) {
+      .scholidonline_resolve_provider = function(provider, meta) {
         called <<- TRUE
         "stub"
       },

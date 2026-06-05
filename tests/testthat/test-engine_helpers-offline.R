@@ -198,3 +198,115 @@ testthat::test_that(
     )
   }
 )
+
+
+testthat::test_that(
+  ".scholidonline_resolve_provider() validates inputs",
+  {
+    meta <- list(
+      providers = c("auto", "ncbi", "epmc"),
+      default_provider = "ncbi",
+      dispatcher = ".exists_pmid"
+    )
+
+    testthat::expect_identical(
+      scholidonline:::.scholidonline_resolve_provider("auto", meta),
+      "auto"
+    )
+
+    testthat::expect_identical(
+      scholidonline:::.scholidonline_resolve_provider("ncbi", meta),
+      "ncbi"
+    )
+
+    testthat::expect_error(
+      scholidonline:::.scholidonline_resolve_provider(
+        provider = c("ncbi", "epmc"),
+        meta = meta
+      ),
+      "`provider` must be a single, non-missing character string\\."
+    )
+
+    testthat::expect_error(
+      scholidonline:::.scholidonline_resolve_provider(
+        provider = NA_character_,
+        meta = meta
+      ),
+      "`provider` must be a single, non-missing character string\\."
+    )
+
+    testthat::expect_error(
+      scholidonline:::.scholidonline_resolve_provider(
+        provider = "crossref",
+        meta = meta
+      ),
+      "Provider `crossref` is not supported\\."
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".scholidonline_resolve_provider() checks meta structure",
+  {
+    testthat::expect_error(
+      scholidonline:::.scholidonline_resolve_provider(
+        provider = "auto",
+        meta = "not_a_list"
+      ),
+      "`meta` must be a list\\."
+    )
+
+    testthat::expect_error(
+      scholidonline:::.scholidonline_resolve_provider(
+        provider = "auto",
+        meta = list(default_provider = "ncbi")
+      ),
+      "`meta` must contain `providers`\\."
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".scholidonline_get_batch_dispatcher() checks meta structure",
+  {
+    testthat::expect_error(
+      scholidonline:::.scholidonline_get_batch_dispatcher("not_a_list"),
+      "`meta` must be a list\\."
+    )
+
+    testthat::expect_error(
+      scholidonline:::.scholidonline_get_batch_dispatcher(
+        list(providers = "ncbi")
+      ),
+      "`meta` must contain `dispatcher`\\."
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".scholidonline_get_batch_dispatcher() resolves optional batch dispatchers",
+  {
+    meta <- list(
+      providers = c("auto", "ncbi"),
+      default_provider = "ncbi",
+      dispatcher = ".exists_doi"
+    )
+
+    testthat::expect_null(
+      scholidonline:::.scholidonline_get_batch_dispatcher(meta)
+    )
+
+    meta$dispatcher <- ".exists_pmid"
+
+    out <- scholidonline:::.scholidonline_get_batch_dispatcher(meta)
+
+    testthat::expect_true(is.function(out))
+    testthat::expect_identical(
+      out,
+      scholidonline:::.exists_pmid_batch
+    )
+  }
+)

@@ -96,7 +96,7 @@
       to = to
     )
     
-    provider_i <- .scholidonline_resolve_binary_provider(
+    provider_i <- .scholidonline_resolve_provider(
       provider = provider,
       meta = meta
     )
@@ -225,57 +225,6 @@
 }
 
 
-#' Resolve a provider for a binary scholidonline operation
-#'
-#' @description
-#' Internal helper used by the binary dispatch engine to validate the
-#' provider argument for a binary operation.
-#'
-#' For binary operations, `"auto"` is preserved so that dispatchers can
-#' implement pair-specific fallback behavior.
-#'
-#' @param provider A single provider string or `"auto"`.
-#' @param meta A named list of binary operation metadata.
-#'
-#' @return A single validated provider string.
-#'
-#' @noRd
-.scholidonline_resolve_binary_provider <- function(
-    provider,
-    meta
-) {
-  
-  if (!is.list(meta)) {
-    rlang::abort("`meta` must be a list.")
-  }
-  
-  if (is.null(meta$providers)) {
-    rlang::abort("`meta` must contain `providers`.")
-  }
-  
-  choices <- unique(meta$providers)
-  
-  if (!is.character(provider) || length(provider) != 1L || is.na(provider)) {
-    rlang::abort(
-      "`provider` must be a single, non-missing character string."
-    )
-  }
-  
-  if (!provider %in% choices) {
-    rlang::abort(
-      paste0(
-        "Unknown provider: `",
-        provider,
-        "`. Must be one of: ",
-        paste0("`", choices, "`", collapse = ", ")
-      )
-    )
-  }
-  
-  provider
-}
-
-
 #' Run a binary scholidonline operation in batch mode
 #'
 #' @description
@@ -336,12 +285,12 @@
     to = to
   )
   
-  provider_i <- .scholidonline_resolve_binary_provider(
+  provider_i <- .scholidonline_resolve_provider(
     provider = provider,
     meta = meta
   )
   
-  dispatcher <- .get_binary_batch_dispatcher(
+  dispatcher <- .scholidonline_get_batch_dispatcher(
     meta = meta
   )
   
@@ -453,42 +402,6 @@
   )
   
   .scholidonline_as_character_scalar(result)
-}
-
-
-# Level 2 functions (functions called by level 1 functions) --------------------
-
-
-#' Get a binary batch dispatcher
-#'
-#' @description
-#' Internal helper used by the binary engine to resolve an optional batch
-#' dispatcher for a source/target/provider conversion combination.
-#'
-#' Batch dispatcher names follow the scalar dispatcher naming convention with
-#' a `_batch` suffix. For example, `.convert_pmid_to_pmcid_batch`.
-#'
-#' @param meta A named list of binary operation metadata.
-#'
-#' @return A function if a batch dispatcher exists, otherwise `NULL`.
-#'
-#' @noRd
-.get_binary_batch_dispatcher <- function(meta) {
-  if (!is.list(meta)) {
-    rlang::abort("`meta` must be a list.")
-  }
-  
-  if (is.null(meta$dispatcher)) {
-    rlang::abort("`meta` must contain `dispatcher`.")
-  }
-  
-  name <- paste0(meta$dispatcher, "_batch")
-  
-  if (!exists(name, mode = "function", inherits = TRUE)) {
-    return(NULL)
-  }
-  
-  get(name, mode = "function", inherits = TRUE)
 }
 
 
