@@ -45,44 +45,18 @@ id_exists <- function(
     x = NA,
     times = length(x)
   )
-  
-  if (identical(type, "auto")) {
-    type_vec <- scholid::detect_scholid_type(
-      x = x
-    )
-    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
-  } else {
-    type_vec <- rep(
-      x = type,
-      times = length(x)
-    )
-  }
-  
-  x_norm <- rep(
-    x = NA_character_,
-    times = length(x)
+
+  prepared <- .scholidonline_prepare_inputs(
+    x = x,
+    type = type
   )
-  
-  for (i in seq_along(x)) {
-    
-    if (is.na(x[i]) || is.na(type_vec[i])) {
-      next
-    }
-    
-    x_norm[i] <- scholid::normalize_scholid(
-      x = x[i],
-      type = type_vec[i]
-    )
-  }
-  
-  ok <- !is.na(x_norm) & !is.na(type_vec)
-  
-  if (!any(ok)) {
+
+  if (!any(prepared$ok)) {
     return(out)
   }
-  
-  x_ok <- x_norm[ok]
-  type_ok <- type_vec[ok]
+
+  x_ok <- prepared$x_norm[prepared$ok]
+  type_ok <- prepared$type_vec[prepared$ok]
   
   res <- .scholidonline_run_unary(
     x = x_ok,
@@ -93,7 +67,7 @@ id_exists <- function(
     quiet = quiet
   )
   
-  out[ok] <- unlist(
+  out[prepared$ok] <- unlist(
     x = res,
     use.names = FALSE
   )

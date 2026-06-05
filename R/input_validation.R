@@ -333,3 +333,82 @@
   
   invisible(x)
 }
+
+
+#' Prepare normalized identifier inputs for engine dispatch
+#'
+#' @description
+#' Internal helper that resolves identifier types, normalizes inputs, and
+#' returns a mask of usable elements for unary and binary front-end functions.
+#'
+#' @param x A character vector of identifiers.
+#' @param type A single identifier type string, or `"auto"` to infer the type
+#'   for each element of `x`.
+#' @param to An optional single target identifier type string. When non-`NULL`
+#'   and `type = "auto"`, inferred source types are restricted to values that
+#'   can be converted to `to`.
+#'
+#' @return A list with elements `type_vec`, `x_norm`, `ok`, and `ok_idx`.
+#'
+#' @noRd
+.scholidonline_prepare_inputs <- function(
+    x,
+    type = "auto",
+    to = NULL
+) {
+  n <- length(x)
+
+  if (!is.null(to) && identical(type, "auto")) {
+    type_vec <- scholid::detect_scholid_type(x = x)
+    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
+
+    type_vec[!vapply(
+      type_vec,
+      FUN = function(f) {
+        if (is.na(f)) {
+          return(FALSE)
+        }
+
+        if (identical(f, to)) {
+          return(TRUE)
+        }
+
+        !is.null(.scholidonline_registry()[[f]]$convert[[to]])
+      },
+      FUN.VALUE = logical(1)
+    )] <- NA_character_
+  } else if (identical(type, "auto")) {
+    type_vec <- scholid::detect_scholid_type(x = x)
+    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
+  } else {
+    type_vec <- rep(
+      x = type,
+      times = n
+    )
+  }
+
+  x_norm <- rep(
+    x = NA_character_,
+    times = n
+  )
+
+  for (i in seq_len(n)) {
+    if (is.na(x[i]) || is.na(type_vec[i])) {
+      next
+    }
+
+    x_norm[i] <- scholid::normalize_scholid(
+      x = x[i],
+      type = type_vec[i]
+    )
+  }
+
+  ok <- !is.na(x_norm) & !is.na(type_vec)
+
+  list(
+    type_vec = type_vec,
+    x_norm = x_norm,
+    ok = ok,
+    ok_idx = which(ok)
+  )
+}

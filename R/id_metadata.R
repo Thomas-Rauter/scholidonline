@@ -65,31 +65,14 @@ id_metadata <- function(
   )
   .scholidonline_check_quiet(quiet)
   
-  n <- length(x)
-  
-  if (identical(type, "auto")) {
-    type_vec <- scholid::detect_scholid_type(x = x)
-    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
-  } else {
-    type_vec <- rep(type, n)
-  }
-  
-  x_norm <- rep(NA_character_, n)
-  
-  for (i in seq_len(n)) {
-    if (is.na(x[i]) || is.na(type_vec[i])) next
-    
-    x_norm[i] <- scholid::normalize_scholid(
-      x = x[i],
-      type = type_vec[i]
-    )
-  }
-  
-  ok <- !is.na(x_norm) & !is.na(type_vec)
-  
+  prepared <- .scholidonline_prepare_inputs(
+    x = x,
+    type = type
+  )
+
   base_df <- data.frame(
     input = x,
-    type = type_vec,
+    type = prepared$type_vec,
     provider = NA_character_,
     title = NA_character_,
     year = NA_integer_,
@@ -101,10 +84,12 @@ id_metadata <- function(
     stringsAsFactors = FALSE
   )
   
-  if (!any(ok)) return(base_df)
-  
-  x_ok <- x_norm[ok]
-  type_ok <- type_vec[ok]
+  if (!any(prepared$ok)) {
+    return(base_df)
+  }
+
+  x_ok <- prepared$x_norm[prepared$ok]
+  type_ok <- prepared$type_vec[prepared$ok]
   
   res <- .scholidonline_run_unary(
     x = x_ok,
@@ -115,21 +100,22 @@ id_metadata <- function(
     quiet = quiet
   )
   
-  ok_idx <- which(ok)
-  
   for (j in seq_along(res)) {
     df <- res[[j]]
-    
-    if (is.null(df) || nrow(df) == 0L) next
-    
-    base_df$provider[ok_idx[j]] <- df$provider[1]
-    base_df$title[ok_idx[j]] <- df$title[1]
-    base_df$year[ok_idx[j]] <- df$year[1]
-    base_df$container[ok_idx[j]] <- df$container[1]
-    base_df$doi[ok_idx[j]] <- df$doi[1]
-    base_df$pmid[ok_idx[j]] <- df$pmid[1]
-    base_df$pmcid[ok_idx[j]] <- df$pmcid[1]
-    base_df$url[ok_idx[j]] <- df$url[1]
+
+    if (is.null(df) || nrow(df) == 0L) {
+      next
+    }
+
+    idx <- prepared$ok_idx[j]
+    base_df$provider[idx] <- df$provider[1]
+    base_df$title[idx] <- df$title[1]
+    base_df$year[idx] <- df$year[1]
+    base_df$container[idx] <- df$container[1]
+    base_df$doi[idx] <- df$doi[1]
+    base_df$pmid[idx] <- df$pmid[1]
+    base_df$pmcid[idx] <- df$pmcid[1]
+    base_df$url[idx] <- df$url[1]
   }
   
   if (!is.null(fields)) {

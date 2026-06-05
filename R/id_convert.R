@@ -39,69 +39,45 @@ id_convert <- function(
   provider <- match.arg(provider)
   .scholidonline_check_quiet(quiet)
   
-  n <- length(x)
-  
   if (is.null(from)) {
-    from_vec <- scholid::detect_scholid_type(x)
-    from_vec[!from_vec %in% scholidonline_types()] <- NA_character_
-    
-    from_vec[!vapply(
-      from_vec,
-      FUN = function(f) {
-        if (is.na(f)) {
-          return(FALSE)
-        }
-        
-        if (identical(f, to)) {
-          return(TRUE)
-        }
-        
-        !is.null(.scholidonline_registry()[[f]]$convert[[to]])
-      },
-      FUN.VALUE = logical(1)
-    )] <- NA_character_
-    
+    prepared <- .scholidonline_prepare_inputs(
+      x = x,
+      type = "auto",
+      to = to
+    )
   } else {
     from <- match.arg(
       arg = from,
       choices = scholidonline_types()
     )
-    
+
     .scholidonline_check_conversion_pair(
       from = from,
       to = to
     )
-    
-    from_vec <- rep(from, n)
-  }
-  
-  x_norm <- rep(NA_character_, n)
-  
-  for (i in seq_len(n)) {
-    if (is.na(x[i]) || is.na(from_vec[i])) next
-    
-    x_norm[i] <- scholid::normalize_scholid(
-      x = x[i],
-      type = from_vec[i]
+
+    prepared <- .scholidonline_prepare_inputs(
+      x = x,
+      type = from
     )
   }
-  
-  ok <- !is.na(x_norm) & !is.na(from_vec)
-  
-  out <- rep(NA_character_, n)
-  
-  if (!any(ok)) return(out)
-  
+
+  out <- rep(NA_character_, length(x))
+
+  if (!any(prepared$ok)) {
+    return(out)
+  }
+
   res <- .scholidonline_run_binary(
-    x = x_norm[ok],
-    from = from_vec[ok],
+    x = prepared$x_norm[prepared$ok],
+    from = prepared$type_vec[prepared$ok],
     to = to,
     provider = provider,
     ...,
     quiet = quiet
   )
-  
-  out[ok] <- res
+
+  out[prepared$ok] <- res
   
   out
 }

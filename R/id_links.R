@@ -55,43 +55,18 @@ id_links <- function(
   .scholidonline_check_quiet(quiet)
   
   n <- length(x)
-  
+
+  prepared <- .scholidonline_prepare_inputs(
+    x = x,
+    type = type
+  )
+
   out_list <- vector(
     mode = "list",
     length = n
   )
-  
-  if (identical(type, "auto")) {
-    type_vec <- scholid::detect_scholid_type(
-      x = x
-    )
-    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
-  } else {
-    type_vec <- rep(
-      x = type,
-      times = n
-    )
-  }
-  
-  x_norm <- rep(
-    x = NA_character_,
-    times = n
-  )
-  
-  for (i in seq_len(n)) {
-    if (is.na(x[i]) || is.na(type_vec[i])) {
-      next
-    }
-    
-    x_norm[i] <- scholid::normalize_scholid(
-      x = x[i],
-      type = type_vec[i]
-    )
-  }
-  
-  ok <- !is.na(x_norm) & !is.na(type_vec)
-  
-  if (!any(ok)) {
+
+  if (!any(prepared$ok)) {
     return(
       data.frame(
         query = character(),
@@ -104,8 +79,8 @@ id_links <- function(
     )
   }
   
-  x_ok <- x_norm[ok]
-  type_ok <- type_vec[ok]
+  x_ok <- prepared$x_norm[prepared$ok]
+  type_ok <- prepared$type_vec[prepared$ok]
   
   res <- .scholidonline_run_unary(
     x = x_ok,
@@ -116,20 +91,19 @@ id_links <- function(
     quiet = quiet
   )
   
-  ok_idx <- which(ok)
-  
   for (j in seq_along(res)) {
     df <- res[[j]]
-    
+    idx <- prepared$ok_idx[j]
+
     if (is.null(df) || nrow(df) == 0L) {
-      out_list[[ok_idx[j]]] <- NULL
+      out_list[[idx]] <- NULL
       next
     }
-    
+
     names(df)[names(df) == "linked_value"] <- "linked_id"
-    
-    df$query <- x_norm[ok_idx[j]]
-    df$query_type <- type_vec[ok_idx[j]]
+
+    df$query <- prepared$x_norm[idx]
+    df$query_type <- prepared$type_vec[idx]
     
     df <- df[
       !(
@@ -141,7 +115,7 @@ id_links <- function(
     ]
     
     if (nrow(df) == 0L) {
-      out_list[[ok_idx[j]]] <- NULL
+      out_list[[idx]] <- NULL
       next
     }
     
@@ -157,7 +131,7 @@ id_links <- function(
       drop = FALSE
     ]
     
-    out_list[[ok_idx[j]]] <- df
+    out_list[[idx]] <- df
   }
   
   rows <- out_list[!vapply(out_list, is.null, logical(1))]
