@@ -109,37 +109,12 @@
     "%20AND%20SRC:MED&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Europe PMC"
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Europe PMC request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("Europe PMC request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -216,37 +191,12 @@
     "&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Europe PMC"
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Europe PMC request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("Europe PMC request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -329,34 +279,16 @@
     "%20AND%20SRC:MED&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Europe PMC request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("Europe PMC request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Europe PMC",
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   recs <- obj$resultList$result
   
@@ -426,34 +358,16 @@
     "&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Europe PMC request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("Europe PMC request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Europe PMC",
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   recs <- obj$resultList$result
   

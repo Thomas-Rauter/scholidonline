@@ -27,32 +27,29 @@
     query
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
   max_attempts <- 2L
   attempt <- 1L
-  
+  resp <- NULL
+
   repeat {
-    
-    resp <- .scholidonline_req_perform_safe(req = req)
-    
+    resp <- .scholidonline_http_get(
+      url = url,
+      quiet = quiet
+    )
+
     if (is.null(resp)) {
       if (!isTRUE(quiet)) {
         rlang::warn("arXiv request failed.")
       }
       return(NA)
     }
-    
+
     status <- .scholidonline_resp_status(resp = resp)
-    
+
     if (status >= 200L && status < 300L) {
       break
     }
-    
+
     if (status == 429L && attempt < max_attempts) {
       if (!isTRUE(quiet)) {
         rlang::warn("arXiv request rate-limited (HTTP 429); retrying once.")
@@ -61,16 +58,17 @@
       Sys.sleep(1)
       next
     }
-    
+
     if (!isTRUE(quiet)) {
       rlang::warn(paste0("arXiv request returned HTTP ", status, "."))
     }
     return(NA)
   }
-  
-  txt <- tryCatch(
-    .scholidonline_resp_body_string(resp = resp),
-    error = function(e) NULL
+
+  txt <- .scholidonline_http_string_from_response(
+    resp = resp,
+    quiet = TRUE,
+    provider_label = "arXiv"
   )
   
   if (is.null(txt)) {
@@ -113,36 +111,15 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  resp <- .scholidonline_http_get(
+    url = url,
+    quiet = quiet
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("arXiv request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("arXiv request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  xml <- tryCatch(
-    .scholidonline_resp_body_string(resp = resp),
-    error = function(e) NULL
+
+  xml <- .scholidonline_http_string_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "arXiv"
   )
   
   if (is.null(xml)) {
@@ -197,34 +174,20 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  resp <- .scholidonline_http_get(
+    url = url,
+    quiet = quiet
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("arXiv request failed.")
-    }
+
+  txt <- .scholidonline_http_string_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "arXiv"
+  )
+
+  if (is.null(txt)) {
     return(data.frame())
   }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("arXiv request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  txt <- .scholidonline_resp_body_string(resp = resp)
   
   entry_title <- sub(
     ".*<entry>.*?<title>(.*?)</title>.*",

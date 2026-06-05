@@ -289,39 +289,15 @@
     "&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
     }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("NCBI request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
   )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -399,39 +375,15 @@
     "&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
     }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("NCBI request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
   )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -535,39 +487,15 @@
     "&format=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
     }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("NCBI request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
   )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -719,36 +647,19 @@
     "&retmode=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   rec <- obj$result[[x]]
   
@@ -826,36 +737,19 @@
     "&retmode=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   if (is.null(obj$result)) {
     return(data.frame())
@@ -944,36 +838,19 @@
     "&retmode=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   rec <- obj$result[[key]]
   
@@ -1052,41 +929,22 @@
     "&retmode=json"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  obj <- .scholidonline_http_perform_json_body(
+    url = url,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
+    simplifyVector = TRUE,
+    parse_failure_warn = "NCBI response could not be parsed as JSON."
   )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
+
+  if (is.null(obj)) {
     return(data.frame())
   }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- tryCatch(
-    .scholidonline_resp_body_json(
-      resp = resp,
-      simplifyVector = TRUE
-    ),
-    error = function(e) NULL
-  )
-  
-  if (is.null(obj) || is.null(obj$result)) {
+
+  if (is.null(obj$result)) {
     if (!isTRUE(quiet)) {
       rlang::warn("NCBI response could not be parsed as JSON.")
     }
@@ -1189,35 +1047,20 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_request_json(
     req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = FALSE
   )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
   
   rec <- js$result[[x]]
   
@@ -1319,44 +1162,18 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_perform_json_body(
     req = req,
-    is_error = function(resp) FALSE
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
+    parse_failure_warn = "NCBI response could not be parsed as JSON."
   )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- tryCatch(
-    .scholidonline_resp_body_json(
-      resp = resp,
-      simplifyVector = FALSE
-    ),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(js)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI response could not be parsed as JSON.")
-    }
-    
     return(NA_character_)
   }
   
@@ -1417,42 +1234,15 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  search <- .scholidonline_http_perform_json_body(
     req = req,
-    is_error = function(resp) FALSE
+    quiet = quiet,
+    provider_label = "NCBI",
+    parse_failure_warn = "NCBI response could not be parsed as JSON."
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(out)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(out)
-  }
-  
-  search <- tryCatch(
-    .scholidonline_resp_body_json(
-      resp = resp,
-      simplifyVector = FALSE
-    ),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(search)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI response could not be parsed as JSON.")
-    }
-    
     return(out)
   }
   
@@ -1532,35 +1322,20 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_request_json(
     req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = FALSE
   )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
   
   recs <- js$records
   
@@ -1604,35 +1379,20 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_request_json(
     req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = FALSE
   )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
   
   recs <- js$records
   
@@ -1676,35 +1436,20 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_request_json(
     req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = FALSE
   )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
   
   recs <- js$records
   
@@ -1748,35 +1493,20 @@
     !!!
       list(...)
   )
-  req <- .scholidonline_req_error(
+
+  js <- .scholidonline_http_request_json(
     req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  .ncbi_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("NCBI request failed.")
-    }
-    return(NA_character_)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("NCBI request returned HTTP ", status, "."))
-    }
-    return(NA_character_)
-  }
-  
-  js <- .scholidonline_resp_body_json(
-    resp = resp,
+    quiet = quiet,
+    provider_label = "NCBI",
+    before_request = function() {
+      .ncbi_rate_limit(quiet = quiet)
+    },
     simplifyVector = FALSE
   )
+
+  if (is.null(js)) {
+    return(NA_character_)
+  }
   
   recs <- js$records
   

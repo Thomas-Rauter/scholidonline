@@ -19,40 +19,19 @@
     x
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_headers(
-    req = req,
-    Accept = "application/json"
+  resp <- .scholidonline_http_get(
+    url = url,
+    headers = c(
+      Accept = "application/json"
+    ),
+    quiet = quiet
   )
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+
+  .scholidonline_http_exists_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "ORCID"
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("ORCID request failed.")
-    }
-    return(NA)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status >= 200L && status < 300L) {
-    return(TRUE)
-  }
-  
-  if (status == 404L) {
-    return(FALSE)
-  }
-  
-  if (!isTRUE(quiet)) {
-    rlang::warn(paste0("ORCID request returned HTTP ", status, "."))
-  }
-  
-  NA
 }
 
 
@@ -85,41 +64,15 @@
     "/works"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_headers(
-    req = req,
-    Accept = "application/json"
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "ORCID",
+    headers = c(
+      Accept = "application/json"
+    )
   )
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("ORCID request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("ORCID request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -194,42 +147,20 @@
     "/record"
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_headers(
-    req = req,
-    Accept = "application/json"
-  )
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("ORCID request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status == 404L) {
-    return(data.frame())
-  }
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("ORCID request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "ORCID",
+    headers = c(
+      Accept = "application/json"
+    ),
+    silent_404 = TRUE,
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   name <- obj$person$name
   full_name <- NA_character_

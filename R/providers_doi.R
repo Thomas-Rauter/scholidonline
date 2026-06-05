@@ -22,40 +22,19 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_headers(
-    req = req,
-    Accept = "application/vnd.citationstyles.csl+json"
+  resp <- .scholidonline_http_get(
+    url = url,
+    headers = c(
+      Accept = "application/vnd.citationstyles.csl+json"
+    ),
+    quiet = quiet
   )
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+
+  .scholidonline_http_exists_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "DOI.org"
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("DOI.org request failed.")
-    }
-    return(NA)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status >= 200L && status < 300L) {
-    return(TRUE)
-  }
-  
-  if (status == 404L) {
-    return(FALSE)
-  }
-  
-  if (!isTRUE(quiet)) {
-    rlang::warn(paste0("DOI.org request returned HTTP ", status, "."))
-  }
-  
-  NA
 }
 
 
@@ -88,42 +67,20 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_headers(
-    req = req,
-    Accept = "application/vnd.citationstyles.csl+json"
-  )
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("DOI.org request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status == 404L) {
-    return(data.frame())
-  }
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("DOI.org request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "DOI.org",
+    headers = c(
+      Accept = "application/vnd.citationstyles.csl+json"
+    ),
+    silent_404 = TRUE,
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   data.frame(
     title = obj$title %||% NA_character_,

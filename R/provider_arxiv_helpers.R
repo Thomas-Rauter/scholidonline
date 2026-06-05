@@ -59,38 +59,18 @@
   
   url <- .arxiv_id_list_url(x = x)
   
-  req <- .scholidonline_request(url)
-  
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  resp <- .scholidonline_http_get(
+    url = url,
+    quiet = quiet,
+    before_request = function() {
+      .arxiv_rate_limit(quiet = quiet)
+    }
   )
-  
-  .arxiv_rate_limit(quiet = quiet)
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("arXiv request failed.")
-    }
-    return(NULL)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("arXiv request returned HTTP ", status, ".")
-      )
-    }
-    return(NULL)
-  }
-  
-  tryCatch(
-    .scholidonline_resp_body_string(resp = resp),
-    error = function(e) NULL
+
+  .scholidonline_http_string_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "arXiv"
   )
 }
 

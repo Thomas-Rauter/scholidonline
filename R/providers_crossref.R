@@ -23,36 +23,16 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  resp <- .scholidonline_http_get(
+    url = url,
+    quiet = quiet
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Crossref request failed.")
-    }
-    return(NA)
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status >= 200L && status < 300L) {
-    return(TRUE)
-  }
-  
-  if (status == 404L) {
-    return(FALSE)
-  }
-  
-  if (!isTRUE(quiet)) {
-    rlang::warn(paste0("Crossref request returned HTTP ", status, "."))
-  }
-  
-  NA
+
+  .scholidonline_http_exists_from_response(
+    resp = resp,
+    quiet = quiet,
+    provider_label = "Crossref"
+  )
 }
 
 
@@ -87,42 +67,13 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
+  json <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Crossref",
+    silent_404 = TRUE
   )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Crossref request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status == 404L) {
-    return(data.frame())
-  }
-  
-  if (!(status >= 200L && status < 300L)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(
-        paste0("Crossref request returned HTTP ", status, ".")
-      )
-    }
-    return(data.frame())
-  }
-  
-  json <- tryCatch(
-    .scholidonline_resp_body_json(resp = resp),
-    error = function(e) NULL
-  )
-  
+
   if (is.null(json)) {
     return(data.frame())
   }
@@ -206,39 +157,17 @@
     )
   )
   
-  req <- .scholidonline_request(url)
-  
-  req <- .scholidonline_req_error(
-    req = req,
-    is_error = function(resp) FALSE
-  )
-  
-  resp <- .scholidonline_req_perform_safe(req = req)
-  
-  if (is.null(resp)) {
-    if (!isTRUE(quiet)) {
-      rlang::warn("Crossref request failed.")
-    }
-    return(data.frame())
-  }
-  
-  status <- .scholidonline_resp_status(resp = resp)
-  
-  if (status == 404L) {
-    return(data.frame())
-  }
-  
-  if (status < 200L || status >= 300L) {
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("Crossref request returned HTTP ", status, "."))
-    }
-    return(data.frame())
-  }
-  
-  obj <- .scholidonline_resp_body_json(
-    resp = resp,
+  obj <- .scholidonline_http_get_json(
+    url = url,
+    quiet = quiet,
+    provider_label = "Crossref",
+    silent_404 = TRUE,
     simplifyVector = TRUE
   )
+
+  if (is.null(obj)) {
+    return(data.frame())
+  }
   
   msg <- obj$message
   
