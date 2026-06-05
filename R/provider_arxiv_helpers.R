@@ -58,14 +58,50 @@
   }
   
   url <- .arxiv_id_list_url(x = x)
-  
-  resp <- .scholidonline_http_get(
-    url = url,
-    quiet = quiet,
-    before_request = function() {
-      .arxiv_rate_limit(quiet = quiet)
+  max_attempts <- 2L
+  attempt <- 1L
+  resp <- NULL
+
+  repeat {
+    resp <- .scholidonline_http_get(
+      url = url,
+      quiet = quiet,
+      before_request = function() {
+        .arxiv_rate_limit(quiet = quiet)
+      }
+    )
+
+    if (is.null(resp)) {
+      .scholidonline_http_warn_failed(
+        provider_label = "arXiv",
+        quiet = quiet
+      )
+      return(NULL)
     }
-  )
+
+    status <- .scholidonline_resp_status(resp = resp)
+
+    if (status >= 200L && status < 300L) {
+      break
+    }
+
+    if (status == 429L && attempt < max_attempts) {
+      if (!isTRUE(quiet)) {
+        rlang::warn("arXiv request rate-limited (HTTP 429); retrying once.")
+      }
+      attempt <- attempt + 1L
+      Sys.sleep(1)
+      next
+    }
+
+    return(
+      .scholidonline_http_string_from_response(
+        resp = resp,
+        quiet = quiet,
+        provider_label = "arXiv"
+      )
+    )
+  }
 
   .scholidonline_http_string_from_response(
     resp = resp,

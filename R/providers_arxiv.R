@@ -13,73 +13,12 @@
     quiet = FALSE
 ) {
   .scholidonline_check_scalar_chr(x = x)
-  
-  query <- paste0(
-    "id_list=",
-    utils::URLencode(
-      x,
-      reserved = TRUE
-    )
-  )
-  
-  url <- paste0(
-    "https://export.arxiv.org/api/query?",
-    query
-  )
-  
-  max_attempts <- 2L
-  attempt <- 1L
-  resp <- NULL
+  rlang::check_dots_empty()
 
-  repeat {
-    resp <- .scholidonline_http_get(
-      url = url,
-      quiet = quiet
-    )
-
-    if (is.null(resp)) {
-      if (!isTRUE(quiet)) {
-        rlang::warn("arXiv request failed.")
-      }
-      return(NA)
-    }
-
-    status <- .scholidonline_resp_status(resp = resp)
-
-    if (status >= 200L && status < 300L) {
-      break
-    }
-
-    if (status == 429L && attempt < max_attempts) {
-      if (!isTRUE(quiet)) {
-        rlang::warn("arXiv request rate-limited (HTTP 429); retrying once.")
-      }
-      attempt <- attempt + 1L
-      Sys.sleep(1)
-      next
-    }
-
-    if (!isTRUE(quiet)) {
-      rlang::warn(paste0("arXiv request returned HTTP ", status, "."))
-    }
-    return(NA)
-  }
-
-  txt <- .scholidonline_http_string_from_response(
-    resp = resp,
-    quiet = TRUE,
-    provider_label = "arXiv"
-  )
-  
-  if (is.null(txt)) {
-    return(NA)
-  }
-  
-  grepl(
-    pattern = "<entry>",
-    x = txt,
-    fixed = TRUE
-  )
+  .exists_arxiv_arxiv_batch(
+    x = x,
+    quiet = quiet
+  )[[1L]]
 }
 
 
@@ -102,46 +41,22 @@
     quiet = FALSE
 ) {
   .scholidonline_check_scalar_chr(x = x)
-  
-  url <- paste0(
-    "http://export.arxiv.org/api/query?id_list=",
-    utils::URLencode(
-      x,
-      reserved = TRUE
-    )
-  )
-  
-  resp <- .scholidonline_http_get(
-    url = url,
+  rlang::check_dots_empty()
+
+  out <- .links_arxiv_arxiv_batch(
+    x = x,
     quiet = quiet
   )
 
-  xml <- .scholidonline_http_string_from_response(
-    resp = resp,
-    quiet = quiet,
-    provider_label = "arXiv"
-  )
-  
-  if (is.null(xml)) {
+  if (nrow(out) < 1L) {
     return(data.frame())
   }
-  
-  doi <- sub(
-    ".*<arxiv:doi[^>]*>([^<]+)</arxiv:doi>.*",
-    "\\1",
-    xml
-  )
-  
-  if (identical(doi, xml) || !nzchar(doi)) {
-    return(data.frame())
-  }
-  
-  data.frame(
-    linked_type      = "doi",
-    linked_value     = doi,
-    provider         = "arxiv",
-    stringsAsFactors = FALSE
-  )
+
+  out[
+    ,
+    c("linked_type", "linked_value", "provider"),
+    drop = FALSE
+  ]
 }
 
 
@@ -165,67 +80,29 @@
     quiet = FALSE
 ) {
   .scholidonline_check_scalar_chr(x = x)
-  
-  url <- paste0(
-    "http://export.arxiv.org/api/query?id_list=",
-    utils::URLencode(
-      x,
-      reserved = TRUE
-    )
-  )
-  
-  resp <- .scholidonline_http_get(
-    url = url,
+  rlang::check_dots_empty()
+
+  out <- .meta_arxiv_arxiv_batch(
+    x = x,
     quiet = quiet
   )
 
-  txt <- .scholidonline_http_string_from_response(
-    resp = resp,
-    quiet = quiet,
-    provider_label = "arXiv"
-  )
+  if (nrow(out) < 1L) {
+    return(data.frame())
+  }
 
-  if (is.null(txt)) {
-    return(data.frame())
-  }
-  
-  entry_title <- sub(
-    ".*<entry>.*?<title>(.*?)</title>.*",
-    "\\1",
-    txt
-  )
-  entry_year_raw <- sub(
-    ".*<entry>.*?<published>(.*?)</published>.*",
-    "\\1",
-    txt
-  )
-  entry_year <- if (
-    !identical(entry_year_raw, txt) &&
-    grepl("^[0-9]{4}(-|$)", entry_year_raw)
-  ) {
-    as.integer(substr(entry_year_raw, 1L, 4L))
-  } else {
-    NA_integer_
-  }
-  entry_url <- sub(
-    ".*<entry>.*?<id>(.*?)</id>.*",
-    "\\1",
-    txt
-  )
-  
-  if (identical(entry_title, txt)) {
-    return(data.frame())
-  }
-  
-  data.frame(
-    title            = entry_title,
-    year             = entry_year,
-    container        = "arXiv",
-    doi              = NA_character_,
-    pmid             = NA_character_,
-    pmcid            = NA_character_,
-    url              = entry_url,
-    provider         = "arxiv",
-    stringsAsFactors = FALSE
-  )
+  out[
+    ,
+    c(
+      "title",
+      "year",
+      "container",
+      "doi",
+      "pmid",
+      "pmcid",
+      "url",
+      "provider"
+    ),
+    drop = FALSE
+  ]
 }

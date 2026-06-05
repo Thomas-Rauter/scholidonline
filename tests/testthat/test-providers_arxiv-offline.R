@@ -54,7 +54,7 @@ testthat::test_that(
       testthat::local_mocked_bindings,
       arxiv_http_bindings(
         status = 200L,
-        body_string = "<feed><entry><id>x</id></entry></feed>"
+        body_string = "<feed><entry><id>http://arxiv.org/abs/1234.5678</id></entry></feed>"
       )
     )
     
@@ -255,6 +255,7 @@ testthat::test_that(
   {
     xml <- paste0(
       "<feed><entry>",
+      "<id>http://arxiv.org/abs/1234.5678</id>",
       "<arxiv:doi>10.1000/test</arxiv:doi>",
       "</entry></feed>"
     )
