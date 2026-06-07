@@ -250,6 +250,20 @@ scholidonline_types <- function() {
           dispatcher = ".convert_pmid_to_pmcid"
         )
       )
+    ),
+
+    ror = list(
+      exists = list(
+        providers = c("auto", "ror"),
+        default_provider = "ror",
+        dispatcher = ".exists_ror"
+      ),
+      meta = list(
+        providers = c("auto", "ror"),
+        default_provider = "ror",
+        dispatcher = ".meta_ror"
+      ),
+      convert = list()
     )
     
   )

@@ -427,6 +427,47 @@
 }
 
 
+#' Return metadata for a ROR organization
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a ROR organization.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_ror_<provider>()`.
+#'
+#' @param x A single, normalized ROR iD string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the ROR organization.
+#'
+#' @noRd
+.meta_ror <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ror"
+  }
+
+  switch(
+    provider,
+    ror = .meta_ror_ror(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 # Level 1 functions (functions called by level 2 functions) --------------------
 
 

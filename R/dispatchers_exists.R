@@ -239,6 +239,51 @@
 }
 
 
+#' Check whether a ROR iD exists
+#'
+#' @description
+#' Internal dispatcher for ROR existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_ror_<provider>()`.
+#'
+#' @param x A single, normalized ROR iD string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_ror <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ror"
+  }
+
+  switch(
+    provider,
+    ror = .exists_ror_ror(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
 #' Check whether a PMID exists
 #'
 #' @description
