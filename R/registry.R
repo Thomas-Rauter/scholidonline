@@ -334,6 +334,20 @@ scholidonline_types <- function() {
         dispatcher = ".meta_sra"
       ),
       convert = list()
+    ),
+
+    uniprot = list(
+      exists = list(
+        providers = c("auto", "uniprot"),
+        default_provider = "uniprot",
+        dispatcher = ".exists_uniprot"
+      ),
+      meta = list(
+        providers = c("auto", "uniprot"),
+        default_provider = "uniprot",
+        dispatcher = ".meta_uniprot"
+      ),
+      convert = list()
     )
     
   )

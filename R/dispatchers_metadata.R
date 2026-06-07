@@ -673,6 +673,47 @@
 }
 
 
+#' Return metadata for a UniProt entry
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a UniProt accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_uniprot_<provider>()`.
+#'
+#' @param x A single, normalized UniProt accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the UniProt entry.
+#'
+#' @noRd
+.meta_uniprot <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "uniprot"
+  }
+
+  switch(
+    provider,
+    uniprot = .meta_uniprot_uniprot(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 # Level 1 functions (functions called by level 2 functions) --------------------
 
 
