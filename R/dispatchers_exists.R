@@ -146,6 +146,51 @@
 }
 
 
+#' Check whether a GEO accession exists
+#'
+#' @description
+#' Internal dispatcher for GEO existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_geo_<provider>()`.
+#'
+#' @param x A single, normalized GEO accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_geo <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .exists_geo_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
 #' Check whether an ORCID exists
 #'
 #' @description

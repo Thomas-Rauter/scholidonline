@@ -49,6 +49,47 @@
 }
 
 
+#' Return metadata for a GEO accession
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a GEO accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_geo_<provider>()`.
+#'
+#' @param x A single, normalized GEO accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the GEO accession.
+#'
+#' @noRd
+.meta_geo <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .meta_geo_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 #' Return metadata for a PMID
 #'
 #' @description

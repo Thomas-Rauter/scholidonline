@@ -142,6 +142,20 @@ scholidonline_types <- function() {
         )
       )
     ),
+
+    geo = list(
+      exists = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".exists_geo"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_geo"
+      ),
+      convert = list()
+    ),
     
     orcid = list(
       exists = list(

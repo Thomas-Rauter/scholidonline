@@ -10,7 +10,7 @@ testthat::test_that("scholidonline_capabilities returns registry summary", {
   )
   
   testthat::expect_true(all(
-    c("arxiv", "doi", "openalex", "orcid", "pmcid", "pmid", "ror") %in% out$type
+    c("arxiv", "doi", "geo", "openalex", "orcid", "pmcid", "pmid", "ror") %in% out$type
   ))
   
   testthat::expect_true(all(
