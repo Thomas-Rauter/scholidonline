@@ -146,6 +146,96 @@
 }
 
 
+#' Check whether a genome assembly accession exists
+#'
+#' @description
+#' Internal dispatcher for assembly existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_assembly_<provider>()`.
+#'
+#' @param x A single, normalized assembly accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_assembly <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .exists_assembly_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
+#' Check whether a BioProject accession exists
+#'
+#' @description
+#' Internal dispatcher for BioProject existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_bioproject_<provider>()`.
+#'
+#' @param x A single, normalized BioProject accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_bioproject <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .exists_bioproject_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
 #' Check whether a GEO accession exists
 #'
 #' @description
@@ -284,6 +374,51 @@
 }
 
 
+#' Check whether a RefSeq accession exists
+#'
+#' @description
+#' Internal dispatcher for RefSeq existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_refseq_<provider>()`.
+#'
+#' @param x A single, normalized RefSeq accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_refseq <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .exists_refseq_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
 #' Check whether a ROR iD exists
 #'
 #' @description
@@ -316,6 +451,51 @@
   switch(
     provider,
     ror = .exists_ror_ror(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
+#' Check whether an SRA accession exists
+#'
+#' @description
+#' Internal dispatcher for SRA existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_sra_<provider>()`.
+#'
+#' @param x A single, normalized SRA accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_sra <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .exists_sra_ncbi(
       x = x,
       ...,
       quiet = quiet

@@ -49,6 +49,88 @@
 }
 
 
+#' Return metadata for a genome assembly accession
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a genome assembly accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_assembly_<provider>()`.
+#'
+#' @param x A single, normalized assembly accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the assembly accession.
+#'
+#' @noRd
+.meta_assembly <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .meta_assembly_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
+#' Return metadata for a BioProject accession
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a BioProject accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_bioproject_<provider>()`.
+#'
+#' @param x A single, normalized BioProject accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the BioProject accession.
+#'
+#' @noRd
+.meta_bioproject <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .meta_bioproject_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 #' Return metadata for a GEO accession
 #'
 #' @description
@@ -468,6 +550,47 @@
 }
 
 
+#' Return metadata for a RefSeq accession
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for a RefSeq accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_refseq_<provider>()`.
+#'
+#' @param x A single, normalized RefSeq accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the RefSeq accession.
+#'
+#' @noRd
+.meta_refseq <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .meta_refseq_ncbi(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 #' Return metadata for a ROR organization
 #'
 #' @description
@@ -500,6 +623,47 @@
   switch(
     provider,
     ror = .meta_ror_ror(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
+#' Return metadata for an SRA accession
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for an SRA accession.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_sra_<provider>()`.
+#'
+#' @param x A single, normalized SRA accession string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the SRA accession.
+#'
+#' @noRd
+.meta_sra <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "ncbi"
+  }
+
+  switch(
+    provider,
+    ncbi = .meta_sra_ncbi(
       x = x,
       ...,
       quiet = quiet

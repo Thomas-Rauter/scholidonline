@@ -94,6 +94,20 @@ scholidonline_types <- function() {
 .scholidonline_registry <- function() {
   reg <- list(
     
+    assembly = list(
+      exists = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".exists_assembly"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_assembly"
+      ),
+      convert = list()
+    ),
+
     arxiv = list(
       exists = list(
         providers = c("auto", "arxiv"),
@@ -113,6 +127,20 @@ scholidonline_types <- function() {
       convert = list()
     ),
     
+    bioproject = list(
+      exists = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".exists_bioproject"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_bioproject"
+      ),
+      convert = list()
+    ),
+
     doi = list(
       exists = list(
         providers = c("auto", "doi.org", "crossref"),
@@ -266,6 +294,20 @@ scholidonline_types <- function() {
       )
     ),
 
+    refseq = list(
+      exists = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".exists_refseq"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_refseq"
+      ),
+      convert = list()
+    ),
+
     ror = list(
       exists = list(
         providers = c("auto", "ror"),
@@ -276,6 +318,20 @@ scholidonline_types <- function() {
         providers = c("auto", "ror"),
         default_provider = "ror",
         dispatcher = ".meta_ror"
+      ),
+      convert = list()
+    ),
+
+    sra = list(
+      exists = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".exists_sra"
+      ),
+      meta = list(
+        providers = c("auto", "ncbi"),
+        default_provider = "ncbi",
+        dispatcher = ".meta_sra"
       ),
       convert = list()
     )
