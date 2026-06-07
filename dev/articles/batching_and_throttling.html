@@ -105,8 +105,8 @@ internally.</p>
 <span>  <span class="op">}</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.04 seconds before NCBI request.</span></span>
-<span><span class="co">## Waiting 0.23 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.09 seconds before NCBI request.</span></span>
+<span><span class="co">## Waiting 0.27 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">##  31452104 999999999 </span></span>
 <span><span class="co">##      TRUE     FALSE</span></span></code></pre>
 <p>Vectorized calls give the package an opportunity to use
@@ -132,7 +132,7 @@ per input:</p>
 <span>  type <span class="op">=</span> <span class="st">"pmid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.2 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.22 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: HTTP request failed (429):</span></span>
 <span><span class="co">## https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi</span></span></code></pre>
 <pre><code><span><span class="co">## [1] NA NA NA</span></span></code></pre>
@@ -165,7 +165,7 @@ links:</p>
 <span>  type <span class="op">=</span> <span class="st">"pmcid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.22 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.19 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">##        query query_type linked_type                    linked_id provider</span></span>
 <span><span class="co">## 1 PMC6784763      pmcid        pmid                     31469695     ncbi</span></span>
 <span><span class="co">## 3 PMC6784763      pmcid         doi 10.1097/EDE.0000000000001091     ncbi</span></span></code></pre>
@@ -178,7 +178,7 @@ per input:</p>
 <span>  to <span class="op">=</span> <span class="st">"pmcid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.18 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.2 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "PMC6784763" NA           NA</span></span></code></pre>
 <p>Batching is provider- and operation-specific. Some providers offer
 clean multi-identifier endpoints; others do not.

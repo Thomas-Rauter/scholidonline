@@ -21,7 +21,9 @@ A character vector of supported identifier type strings.
 
 ``` r
 scholidonline_types()
-#> [1] "arxiv" "doi"   "orcid" "pmcid" "pmid" 
+#>  [1] "arxiv"      "assembly"   "bioproject" "doi"        "geo"       
+#>  [6] "openalex"   "orcid"      "pmcid"      "pmid"       "refseq"    
+#> [11] "ror"        "sra"        "uniprot"   
 "doi" %in% scholidonline_types()
 #> [1] TRUE
 ```

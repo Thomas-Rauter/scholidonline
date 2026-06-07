@@ -100,7 +100,9 @@ functions:</p>
 <p>You can inspect which identifier types are supported:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_types.html">scholidonline_types</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "arxiv"      "assembly"   "bioproject" "doi"        "geo"       </span></span>
+<span><span class="co">#&gt;  [6] "openalex"   "orcid"      "pmcid"      "pmid"       "refseq"    </span></span>
+<span><span class="co">#&gt; [11] "ror"        "sra"        "uniprot"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspecting-capabilities">Inspecting capabilities<a class="anchor" aria-label="anchor" href="#inspecting-capabilities"></a>
@@ -111,6 +113,13 @@ supported operations, conversions, and providers:</p>
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
+<colgroup>
+<col width="15%">
+<col width="14%">
+<col width="10%">
+<col width="34%">
+<col width="24%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">type</th>
 <th align="left">operation</th>
@@ -139,6 +148,34 @@ supported operations, conversions, and providers:</p>
 <td align="left">NA</td>
 <td align="left">auto, arxiv</td>
 <td align="left">arxiv</td>
+</tr>
+<tr class="even">
+<td align="left">assembly</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">assembly</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">bioproject</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">bioproject</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
 </tr>
 <tr class="even">
 <td align="left">doi</td>
@@ -176,95 +213,200 @@ supported operations, conversions, and providers:</p>
 <td align="left">ncbi</td>
 </tr>
 <tr class="odd">
+<td align="left">geo</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">geo</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">openalex</td>
+<td align="left">links</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">doi</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">pmid</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
 <td align="left">orcid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">orcid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">orcid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmcid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmcid</td>
 <td align="left">convert</td>
 <td align="left">pmid</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">convert</td>
 <td align="left">doi</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmid</td>
 <td align="left">convert</td>
 <td align="left">doi</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">convert</td>
 <td align="left">pmcid</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">refseq</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">refseq</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">ror</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ror</td>
+<td align="left">ror</td>
+</tr>
+<tr class="even">
+<td align="left">ror</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ror</td>
+<td align="left">ror</td>
+</tr>
+<tr class="odd">
+<td align="left">sra</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">sra</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">uniprot</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, uniprot</td>
+<td align="left">uniprot</td>
+</tr>
+<tr class="even">
+<td align="left">uniprot</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, uniprot</td>
+<td align="left">uniprot</td>
 </tr>
 </tbody>
 </table>

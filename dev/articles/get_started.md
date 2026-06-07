@@ -39,7 +39,9 @@ You can inspect which identifier types are supported:
 ``` r
 
 scholidonline::scholidonline_types()
-#> [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"
+#>  [1] "arxiv"      "assembly"   "bioproject" "doi"        "geo"       
+#>  [6] "openalex"   "orcid"      "pmcid"      "pmid"       "refseq"    
+#> [11] "ror"        "sra"        "uniprot"
 ```
 
 ## Inspecting capabilities
@@ -53,29 +55,48 @@ out <- scholidonline::scholidonline_capabilities()
 knitr::kable(out)
 ```
 
-| type  | operation | target | providers               | default_provider |
-|:------|:----------|:-------|:------------------------|:-----------------|
-| arxiv | exists    | NA     | auto, arxiv             | arxiv            |
-| arxiv | links     | NA     | auto, arxiv             | arxiv            |
-| arxiv | meta      | NA     | auto, arxiv             | arxiv            |
-| doi   | exists    | NA     | auto, doi.org, crossref | doi.org          |
-| doi   | links     | NA     | auto, crossref          | crossref         |
-| doi   | meta      | NA     | auto, crossref, doi.org | crossref         |
-| doi   | convert   | pmid   | auto, ncbi, epmc        | ncbi             |
-| doi   | convert   | pmcid  | auto, ncbi, epmc        | ncbi             |
-| orcid | exists    | NA     | auto, orcid             | orcid            |
-| orcid | links     | NA     | auto, orcid             | orcid            |
-| orcid | meta      | NA     | auto, orcid             | orcid            |
-| pmcid | exists    | NA     | auto, ncbi, epmc        | ncbi             |
-| pmcid | links     | NA     | auto, ncbi, epmc        | ncbi             |
-| pmcid | meta      | NA     | auto, ncbi, epmc        | ncbi             |
-| pmcid | convert   | pmid   | auto, ncbi, epmc        | ncbi             |
-| pmcid | convert   | doi    | auto, ncbi, epmc        | ncbi             |
-| pmid  | exists    | NA     | auto, ncbi, epmc        | ncbi             |
-| pmid  | links     | NA     | auto, ncbi, epmc        | ncbi             |
-| pmid  | meta      | NA     | auto, ncbi, epmc        | ncbi             |
-| pmid  | convert   | doi    | auto, ncbi, epmc        | ncbi             |
-| pmid  | convert   | pmcid  | auto, ncbi, epmc        | ncbi             |
+| type       | operation | target | providers               | default_provider |
+|:-----------|:----------|:-------|:------------------------|:-----------------|
+| arxiv      | exists    | NA     | auto, arxiv             | arxiv            |
+| arxiv      | links     | NA     | auto, arxiv             | arxiv            |
+| arxiv      | meta      | NA     | auto, arxiv             | arxiv            |
+| assembly   | exists    | NA     | auto, ncbi              | ncbi             |
+| assembly   | meta      | NA     | auto, ncbi              | ncbi             |
+| bioproject | exists    | NA     | auto, ncbi              | ncbi             |
+| bioproject | meta      | NA     | auto, ncbi              | ncbi             |
+| doi        | exists    | NA     | auto, doi.org, crossref | doi.org          |
+| doi        | links     | NA     | auto, crossref          | crossref         |
+| doi        | meta      | NA     | auto, crossref, doi.org | crossref         |
+| doi        | convert   | pmid   | auto, ncbi, epmc        | ncbi             |
+| doi        | convert   | pmcid  | auto, ncbi, epmc        | ncbi             |
+| geo        | exists    | NA     | auto, ncbi              | ncbi             |
+| geo        | meta      | NA     | auto, ncbi              | ncbi             |
+| openalex   | exists    | NA     | auto, openalex          | openalex         |
+| openalex   | links     | NA     | auto, openalex          | openalex         |
+| openalex   | meta      | NA     | auto, openalex          | openalex         |
+| openalex   | convert   | doi    | auto, openalex          | openalex         |
+| openalex   | convert   | pmid   | auto, openalex          | openalex         |
+| orcid      | exists    | NA     | auto, orcid             | orcid            |
+| orcid      | links     | NA     | auto, orcid             | orcid            |
+| orcid      | meta      | NA     | auto, orcid             | orcid            |
+| pmcid      | exists    | NA     | auto, ncbi, epmc        | ncbi             |
+| pmcid      | links     | NA     | auto, ncbi, epmc        | ncbi             |
+| pmcid      | meta      | NA     | auto, ncbi, epmc        | ncbi             |
+| pmcid      | convert   | pmid   | auto, ncbi, epmc        | ncbi             |
+| pmcid      | convert   | doi    | auto, ncbi, epmc        | ncbi             |
+| pmid       | exists    | NA     | auto, ncbi, epmc        | ncbi             |
+| pmid       | links     | NA     | auto, ncbi, epmc        | ncbi             |
+| pmid       | meta      | NA     | auto, ncbi, epmc        | ncbi             |
+| pmid       | convert   | doi    | auto, ncbi, epmc        | ncbi             |
+| pmid       | convert   | pmcid  | auto, ncbi, epmc        | ncbi             |
+| refseq     | exists    | NA     | auto, ncbi              | ncbi             |
+| refseq     | meta      | NA     | auto, ncbi              | ncbi             |
+| ror        | exists    | NA     | auto, ror               | ror              |
+| ror        | meta      | NA     | auto, ror               | ror              |
+| sra        | exists    | NA     | auto, ncbi              | ncbi             |
+| sra        | meta      | NA     | auto, ncbi              | ncbi             |
+| uniprot    | exists    | NA     | auto, uniprot           | uniprot          |
+| uniprot    | meta      | NA     | auto, uniprot           | uniprot          |
 
 ## Existence checks: `id_exists()`
 
