@@ -194,6 +194,51 @@
 }
 
 
+#' Check whether an OpenAlex entity exists
+#'
+#' @description
+#' Internal dispatcher for OpenAlex existence checks.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.exists_openalex_<provider>()`.
+#'
+#' @param x A single, normalized OpenAlex key string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single logical value.
+#'
+#' @noRd
+.exists_openalex <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (identical(provider, "auto")) {
+    provider <- "openalex"
+  }
+
+  switch(
+    provider,
+    openalex = .exists_openalex_openalex(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    stop(
+      "Unknown provider: ",
+      provider,
+      call. = FALSE
+    )
+  )
+}
+
+
 #' Check whether a PMID exists
 #'
 #' @description

@@ -161,6 +161,36 @@ scholidonline_types <- function() {
       ),
       convert = list()
     ),
+
+    openalex = list(
+      exists = list(
+        providers = c("auto", "openalex"),
+        default_provider = "openalex",
+        dispatcher = ".exists_openalex"
+      ),
+      links = list(
+        providers = c("auto", "openalex"),
+        default_provider = "openalex",
+        dispatcher = ".links_openalex"
+      ),
+      meta = list(
+        providers = c("auto", "openalex"),
+        default_provider = "openalex",
+        dispatcher = ".meta_openalex"
+      ),
+      convert = list(
+        doi = list(
+          providers = c("auto", "openalex"),
+          default_provider = "openalex",
+          dispatcher = ".convert_openalex_to_doi"
+        ),
+        pmid = list(
+          providers = c("auto", "openalex"),
+          default_provider = "openalex",
+          dispatcher = ".convert_openalex_to_pmid"
+        )
+      )
+    ),
     
     pmcid = list(
       exists = list(

@@ -183,6 +183,47 @@
 }
 
 
+#' Return linked identifiers for an OpenAlex work
+#'
+#' @description
+#' Internal dispatcher for retrieving identifiers linked to an OpenAlex work.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.links_openalex_<provider>()`.
+#'
+#' @param x A single, normalized OpenAlex key string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing linked identifiers.
+#'
+#' @noRd
+.links_openalex <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "openalex"
+  }
+
+  switch(
+    provider,
+    openalex = .links_openalex_openalex(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 
 #' Return linked identifiers for a PMCID
 #'

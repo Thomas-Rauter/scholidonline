@@ -386,6 +386,47 @@
 }
 
 
+#' Return metadata for an OpenAlex work
+#'
+#' @description
+#' Internal dispatcher for retrieving metadata for an OpenAlex work.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.meta_openalex_<provider>()`.
+#'
+#' @param x A single, normalized OpenAlex key string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A data.frame describing metadata for the OpenAlex work.
+#'
+#' @noRd
+.meta_openalex <- function(
+    x,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "openalex"
+  }
+
+  switch(
+    provider,
+    openalex = .meta_openalex_openalex(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 # Level 1 functions (functions called by level 2 functions) --------------------
 
 

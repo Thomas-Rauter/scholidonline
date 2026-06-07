@@ -1,6 +1,96 @@
 # Level 2 function (functions called by level 1 functions) ---------------------
 
 
+#' Convert an OpenAlex work to a DOI
+#'
+#' @description
+#' Internal dispatcher for converting an OpenAlex work to a DOI.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.convert_openalex_to_doi_<provider>()`.
+#'
+#' @param x A single, normalized OpenAlex work key string.
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single DOI string, or `NA_character_`.
+#'
+#' @noRd
+.convert_openalex_to_doi <- function(
+    x,
+    from,
+    to,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "openalex"
+  }
+
+  switch(
+    provider,
+    openalex = .convert_openalex_to_doi_openalex(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
+#' Convert an OpenAlex work to a PMID
+#'
+#' @description
+#' Internal dispatcher for converting an OpenAlex work to a PMID.
+#'
+#' Provider-specific implementations live in helpers named
+#' `.convert_openalex_to_pmid_<provider>()`.
+#'
+#' @param x A single, normalized OpenAlex work key string.
+#' @param from A single source identifier type string.
+#' @param to A single target identifier type string.
+#' @param provider A single provider string.
+#' @param ... Passed to provider-specific implementations.
+#' @param quiet Logical; if `TRUE`, suppress provider warnings/messages where
+#'   possible.
+#'
+#' @return A single PMID string, or `NA_character_`.
+#'
+#' @noRd
+.convert_openalex_to_pmid <- function(
+    x,
+    from,
+    to,
+    provider,
+    ...,
+    quiet = FALSE
+) {
+  .scholidonline_check_scalar_chr(x)
+
+  if (identical(provider, "auto")) {
+    provider <- "openalex"
+  }
+
+  switch(
+    provider,
+    openalex = .convert_openalex_to_pmid_openalex(
+      x = x,
+      ...,
+      quiet = quiet
+    ),
+    rlang::abort(paste0("Unknown provider: ", provider))
+  )
+}
+
+
 #' Convert a PMID to a DOI
 #'
 #' @description
