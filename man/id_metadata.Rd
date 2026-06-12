@@ -50,9 +50,14 @@ For providers that support batch lookup, such as arXiv, multiple identifiers
 may be resolved using a single provider request. This does not change the
 public return shape: the output still contains one row per input identifier.
 
-The function returns a consistent cross-provider subset of core
-bibliographic metadata, such as title, publication year, container title,
-linked DOI, PMID, PMCID, and a canonical URL when available.
+The function returns a harmonized cross-provider data.frame with columns
+\code{title}, \code{year}, \code{container}, \code{doi}, \code{pmid}, \code{pmcid}, and \code{url}. For
+bibliographic identifiers, \code{container} is typically a journal or source
+title and linked DOI/PMID/PMCID fields may be populated. For other types,
+the same columns are reused with type-appropriate meaning (for example,
+protein name and organism for UniProt, organization name and country for
+ROR, or accession title and organism for NCBI accessions). Bibliographic
+link columns are \code{NA} when not applicable.
 }
 \examples{
 \donttest{

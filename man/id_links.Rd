@@ -41,7 +41,11 @@ record or to a closely corresponding version of it.
 row per discovered identifier link.
 
 Typical links include DOI <-> PMID, DOI <-> PMCID, PMID <-> PMCID,
-arXiv ID <-> DOI, and ORCID -> DOI for works recorded in ORCID.
+arXiv ID <-> DOI, ORCID -> DOI for works recorded in ORCID, and OpenAlex
+work -> DOI, PMID, or PMCID where present in the OpenAlex record.
+
+Link discovery is not available for every supported identifier type; use
+\code{\link{scholidonline_capabilities}()} to check whether \code{links} is supported.
 
 Only identifier links explicitly exposed by the queried provider are
 returned. \code{id_links()} does not retrieve general metadata or broader related

@@ -18,7 +18,7 @@ is_pkgdown <- identical(Sys.getenv("IN_PKGDOWN"), "true")
 
 `scholidonline` provides online utilities for working with scholarly
 identifiers. It builds on
-[`scholid`](https://thomas-rauter.github.io/scholid/)
+[`scholid`](https://thomas-rauter.github.io/scholid/) (0.2.0 or later)
 for structural detection and
 normalization, and adds registry-backed functionality such as:
 
@@ -251,19 +251,23 @@ The chosen provider affects:
 
 ## Scope of scholidonline
 
-`scholidonline` focuses on identifiers that have:
+`scholidonline` focuses on identifier types with stable public registries and
+accessible APIs. Version 0.2.0 supports online operations for:
 
-- Stable public registries
-- Accessible APIs
-- Meaningful cross-system relationships
+- **Bibliographic core:** DOI, PMID, PMCID, arXiv
+- **Graph and people:** OpenAlex, ORCID
+- **Organizations:** ROR
+- **Life science:** UniProt; NCBI accessions (GEO, BioProject, RefSeq, SRA,
+  genome assembly)
 
-Examples:
+Not every type supports every operation. For example, ROR and UniProt support
+existence checks and metadata, while DOI and PMID additionally support linked
+identifiers and conversion. Use `scholidonline_capabilities()` as the
+authoritative summary.
 
-- DOI
-- PMID
-- PMCID
-- ORCID
-- arXiv
+Many other identifier types (e.g., ISBN, ISSN, bibcode, RRID) are
+structurally supported by `scholid`, but are not covered by `scholidonline`
+because they lack a stable, open registry API fit for this package.
 
-Other identifiers (e.g., ISBN, ISSN) are structurally supported by
-`scholid`, but do not always have stable, open registry APIs.
+`scholidonline` 0.2.0 requires `scholid` 0.2.0 or later so that new types
+can be classified and normalized before online lookup.

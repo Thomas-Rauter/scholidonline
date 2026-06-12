@@ -33,21 +33,22 @@ install.packages("scholidonline")
 
 ## Scope
 
-The package focuses on online operations for common identifier systems used
-in scholarly communication:
+The package provides registry-backed online operations where supported for
+these identifier groups:
 
-- DOI
-- ORCID iD
-- arXiv
-- PubMed (PMID)
-- PubMed Central (PMCID)
+- **Bibliographic core:** DOI, PMID, PMCID, arXiv
+- **Graph and people:** OpenAlex, ORCID
+- **Organizations:** ROR
+- **Life science:** UniProt; NCBI accessions (GEO, BioProject, RefSeq, SRA,
+  genome assembly)
 
-It provides registry-backed functionality such as:
+Operations include existence checks, metadata retrieval, linked-identifier
+discovery, and cross-system conversion. Not every type supports every
+operation; use `scholidonline_capabilities()` to inspect what is available
+for a given type.
 
-- Existence checks
-- Identifier conversion across systems
-- Basic metadata retrieval
-- Discovery of linked identifiers
+Requires [`scholid`](https://thomas-rauter.github.io/scholid/) 0.2.0 or later
+for classification and normalization of the supported types.
 
 ## Interface
 
@@ -110,9 +111,11 @@ knitr::kable(out)
 
 [`scholid`](https://thomas-rauter.github.io/scholid/) provides dependency-free
 utilities for detecting, normalizing, classifying, and extracting scholarly
-identifiers.
+identifiers (including types without online support here, such as ISBN, ISSN,
+and bibcode).
 
-`scholidonline` builds on that foundation and adds online registry queries.
+`scholidonline` builds on that foundation and adds online registry queries
+for a subset of those types. Version 0.2.0 requires scholid 0.2.0 or later.
 
 
 

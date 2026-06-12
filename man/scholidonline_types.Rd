@@ -13,8 +13,10 @@ A character vector of supported identifier type strings.
 Return the set of identifier types supported by the scholidonline package.
 
 This is the set of identifier types for which scholidonline provides
-registry-backed functionality, including existence checks, identifier
-conversion, metadata retrieval, and link discovery.
+registry-backed functionality. Available operations vary by type; use
+\code{\link{scholidonline_capabilities}()} to see which of existence checks,
+metadata retrieval, link discovery, and identifier conversion are
+supported for each type.
 }
 \examples{
 scholidonline_types()
