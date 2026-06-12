@@ -1,7 +1,7 @@
 Package: scholidonline
 Type: Package
 Title: Resolution, Conversion, Linking and Metadata for Scholarly Identifiers
-Version: 0.1.1
+Version: 0.2.0
 Language: en-US
 Authors@R:
     person("Thomas", "Rauter",
@@ -11,14 +11,15 @@ Authors@R:
 Description: Enables querying of scholarly identifier services to
     verify identifier existence, convert identifiers across systems,
     retrieve bibliographic metadata, and discover linked identifiers.
-    Supports common identifier types including DOI, PMID, PMCID,
-    arXiv, and ORCID.
+    Supports identifier types including DOI, PMID, PMCID, arXiv,
+    ORCID, OpenAlex, ROR, UniProt, and selected NCBI accessions
+    (GEO, BioProject, RefSeq, SRA, and genome assembly).
 License: MIT + file LICENSE
 URL: https://thomas-rauter.github.io/scholidonline/
 BugReports: https://github.com/Thomas-Rauter/scholidonline/issues
 Depends: R (>= 4.0.0)
 Imports:
-    scholid,
+    scholid (>= 0.2.0),
     httr2,
     rlang
 Suggests:
