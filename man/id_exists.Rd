@@ -36,6 +36,11 @@ input could not be identified, normalized, or checked reliably.
 Check whether scholarly identifiers are found in their respective
 registries.
 }
+\details{
+Existence checking is not available for every identifier type supported
+by \code{scholid}. Use \code{\link{scholidonline_capabilities}()} to see which types
+support the \code{exists} operation and which providers implement it.
+}
 \examples{
 \donttest{
   id_exists("10.1038/nature12373", type = "doi")

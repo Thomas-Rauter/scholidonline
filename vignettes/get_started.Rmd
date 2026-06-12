@@ -69,6 +69,15 @@ out <- scholidonline::scholidonline_capabilities()
 knitr::kable(out)
 ```
 
+Not every supported type offers every operation. For example, ROR and
+UniProt support existence checks and metadata, while DOI and PMID also
+support linked identifiers and conversion. To inspect one type:
+
+```{r capabilities by type, eval = TRUE}
+out <- scholidonline::scholidonline_capabilities()
+knitr::kable(subset(out, type == "openalex"))
+```
+
 
 
 ## Existence checks: `id_exists()`

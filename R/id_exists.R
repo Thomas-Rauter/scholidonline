@@ -4,6 +4,11 @@
 #' Check whether scholarly identifiers are found in their respective
 #' registries.
 #'
+#' @details
+#' Existence checking is not available for every identifier type supported
+#' by `scholid`. Use [scholidonline_capabilities()] to see which types
+#' support the `exists` operation and which providers implement it.
+#'
 #' @param x A character vector of identifiers.
 #' @param type A single identifier type string, or `"auto"` to infer the type
 #'   for each element of `x`. See `scholidonline_types()` for supported values.

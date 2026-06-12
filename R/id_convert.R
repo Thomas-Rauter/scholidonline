@@ -4,6 +4,12 @@
 #' Convert scholarly identifiers across registries, for example from PMID to
 #' DOI.
 #'
+#' @details
+#' Only some source/target type pairs are supported. Use
+#' [scholidonline_capabilities()] with `operation = "convert"` (or filter the
+#' returned table) to see which conversions are available and which providers
+#' implement them.
+#'
 #' @param x A character vector of scholarly identifiers.
 #' @param to A single target identifier type string, such as `"doi"` or
 #'   `"pmid"`. See `scholidonline_types()` for all supported values.

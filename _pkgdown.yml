@@ -36,8 +36,9 @@ navbar:
 reference:
   - title: User Available Functions
     desc: >
-      Documentation for all user-facing functions (for internal functions,
-      see GitHub).
+      Documentation for all user-facing functions. Use
+      `scholidonline_capabilities()` to see which operations and conversions
+      are available for each supported identifier type.
     contents:
       - id_convert
       - id_exists
