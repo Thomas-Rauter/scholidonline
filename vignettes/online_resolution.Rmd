@@ -103,9 +103,8 @@ A structurally valid identifier may still fail registry validation.
 normalizes identifier strings offline. `scholidonline` then queries external
 registries for types that have online support.
 
-Version 0.2.0 of `scholidonline` requires **scholid 0.2.0 or later** so that
-newly supported types (for example OpenAlex, ROR, UniProt, and NCBI
-accessions) are recognized and normalized before registry lookup. Structural
-validation in `scholid` does not imply registry support in `scholidonline`;
-use `scholidonline_types()` and `scholidonline_capabilities()` to see which
-types and operations are available online.
+Identifiers must be classified and normalized with `scholid` before
+registry lookup in `scholidonline`. Structural validation in `scholid` does
+not imply registry support in `scholidonline`; use `scholidonline_types()`
+and `scholidonline_capabilities()` to see which types and operations are
+available online.

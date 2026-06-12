@@ -47,9 +47,6 @@ discovery, and cross-system conversion. Not every type supports every
 operation; use `scholidonline_capabilities()` to inspect what is available
 for a given type.
 
-Requires [`scholid`](https://thomas-rauter.github.io/scholid/) 0.2.0 or later
-for classification and normalization of the supported types.
-
 ## Interface
 
 User-available functions:
@@ -115,7 +112,7 @@ identifiers (including types without online support here, such as ISBN, ISSN,
 and bibcode).
 
 `scholidonline` builds on that foundation and adds online registry queries
-for a subset of those types. Version 0.2.0 requires scholid 0.2.0 or later.
+for a subset of those types. 
 
 
 

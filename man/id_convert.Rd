@@ -41,7 +41,7 @@ DOI.
 }
 \details{
 Only some source/target type pairs are supported. Use
-\code{\link{scholidonline_capabilities}()} with \code{operation = "convert"} (or filter the
+\code{\link[=scholidonline_capabilities]{scholidonline_capabilities()}} with \code{operation = "convert"} (or filter the
 returned table) to see which conversions are available and which providers
 implement them.
 }

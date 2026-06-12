@@ -38,7 +38,7 @@ registries.
 }
 \details{
 Existence checking is not available for every identifier type supported
-by \code{scholid}. Use \code{\link{scholidonline_capabilities}()} to see which types
+by \code{scholid}. Use \code{\link[=scholidonline_capabilities]{scholidonline_capabilities()}} to see which types
 support the \code{exists} operation and which providers implement it.
 }
 \examples{

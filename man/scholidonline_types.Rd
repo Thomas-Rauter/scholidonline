@@ -14,7 +14,7 @@ Return the set of identifier types supported by the scholidonline package.
 
 This is the set of identifier types for which scholidonline provides
 registry-backed functionality. Available operations vary by type; use
-\code{\link{scholidonline_capabilities}()} to see which of existence checks,
+\code{\link[=scholidonline_capabilities]{scholidonline_capabilities()}} to see which of existence checks,
 metadata retrieval, link discovery, and identifier conversion are
 supported for each type.
 }

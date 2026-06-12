@@ -44,21 +44,18 @@ linked-identifier discovery, and cross-system conversion. Not every type
 supports every operation; use `scholidonline_capabilities()` to inspect
 what is available for a given type.
 
-Requires [`scholid`](https://thomas-rauter.github.io/scholid/) 0.2.0 or
-later for classification and normalization of the supported types.
-
 ## Interface
 
 User-available functions:
 
-| Function                       | Purpose                                                  |
-|--------------------------------|----------------------------------------------------------|
-| `scholidonline_types()`        | Supported scholidonline identifier types                 |
-| `scholidonline_capabilities()` | Supported scholidonline capabilities                     |
-| `id_exists()`                  | Check whether identifiers exist in their registries      |
-| `id_convert()`                 | Convert identifiers across systems (e.g., PMID → DOI)    |
-| `id_metadata()`                | Retrieve basic structured metadata                       |
-| `id_links()`                   | Discover identifiers linked to the same scholarly record |
+| Function | Purpose |
+|----|----|
+| `scholidonline_types()` | Supported scholidonline identifier types |
+| `scholidonline_capabilities()` | Supported scholidonline capabilities |
+| `id_exists()` | Check whether identifiers exist in their registries |
+| `id_convert()` | Convert identifiers across systems (e.g., PMID → DOI) |
+| `id_metadata()` | Retrieve basic structured metadata |
+| `id_links()` | Discover identifiers linked to the same scholarly record |
 
 ## Examples
 
@@ -150,9 +147,9 @@ out <- scholidonline::id_metadata(
 knitr::kable(out)
 ```
 
-| input               | type | provider | title                                        | year | container | doi                 | pmid | pmcid | url                                   |
-|:--------------------|:-----|:---------|:---------------------------------------------|-----:|:----------|:--------------------|:-----|:------|:--------------------------------------|
-| 10.1038/nature12373 | doi  | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature    | 10.1038/nature12373 | NA   | NA    | <https://doi.org/10.1038/nature12373> |
+| input | type | provider | title | year | container | doi | pmid | pmcid | url |
+|:---|:---|:---|:---|---:|:---|:---|:---|:---|:---|
+| 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
 ``` r
 # Return identifiers linked to the same scholarly record
@@ -176,8 +173,7 @@ extracting scholarly identifiers (including types without online support
 here, such as ISBN, ISSN, and bibcode).
 
 `scholidonline` builds on that foundation and adds online registry
-queries for a subset of those types. Version 0.2.0 requires scholid
-0.2.0 or later.
+queries for a subset of those types.
 
 ## License
 

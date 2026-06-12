@@ -13,8 +13,6 @@ scholidonline 0.2.0
   rate limiters, registry reader helpers, shared `id_*()` input preparation,
   arXiv scalar-to-batch delegation, and consolidated engine provider
   resolution.
-* Requires scholid 0.2.0 or later for classification and normalization of
-  the newly supported identifier types.
 
 scholidonline 0.1.1
 ===========
