@@ -172,13 +172,19 @@ out <- scholidonline::id_links(
   "31452104",
   provider = "epmc"
   )
+```
+
+``` R
+## Warning: Europe PMC request returned HTTP 503.
+```
+
+``` r
 
 knitr::kable(out)
 ```
 
-|     | query    | query_type | linked_type | linked_id                    | provider |
-|:----|:---------|:-----------|:------------|:-----------------------------|:---------|
-| 2   | 31452104 | pmid       | doi         | 10.1007/978-1-4939-9752-7_10 | epmc     |
+| query | query_type | linked_type | linked_id | provider |
+|-------|------------|-------------|-----------|----------|
 
 ## Relationship to scholid
 
