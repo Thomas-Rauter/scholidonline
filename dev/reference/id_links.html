@@ -9,7 +9,7 @@ record or to a closely corresponding version of it."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,10 @@ data.frame with these columns is returned.</p>
     <p><code>id_links()</code> is vectorized over <code>x</code> and returns a long data.frame with one
 row per discovered identifier link.</p>
 <p>Typical links include DOI &lt;-&gt; PMID, DOI &lt;-&gt; PMCID, PMID &lt;-&gt; PMCID,
-arXiv ID &lt;-&gt; DOI, and ORCID -&gt; DOI for works recorded in ORCID.</p>
+arXiv ID &lt;-&gt; DOI, ORCID -&gt; DOI for works recorded in ORCID, and OpenAlex
+work -&gt; DOI, PMID, or PMCID where present in the OpenAlex record.</p>
+<p>Link discovery is not available for every supported identifier type; use
+<code><a href="scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to check whether <code>links</code> is supported.</p>
 <p>Only identifier links explicitly exposed by the queried provider are
 returned. <code>id_links()</code> does not retrieve general metadata or broader related
 records unless the provider represents them as direct identifier links.</p>

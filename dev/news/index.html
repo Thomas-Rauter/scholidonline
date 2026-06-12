@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,15 @@
       <small>Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="scholidonline-020">scholidonline 0.2.0<a class="anchor" aria-label="anchor" href="#scholidonline-020"></a></h2>
+<ul><li>Added OpenAlex support for existence checks, metadata, linked identifiers, and conversion to DOI and PMID for work records.</li>
+<li>Added ROR support for organization existence checks and metadata.</li>
+<li>Added NCBI accession support for GEO, BioProject, RefSeq, SRA, and genome assembly existence checks and metadata via Entrez ESummary.</li>
+<li>Added UniProt support for protein accession existence checks and metadata.</li>
+<li>Introduced shared NCBI accession helpers for generic Entrez ESummary querying, record resolution, and harmonized metadata frames.</li>
+<li>Refactored internal provider infrastructure: shared HTTP helpers, unified rate limiters, registry reader helpers, shared <code>id_*()</code> input preparation, arXiv scalar-to-batch delegation, and consolidated engine provider resolution.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="scholidonline-011">scholidonline 0.1.1<a class="anchor" aria-label="anchor" href="#scholidonline-011"></a></h2><p class="text-muted">CRAN release: 2026-05-14</p>
 <ul><li>Added provider-level batching for selected arXiv and NCBI operations to reduce unnecessary live-service requests while preserving existing public return shapes.</li>

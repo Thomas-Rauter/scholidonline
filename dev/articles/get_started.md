@@ -98,6 +98,24 @@ knitr::kable(out)
 | uniprot    | exists    | NA     | auto, uniprot           | uniprot          |
 | uniprot    | meta      | NA     | auto, uniprot           | uniprot          |
 
+Not every supported type offers every operation. For example, ROR and
+UniProt support existence checks and metadata, while DOI and PMID also
+support linked identifiers and conversion. To inspect one type:
+
+``` r
+
+out <- scholidonline::scholidonline_capabilities()
+knitr::kable(subset(out, type == "openalex"))
+```
+
+|     | type     | operation | target | providers      | default_provider |
+|:----|:---------|:----------|:-------|:---------------|:-----------------|
+| 15  | openalex | exists    | NA     | auto, openalex | openalex         |
+| 16  | openalex | links     | NA     | auto, openalex | openalex         |
+| 17  | openalex | meta      | NA     | auto, openalex | openalex         |
+| 18  | openalex | convert   | doi    | auto, openalex | openalex         |
+| 19  | openalex | convert   | pmid   | auto, openalex | openalex         |
+
 ## Existence checks: `id_exists()`
 
 [`id_exists()`](https://thomas-rauter.github.io/scholidonline/reference/id_exists.md)
@@ -299,19 +317,23 @@ The chosen provider affects:
 
 ## Scope of scholidonline
 
-`scholidonline` focuses on identifiers that have:
+`scholidonline` focuses on identifier types with stable public
+registries and accessible APIs. The package supports online operations
+for:
 
-- Stable public registries
-- Accessible APIs
-- Meaningful cross-system relationships
+- **Bibliographic core:** DOI, PMID, PMCID, arXiv
+- **Graph and people:** OpenAlex, ORCID
+- **Organizations:** ROR
+- **Life science:** UniProt; NCBI accessions (GEO, BioProject, RefSeq,
+  SRA, genome assembly)
 
-Examples:
+Not every type supports every operation. For example, ROR and UniProt
+support existence checks and metadata, while DOI and PMID additionally
+support linked identifiers and conversion. Use
+[`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+as the authoritative summary.
 
-- DOI
-- PMID
-- PMCID
-- ORCID
-- arXiv
-
-Other identifiers (e.g., ISBN, ISSN) are structurally supported by
-`scholid`, but do not always have stable, open registry APIs.
+Many other identifier types (e.g., ISBN, ISSN, bibcode, RRID) are
+structurally supported by `scholid`, but are not covered by
+`scholidonline` because they lack a stable, open registry API fit for
+this package.

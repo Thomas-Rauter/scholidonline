@@ -9,7 +9,7 @@ registries."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,6 +87,12 @@ warnings and messages where possible.</p></dd>
     <p>A logical vector. <code>TRUE</code> indicates that the identifier was found,
 <code>FALSE</code> indicates that it was not found, and <code>NA</code> indicates that the
 input could not be identified, normalized, or checked reliably.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Existence checking is not available for every identifier type supported
+by <code>scholid</code>. Use <code><a href="scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to see which types
+support the <code>exists</code> operation and which providers implement it.</p>
     </div>
 
     <div class="section level2">

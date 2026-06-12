@@ -9,7 +9,7 @@ DOI."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,6 +92,13 @@ warnings and messages where possible.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A character vector of converted identifiers. Elements that cannot
 be identified, normalized, or converted return <code>NA_character_</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Only some source/target type pairs are supported. Use
+<code><a href="scholidonline_capabilities.html">scholidonline_capabilities()</a></code> with <code>operation = "convert"</code> (or filter the
+returned table) to see which conversions are available and which providers
+implement them.</p>
     </div>
 
     <div class="section level2">

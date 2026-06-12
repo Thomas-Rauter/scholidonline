@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -410,20 +410,78 @@ supported operations, conversions, and providers:</p>
 </tr>
 </tbody>
 </table>
+<p>Not every supported type offers every operation. For example, ROR and
+UniProt support existence checks and metadata, while DOI and PMID also
+support linked identifiers and conversion. To inspect one type:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">out</span>, <span class="va">type</span> <span class="op">==</span> <span class="st">"openalex"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">type</th>
+<th align="left">operation</th>
+<th align="left">target</th>
+<th align="left">providers</th>
+<th align="left">default_provider</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">15</td>
+<td align="left">openalex</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="left">openalex</td>
+<td align="left">links</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="left">openalex</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">18</td>
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">doi</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">19</td>
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">pmid</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="existence-checks-id_exists">Existence checks: <code>id_exists()</code><a class="anchor" aria-label="anchor" href="#existence-checks-id_exists"></a>
 </h2>
 <p><code><a href="../reference/id_exists.html">id_exists()</a></code> verifies whether identifiers exist in their
 respective registries.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If <code>type = NULL</code>, the type is inferred automatically:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"10.1000/182"</span>,</span>
@@ -448,7 +506,7 @@ respective registries.</p>
 <li>PMCID → PMID</li>
 <li>DOI → PMCID</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"12345678"</span>,</span>
 <span>  from <span class="op">=</span> <span class="st">"pmid"</span>,</span>
@@ -457,7 +515,7 @@ respective registries.</p>
 <span><span class="co">#&gt; [1] "10.1234/2013/999990"</span></span></code></pre></div>
 <p>If <code>from = NULL</code>, the source type is inferred per
 element:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12345678"</span>, <span class="st">"PMC1234567"</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="st">"doi"</span></span>
@@ -470,7 +528,7 @@ element:</p>
 </h2>
 <p><code><a href="../reference/id_metadata.html">id_metadata()</a></code> retrieves harmonized metadata from
 external registries.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1038/nature12373"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
@@ -516,7 +574,7 @@ external registries.</p>
 </table>
 <p>Metadata completeness depends on the registry.</p>
 <p>You can restrict returned fields:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="st">"10.1038/nature12373"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span>,</span>
@@ -546,7 +604,7 @@ external registries.</p>
 </h2>
 <p><code><a href="../reference/id_links.html">id_links()</a></code> returns related identifiers discovered via
 registry queries.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_links.html">id_links</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"pmcid"</span></span>
@@ -600,7 +658,7 @@ registry queries.</p>
 <li>Check registry existence</li>
 </ol>
 <p>Example:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://doi.org/10.1000/182"</span>,</span>
 <span>  <span class="st">"PMCID: PMC1234567"</span>,</span>
@@ -634,7 +692,7 @@ registry queries.</p>
 <h2 id="provider-selection">Provider selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
 </h2>
 <p>Most functions accept a <code>provider</code> argument.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x        <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type     <span class="op">=</span> <span class="st">"doi"</span>,</span>
@@ -662,23 +720,29 @@ chosen automatically, potentially with fallback behavior.</p>
 <div class="section level2">
 <h2 id="scope-of-scholidonline">Scope of scholidonline<a class="anchor" aria-label="anchor" href="#scope-of-scholidonline"></a>
 </h2>
-<p><code>scholidonline</code> focuses on identifiers that have:</p>
+<p><code>scholidonline</code> focuses on identifier types with stable
+public registries and accessible APIs. The package supports online
+operations for:</p>
 <ul>
-<li>Stable public registries</li>
-<li>Accessible APIs</li>
-<li>Meaningful cross-system relationships</li>
+<li>
+<strong>Bibliographic core:</strong> DOI, PMID, PMCID, arXiv</li>
+<li>
+<strong>Graph and people:</strong> OpenAlex, ORCID</li>
+<li>
+<strong>Organizations:</strong> ROR</li>
+<li>
+<strong>Life science:</strong> UniProt; NCBI accessions (GEO,
+BioProject, RefSeq, SRA, genome assembly)</li>
 </ul>
-<p>Examples:</p>
-<ul>
-<li>DOI</li>
-<li>PMID</li>
-<li>PMCID</li>
-<li>ORCID</li>
-<li>arXiv</li>
-</ul>
-<p>Other identifiers (e.g., ISBN, ISSN) are structurally supported by
-<code>scholid</code>, but do not always have stable, open registry
-APIs.</p>
+<p>Not every type supports every operation. For example, ROR and UniProt
+support existence checks and metadata, while DOI and PMID additionally
+support linked identifiers and conversion. Use
+<code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> as the authoritative
+summary.</p>
+<p>Many other identifier types (e.g., ISBN, ISSN, bibcode, RRID) are
+structurally supported by <code>scholid</code>, but are not covered by
+<code>scholidonline</code> because they lack a stable, open registry API
+fit for this package.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

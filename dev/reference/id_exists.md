@@ -49,6 +49,14 @@ A logical vector. `TRUE` indicates that the identifier was found,
 `FALSE` indicates that it was not found, and `NA` indicates that the
 input could not be identified, normalized, or checked reliably.
 
+## Details
+
+Existence checking is not available for every identifier type supported
+by `scholid`. Use
+[`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+to see which types support the `exists` operation and which providers
+implement it.
+
 ## Examples
 
 ``` r

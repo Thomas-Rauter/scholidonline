@@ -2,8 +2,10 @@
 
 ## User Available Functions
 
-Documentation for all user-facing functions (for internal functions, see
-GitHub).
+Documentation for all user-facing functions. Use
+[`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+to see which operations and conversions are available for each supported
+identifier type.
 
 - [`id_convert()`](https://thomas-rauter.github.io/scholidonline/reference/id_convert.md)
   : Convert scholarly identifiers across systems

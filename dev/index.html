@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Resolution, Conversion, Linking and Metadata for Scholarly Identifiers">
-<meta name="description" content="Enables querying of scholarly identifier services to verify identifier existence, convert identifiers across systems, retrieve bibliographic metadata, and discover linked identifiers. Supports common identifier types including DOI, PMID, PMCID, arXiv, and ORCID.">
-<meta property="og:description" content="Enables querying of scholarly identifier services to verify identifier existence, convert identifiers across systems, retrieve bibliographic metadata, and discover linked identifiers. Supports common identifier types including DOI, PMID, PMCID, arXiv, and ORCID.">
+<meta name="description" content="Enables querying of scholarly identifier services to verify identifier existence, convert identifiers across systems, retrieve bibliographic metadata, and discover linked identifiers. Supports identifier types including DOI, PMID, PMCID, arXiv, ORCID, OpenAlex, ROR, UniProt, and selected NCBI accessions (GEO, BioProject, RefSeq, SRA, and genome assembly).">
+<meta property="og:description" content="Enables querying of scholarly identifier services to verify identifier existence, convert identifiers across systems, retrieve bibliographic metadata, and discover linked identifiers. Supports identifier types including DOI, PMID, PMCID, arXiv, ORCID, OpenAlex, ROR, UniProt, and selected NCBI accessions (GEO, BioProject, RefSeq, SRA, and genome assembly).">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,21 +65,18 @@
 <div class="section level2">
 <h2 id="scope">Scope<a class="anchor" aria-label="anchor" href="#scope"></a>
 </h2>
-<p>The package focuses on online operations for common identifier systems used in scholarly communication:</p>
+<p>The package provides registry-backed online operations where supported for these identifier groups:</p>
 <ul>
-<li>DOI</li>
-<li>ORCID iD</li>
-<li>arXiv</li>
-<li>PubMed (PMID)</li>
-<li>PubMed Central (PMCID)</li>
+<li>
+<strong>Bibliographic core:</strong> DOI, PMID, PMCID, arXiv</li>
+<li>
+<strong>Graph and people:</strong> OpenAlex, ORCID</li>
+<li>
+<strong>Organizations:</strong> ROR</li>
+<li>
+<strong>Life science:</strong> UniProt; NCBI accessions (GEO, BioProject, RefSeq, SRA, genome assembly)</li>
 </ul>
-<p>It provides registry-backed functionality such as:</p>
-<ul>
-<li>Existence checks</li>
-<li>Identifier conversion across systems</li>
-<li>Basic metadata retrieval</li>
-<li>Discovery of linked identifiers</li>
-</ul>
+<p>Operations include existence checks, metadata retrieval, linked-identifier discovery, and cross-system conversion. Not every type supports every operation; use <code><a href="reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to inspect what is available for a given type.</p>
 </div>
 <div class="section level2">
 <h2 id="interface">Interface<a class="anchor" aria-label="anchor" href="#interface"></a>
@@ -128,32 +125,53 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List supported scholidonline identifier types</span></span>
 <span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/scholidonline_types.html">scholidonline_types</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">##  [1] "arxiv"      "assembly"   "bioproject" "doi"        "geo"       </span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="do">##  [6] "openalex"   "orcid"      "pmcid"      "pmid"       "refseq"    </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="do">## [11] "ror"        "sra"        "uniprot"</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List scholidonline capabilities</span></span>
 <span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">##     type operation target               providers default_provider</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## 1  arxiv    exists   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="do">## 2  arxiv     links   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## 3  arxiv      meta   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="do">## 4    doi    exists   &lt;NA&gt; auto, doi.org, crossref          doi.org</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="do">## 5    doi     links   &lt;NA&gt;          auto, crossref         crossref</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="do">## 6    doi      meta   &lt;NA&gt; auto, crossref, doi.org         crossref</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="do">## 7    doi   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="do">## 8    doi   convert  pmcid        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="do">## 9  orcid    exists   &lt;NA&gt;             auto, orcid            orcid</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="do">## 10 orcid     links   &lt;NA&gt;             auto, orcid            orcid</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="do">## 11 orcid      meta   &lt;NA&gt;             auto, orcid            orcid</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="do">## 12 pmcid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="do">## 13 pmcid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="do">## 14 pmcid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="do">## 15 pmcid   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="do">## 16 pmcid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="do">## 17  pmid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="do">## 18  pmid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="do">## 19  pmid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="do">## 20  pmid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="do">## 21  pmid   convert  pmcid        auto, ncbi, epmc             ncbi</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">##          type operation target               providers default_provider</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## 1       arxiv    exists   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="do">## 2       arxiv     links   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## 3       arxiv      meta   &lt;NA&gt;             auto, arxiv            arxiv</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="do">## 4    assembly    exists   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="do">## 5    assembly      meta   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="do">## 6  bioproject    exists   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="do">## 7  bioproject      meta   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="do">## 8         doi    exists   &lt;NA&gt; auto, doi.org, crossref          doi.org</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="do">## 9         doi     links   &lt;NA&gt;          auto, crossref         crossref</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="do">## 10        doi      meta   &lt;NA&gt; auto, crossref, doi.org         crossref</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="do">## 11        doi   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="do">## 12        doi   convert  pmcid        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="do">## 13        geo    exists   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="do">## 14        geo      meta   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="do">## 15   openalex    exists   &lt;NA&gt;          auto, openalex         openalex</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="do">## 16   openalex     links   &lt;NA&gt;          auto, openalex         openalex</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="do">## 17   openalex      meta   &lt;NA&gt;          auto, openalex         openalex</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="do">## 18   openalex   convert    doi          auto, openalex         openalex</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="do">## 19   openalex   convert   pmid          auto, openalex         openalex</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="do">## 20      orcid    exists   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="do">## 21      orcid     links   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="do">## 22      orcid      meta   &lt;NA&gt;             auto, orcid            orcid</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="do">## 23      pmcid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="do">## 24      pmcid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="do">## 25      pmcid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="do">## 26      pmcid   convert   pmid        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="do">## 27      pmcid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="do">## 28       pmid    exists   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="do">## 29       pmid     links   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="do">## 30       pmid      meta   &lt;NA&gt;        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="do">## 31       pmid   convert    doi        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="do">## 32       pmid   convert  pmcid        auto, ncbi, epmc             ncbi</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="do">## 33     refseq    exists   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="do">## 34     refseq      meta   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="do">## 35        ror    exists   &lt;NA&gt;               auto, ror              ror</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="do">## 36        ror      meta   &lt;NA&gt;               auto, ror              ror</span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="do">## 37        sra    exists   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="do">## 38        sra      meta   &lt;NA&gt;              auto, ncbi             ncbi</span></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="do">## 39    uniprot    exists   &lt;NA&gt;           auto, uniprot          uniprot</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="do">## 40    uniprot      meta   &lt;NA&gt;           auto, uniprot          uniprot</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check if an ID exists online</span></span>
 <span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
@@ -254,8 +272,8 @@
 <div class="section level2">
 <h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
 </h2>
-<p><a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a> provides dependency-free utilities for detecting, normalizing, classifying, and extracting scholarly identifiers.</p>
-<p><code>scholidonline</code> builds on that foundation and adds online registry queries.</p>
+<p><a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a> provides dependency-free utilities for detecting, normalizing, classifying, and extracting scholarly identifiers (including types without online support here, such as ISBN, ISSN, and bibcode).</p>
+<p><code>scholidonline</code> builds on that foundation and adds online registry queries for a subset of those types.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>

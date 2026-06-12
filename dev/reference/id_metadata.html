@@ -9,7 +9,7 @@ registries."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,9 +103,14 @@ per input identifier.</p>
 <p>For providers that support batch lookup, such as arXiv, multiple identifiers
 may be resolved using a single provider request. This does not change the
 public return shape: the output still contains one row per input identifier.</p>
-<p>The function returns a consistent cross-provider subset of core
-bibliographic metadata, such as title, publication year, container title,
-linked DOI, PMID, PMCID, and a canonical URL when available.</p>
+<p>The function returns a harmonized cross-provider data.frame with columns
+<code>title</code>, <code>year</code>, <code>container</code>, <code>doi</code>, <code>pmid</code>, <code>pmcid</code>, and <code>url</code>. For
+bibliographic identifiers, <code>container</code> is typically a journal or source
+title and linked DOI/PMID/PMCID fields may be populated. For other types,
+the same columns are reused with type-appropriate meaning (for example,
+protein name and organism for UniProt, organization name and country for
+ROR, or accession title and organism for NCBI accessions). Bibliographic
+link columns are <code>NA</code> when not applicable.</p>
     </div>
 
     <div class="section level2">

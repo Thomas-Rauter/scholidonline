@@ -49,8 +49,8 @@ vapply(
 )
 ```
 
-    ## Waiting 0.09 seconds before NCBI request.
-    ## Waiting 0.27 seconds before NCBI request.
+    ## Waiting 0.06 seconds before NCBI request.
+    ## Waiting 0.24 seconds before NCBI request.
 
     ##  31452104 999999999 
     ##      TRUE     FALSE
@@ -83,7 +83,7 @@ scholidonline::id_exists(
 )
 ```
 
-    ## Waiting 0.22 seconds before NCBI request.
+    ## Waiting 0.14 seconds before NCBI request.
 
     ## Warning: HTTP request failed (429):
     ## https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi
@@ -103,7 +103,7 @@ scholidonline::id_metadata(
 )
 ```
 
-    ## Waiting 0.23 seconds before NCBI request.
+    ## Waiting 0.19 seconds before NCBI request.
 
     ##       input type provider                               title year
     ## 1  31452104 pmid     ncbi Molegro Virtual Docker for Docking. 2019
@@ -150,7 +150,7 @@ scholidonline::id_convert(
 )
 ```
 
-    ## Waiting 0.2 seconds before NCBI request.
+    ## Waiting 0.13 seconds before NCBI request.
 
     ## [1] "PMC6784763" NA           NA
 
@@ -164,6 +164,13 @@ selected NCBI-backed PMID, PMCID, and DOI operations. These include
 existence checks, metadata retrieval, linked-identifier lookup, and
 supported identifier conversions where the provider response can be
 mapped safely back to the input vector.
+
+NCBI accession types such as GEO, BioProject, RefSeq, SRA, and genome
+assembly use scalar Entrez ESummary requests per identifier. Standalone
+provider APIs such as OpenAlex, ROR, and UniProt also resolve
+identifiers one at a time internally. Vectorized calls still work; they
+simply issue separate provider requests rather than a single batched
+request.
 
 When batching is not available, the package falls back to scalar
 provider calls while preserving the same public return contract. This
@@ -216,6 +223,17 @@ Europe PMC requests can also be controlled separately:
 
 options(scholidonline.epmc.min_interval = 1)
 ```
+
+OpenAlex recommends identifying your application in API requests. You
+can supply a contact address for the polite pool:
+
+``` r
+
+options(scholidonline.openalex.mailto = "you@example.org")
+```
+
+When set, this value is appended as a `mailto` query parameter on
+OpenAlex API requests made by `scholidonline`.
 
 These options affect future requests in the current R session. They do
 not change the meaning of results.

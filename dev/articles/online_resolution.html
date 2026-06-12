@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,6 +116,11 @@ checksum algorithms (e.g., ORCID).</p>
 <li>Does this DOI resolve via doi.org or Crossref?</li>
 <li>Does this PMID exist in PubMed?</li>
 <li>Is this ORCID iD present in the ORCID registry?</li>
+<li>Does this OpenAlex work or ROR organization record resolve via its
+API?</li>
+<li>Does this UniProt accession exist in UniProtKB?</li>
+<li>Do NCBI accessions such as GEO, BioProject, RefSeq, SRA, or genome
+assembly records resolve via Entrez?</li>
 </ul>
 <p>Example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -133,7 +138,23 @@ checksum algorithms (e.g., ORCID).</p>
 </ul>
 <p>A structurally valid identifier may still fail registry
 validation.</p>
+<hr>
 </div>
+</div>
+<div class="section level2">
+<h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
+</h2>
+<p><a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a>
+classifies and normalizes identifier strings offline.
+<code>scholidonline</code> then queries external registries for types
+that have online support.</p>
+<p>Identifiers must be classified and normalized with
+<code>scholid</code> before registry lookup in
+<code>scholidonline</code>. Structural validation in
+<code>scholid</code> does not imply registry support in
+<code>scholidonline</code>; use <code><a href="../reference/scholidonline_types.html">scholidonline_types()</a></code> and
+<code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to see which types and
+operations are available online.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
