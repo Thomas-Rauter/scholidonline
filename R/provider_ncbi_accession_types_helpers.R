@@ -95,9 +95,9 @@
     return(NULL)
   }
 
-  .scholidonline_esummary_entrez(
+  .ncbi_accession_fetch_esummary(
     db = db,
-    id = x,
+    x = x,
     ...,
     quiet = quiet
   )

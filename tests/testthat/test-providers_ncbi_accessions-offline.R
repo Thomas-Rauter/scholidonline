@@ -30,6 +30,54 @@ accession_esummary_bindings <- function(result = NULL) {
         calls$id <- id
         result
       },
+      .scholidonline_esearch_entrez = function(
+          db,
+          term,
+          ...,
+          quiet = FALSE
+      ) {
+        list(
+          esearchresult = list(
+            idlist = character()
+          )
+        )
+      },
+      .package = "scholidonline"
+    ),
+    calls = calls
+  )
+}
+
+
+accession_fetch_bindings <- function(
+    direct_result = list(result = list(uids = character())),
+    search_ids = character(),
+    summary_result = NULL
+) {
+  calls <- new.env(parent = emptyenv())
+  calls$esummary <- list()
+
+  list(
+    bindings = list(
+      .scholidonline_esummary_entrez = function(db, id, ..., quiet = FALSE) {
+        calls$esummary[[length(calls$esummary) + 1L]] <- list(
+          db = db,
+          id = id
+        )
+
+        if (length(calls$esummary) == 1L) {
+          direct_result
+        } else {
+          summary_result
+        }
+      },
+      .scholidonline_esearch_entrez = function(db, term, ..., quiet = FALSE) {
+        list(
+          esearchresult = list(
+            idlist = search_ids
+          )
+        )
+      },
       .package = "scholidonline"
     ),
     calls = calls
@@ -139,6 +187,107 @@ testthat::test_that(
     testthat::expect_identical(
       .ncbi_assembly_entrez_db("GCF_000001405.40"),
       "assembly"
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".exists_bioproject_ncbi() uses ESearch when direct ESummary misses",
+  {
+    mock <- accession_fetch_bindings(
+      search_ids = "300298",
+      summary_result = list(
+        result = list(
+          uids = "300298",
+          `300298` = list(
+            uid = "300298",
+            accession = "PRJNA257197",
+            project_title = "Example BioProject"
+          )
+        )
+      )
+    )
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      mock$bindings
+    )
+
+    testthat::expect_true(
+      .exists_bioproject_ncbi("PRJNA257197", quiet = TRUE)
+    )
+    testthat::expect_length(mock$calls$esummary, 2L)
+    testthat::expect_identical(mock$calls$esummary[[2L]]$id, "300298")
+  }
+)
+
+
+testthat::test_that(
+  ".exists_sra_ncbi() uses ESearch when direct ESummary misses",
+  {
+    mock <- accession_fetch_bindings(
+      search_ids = "90134",
+      summary_result = list(
+        result = list(
+          uids = "90134",
+          `90134` = list(
+            uid = "90134",
+            accession = "SRR390728",
+            title = "Example run"
+          )
+        )
+      )
+    )
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      mock$bindings
+    )
+
+    testthat::expect_true(
+      .exists_sra_ncbi("SRR390728", quiet = TRUE)
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".exists_assembly_ncbi() uses ESearch with an assembly field tag",
+  {
+    mock <- accession_fetch_bindings(
+      search_ids = "2334371",
+      summary_result = list(
+        result = list(
+          uids = "2334371",
+          `2334371` = list(
+            uid = "2334371",
+            accession = "GCA_000001405.28",
+            assemblyname = "GRCh38.p14"
+          )
+        )
+      )
+    )
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      mock$bindings
+    )
+
+    testthat::expect_true(
+      .exists_assembly_ncbi("GCA_000001405.28", quiet = TRUE)
     )
   }
 )

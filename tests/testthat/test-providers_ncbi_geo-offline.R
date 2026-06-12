@@ -74,9 +74,9 @@ geo_gds_record_json <- function() {
 testthat::test_that(
   ".ncbi_geo_entrez_db() routes GEO prefixes to the expected databases",
   {
-    testthat::expect_identical(.ncbi_geo_entrez_db("GSE2553"), "geo")
-    testthat::expect_identical(.ncbi_geo_entrez_db("GSM313800"), "geo")
-    testthat::expect_identical(.ncbi_geo_entrez_db("GPL96"), "geo")
+    testthat::expect_identical(.ncbi_geo_entrez_db("GSE2553"), "gds")
+    testthat::expect_identical(.ncbi_geo_entrez_db("GSM313800"), "gds")
+    testthat::expect_identical(.ncbi_geo_entrez_db("GPL96"), "gds")
     testthat::expect_identical(.ncbi_geo_entrez_db("GDS505"), "gds")
     testthat::expect_null(.ncbi_geo_entrez_db("XXX123"))
   }
@@ -84,7 +84,7 @@ testthat::test_that(
 
 
 testthat::test_that(
-  ".ncbi_geo_fetch_esummary() uses geo for series accessions",
+  ".ncbi_geo_fetch_esummary() uses gds for series accessions",
   {
     mock <- geo_esummary_bindings(result = geo_gse_record_json())
 
@@ -95,7 +95,7 @@ testthat::test_that(
 
     out <- .ncbi_geo_fetch_esummary("GSE2553", quiet = TRUE)
 
-    testthat::expect_identical(mock$calls$db, "geo")
+    testthat::expect_identical(mock$calls$db, "gds")
     testthat::expect_identical(mock$calls$id, "GSE2553")
     testthat::expect_identical(out, geo_gse_record_json())
   }
@@ -245,6 +245,90 @@ testthat::test_that(
     testthat::expect_identical(out$title, "Example dataset")
     testthat::expect_identical(out$year, 2004L)
     testthat::expect_identical(out$container, "Mus musculus")
+  }
+)
+
+
+geo_fetch_bindings <- function(
+    direct_result = list(result = list(uids = character())),
+    search_ids = "200002553",
+    summary_result = geo_gse_record_json()
+) {
+  calls <- new.env(parent = emptyenv())
+  calls$esummary <- list()
+  calls$esearch <- NULL
+
+  list(
+    bindings = list(
+      .scholidonline_esummary_entrez = function(db, id, ..., quiet = FALSE) {
+        calls$esummary[[length(calls$esummary) + 1L]] <- list(
+          db = db,
+          id = id,
+          quiet = quiet
+        )
+
+        if (length(calls$esummary) == 1L) {
+          direct_result
+        } else {
+          summary_result
+        }
+      },
+      .scholidonline_esearch_entrez = function(db, term, ..., quiet = FALSE) {
+        calls$esearch <- list(
+          db = db,
+          term = term,
+          quiet = quiet
+        )
+        list(
+          esearchresult = list(
+            idlist = search_ids
+          )
+        )
+      },
+      .package = "scholidonline"
+    ),
+    calls = calls
+  )
+}
+
+
+testthat::test_that(
+  ".ncbi_geo_fetch_esummary() falls back to ESearch when direct ESummary misses",
+  {
+    mock <- geo_fetch_bindings(
+      summary_result = list(
+        result = list(
+          uids = "200002553",
+          `200002553` = list(
+            uid = "200002553",
+            accession = "GSE2553",
+            title = "Example series",
+            taxon = "Homo sapiens",
+            pdat = "2005/01/01"
+          )
+        )
+      )
+    )
+
+    do.call(
+      testthat::local_mocked_bindings,
+      mock$bindings
+    )
+
+    out <- .ncbi_geo_fetch_esummary("GSE2553", quiet = TRUE)
+
+    testthat::expect_length(mock$calls$esummary, 2L)
+    testthat::expect_identical(mock$calls$esummary[[1L]]$id, "GSE2553")
+    testthat::expect_identical(mock$calls$esearch$db, "gds")
+    testthat::expect_identical(
+      mock$calls$esearch$term,
+      "GSE2553[Accession]"
+    )
+    testthat::expect_identical(mock$calls$esummary[[2L]]$id, "200002553")
+    testthat::expect_identical(
+      .ncbi_accession_record_from_esummary(out, "GSE2553")$title,
+      "Example series"
+    )
   }
 )
 

@@ -141,14 +141,58 @@
     ...,
     quiet = FALSE
 ) {
-  .ncbi_accession_type_meta_ncbi(
-    x = x,
+  .scholidonline_check_scalar_chr(x = x)
+
+  if (is.null(.ncbi_sra_entrez_db(x))) {
+    return(data.frame())
+  }
+
+  js <- .ncbi_accession_type_fetch_esummary(
     entrez_db_fn = .ncbi_sra_entrez_db,
-    url_fn = .ncbi_sra_record_url,
-    title_fields = c("title", "caption"),
-    year_fields = c("publicationdate", "createdate", "loaddate"),
+    x = x,
     ...,
     quiet = quiet
+  )
+
+  if (is.null(js)) {
+    return(data.frame())
+  }
+
+  rec <- .ncbi_accession_record_from_esummary(
+    js = js,
+    x = x
+  )
+
+  if (is.null(rec)) {
+    return(data.frame())
+  }
+
+  title <- .ncbi_accession_title_from_record_fields(
+    rec = rec,
+    fields = c("title", "caption")
+  )
+
+  if (is.na(title) && !is.null(rec$expxml) && nzchar(rec$expxml)) {
+    title <- sub(
+      ".*<Title>([^<]+)</Title>.*",
+      "\\1",
+      rec$expxml,
+      perl = TRUE
+    )
+
+    if (identical(title, rec$expxml)) {
+      title <- NA_character_
+    }
+  }
+
+  .ncbi_accession_meta_frame(
+    title = title,
+    year = .ncbi_accession_year_from_record_fields(
+      rec = rec,
+      fields = c("publicationdate", "createdate", "loaddate")
+    ),
+    container = .ncbi_accession_organism_from_record(rec),
+    url = .ncbi_sra_record_url(x)
   )
 }
 

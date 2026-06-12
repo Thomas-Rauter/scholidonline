@@ -4,9 +4,8 @@
 #' Map a GEO accession prefix to an Entrez database name
 #'
 #' @description
-#' GEO DataSets (`GDS`) are queried from the `gds` database. Series, sample,
-#' and platform accessions (`GSE`, `GSM`, `GPL`) are queried from the `geo`
-#' database.
+#' GEO accessions (`GDS`, `GSE`, `GSM`, `GPL`) are queried from the `gds`
+#' database via Entrez ESearch and ESummary.
 #'
 #' @param x A single normalized GEO accession string.
 #'
@@ -19,9 +18,9 @@
   switch(
     prefix,
     GDS = "gds",
-    GSE = "geo",
-    GSM = "geo",
-    GPL = "geo",
+    GSE = "gds",
+    GSM = "gds",
+    GPL = "gds",
     NULL
   )
 }
@@ -47,9 +46,9 @@
     return(NULL)
   }
 
-  .scholidonline_esummary_entrez(
+  .ncbi_accession_fetch_esummary(
     db = db,
-    id = x,
+    x = x,
     ...,
     quiet = quiet
   )
