@@ -55,7 +55,7 @@ User-available functions:
 | `id_exists()` | Check whether identifiers exist in their registries |
 | `id_convert()` | Convert identifiers across systems (e.g., PMID → DOI) |
 | `id_metadata()` | Retrieve basic structured metadata |
-| `id_links()` | Discover identifiers linked to the same scholarly record |
+| `id_links()` | Discover identifiers linked to the same scholarly record when exposed by the provider |
 
 ## Examples
 
@@ -152,21 +152,19 @@ knitr::kable(out)
 | 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
 ``` r
-# Return identifiers linked to the same scholarly record
+# Return identifiers linked to the same scholarly record when the provider
+# exposes them. Returns an empty table when no linked identifiers are found.
 out <- scholidonline::id_links(
   "31452104",
   provider = "epmc"
   )
-```
 
-    ## Warning: Europe PMC request returned HTTP 503.
-
-``` r
 knitr::kable(out)
 ```
 
-| query | query_type | linked_type | linked_id | provider |
-|:------|:-----------|:------------|:----------|:---------|
+|     | query    | query_type | linked_type | linked_id                    | provider |
+|:----|:---------|:-----------|:------------|:-----------------------------|:---------|
+| 2   | 31452104 | pmid       | doi         | 10.1007/978-1-4939-9752-7_10 | epmc     |
 
 ## Relationship to scholid
 

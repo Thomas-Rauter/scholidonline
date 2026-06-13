@@ -58,7 +58,7 @@ User-available functions:
 | `id_exists()` | Check whether identifiers exist in their registries |
 | `id_convert()` | Convert identifiers across systems (e.g., PMID → DOI) |
 | `id_metadata()` | Retrieve basic structured metadata |
-| `id_links()` | Discover identifiers linked to the same scholarly record |
+| `id_links()` | Discover identifiers linked to the same scholarly record when exposed by the provider |
 
 
 
@@ -93,7 +93,8 @@ out <- scholidonline::id_metadata(
 # Show key fields
 knitr::kable(out)
 
-# Return identifiers linked to the same scholarly record
+# Return identifiers linked to the same scholarly record when the provider
+# exposes them. Returns an empty table when no linked identifiers are found.
 out <- scholidonline::id_links(
   "31452104",
   provider = "epmc"

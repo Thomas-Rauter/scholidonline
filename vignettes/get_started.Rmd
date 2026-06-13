@@ -172,7 +172,8 @@ knitr::kable(out)
 ## Linked identifiers: `id_links()`
 
 `id_links()` returns related identifiers discovered via registry
-queries.
+queries. Returns an empty table when the provider exposes no linked
+identifiers for that record.
 
 ```{r id_links 1, eval = is_pkgdown}
 out <- scholidonline::id_links(
@@ -182,7 +183,8 @@ out <- scholidonline::id_links(
 knitr::kable(out)
 ```
 
-The result is a long data.frame with one row per link.
+The result is a long data.frame with one row per link. When no links are
+found, the same columns are returned with zero rows.
 
 
 
