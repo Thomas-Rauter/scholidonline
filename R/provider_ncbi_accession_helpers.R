@@ -137,15 +137,20 @@
 .ncbi_accession_esearch_ids <- function(
     db,
     x,
+    esearch_term = NULL,
     ...,
     quiet = FALSE
 ) {
-  js <- .scholidonline_esearch_entrez(
-    db = db,
-    term = .ncbi_accession_esearch_term(
+  if (is.null(esearch_term)) {
+    esearch_term <- .ncbi_accession_esearch_term(
       db = db,
       x = x
-    ),
+    )
+  }
+
+  js <- .scholidonline_esearch_entrez(
+    db = db,
+    term = esearch_term,
     retmax = 20L,
     ...,
     quiet = quiet
@@ -193,6 +198,8 @@
 #'
 #' @param db A single Entrez database name.
 #' @param x A single normalized accession string.
+#' @param esearch_term Optional Entrez ESearch query term. Defaults to
+#'   `.ncbi_accession_esearch_term()`.
 #' @param ... Passed to Entrez API helpers.
 #' @param quiet Logical.
 #'
@@ -202,6 +209,7 @@
 .ncbi_accession_fetch_esummary <- function(
     db,
     x,
+    esearch_term = NULL,
     ...,
     quiet = FALSE
 ) {
@@ -222,6 +230,7 @@
   ids <- .ncbi_accession_esearch_ids(
     db = db,
     x = x,
+    esearch_term = esearch_term,
     ...,
     quiet = quiet
   )

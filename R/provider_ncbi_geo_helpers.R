@@ -26,6 +26,29 @@
 }
 
 
+#' Build an Entrez ESearch term for a GEO accession
+#'
+#' @description
+#' GEO accessions are filtered by Entrez entry type so platform queries such
+#' as `GPL96` resolve to the platform record rather than related series.
+#'
+#' @param x A single normalized GEO accession string.
+#'
+#' @return A single Entrez query term.
+#'
+#' @noRd
+.ncbi_geo_esearch_term <- function(x) {
+  prefix <- toupper(substr(x, 1L, 3L))
+
+  paste0(
+    x,
+    "[Accession] AND ",
+    prefix,
+    "[Entry Type]"
+  )
+}
+
+
 #' Fetch an ESummary response for a GEO accession
 #'
 #' @param x A single normalized GEO accession string.
@@ -49,6 +72,7 @@
   .ncbi_accession_fetch_esummary(
     db = db,
     x = x,
+    esearch_term = .ncbi_geo_esearch_term(x),
     ...,
     quiet = quiet
   )

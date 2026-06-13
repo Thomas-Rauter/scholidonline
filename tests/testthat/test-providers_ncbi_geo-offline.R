@@ -84,6 +84,29 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".ncbi_geo_esearch_term() filters GEO accessions by Entrez entry type",
+  {
+    testthat::expect_identical(
+      .ncbi_geo_esearch_term("GSE2553"),
+      "GSE2553[Accession] AND GSE[Entry Type]"
+    )
+    testthat::expect_identical(
+      .ncbi_geo_esearch_term("GSM313800"),
+      "GSM313800[Accession] AND GSM[Entry Type]"
+    )
+    testthat::expect_identical(
+      .ncbi_geo_esearch_term("GPL96"),
+      "GPL96[Accession] AND GPL[Entry Type]"
+    )
+    testthat::expect_identical(
+      .ncbi_geo_esearch_term("GDS505"),
+      "GDS505[Accession] AND GDS[Entry Type]"
+    )
+  }
+)
+
+
+testthat::test_that(
   ".ncbi_geo_fetch_esummary() uses gds for series accessions",
   {
     mock <- geo_esummary_bindings(result = geo_gse_record_json())
@@ -322,13 +345,58 @@ testthat::test_that(
     testthat::expect_identical(mock$calls$esearch$db, "gds")
     testthat::expect_identical(
       mock$calls$esearch$term,
-      "GSE2553[Accession]"
+      "GSE2553[Accession] AND GSE[Entry Type]"
     )
     testthat::expect_identical(mock$calls$esummary[[2L]]$id, "200002553")
     testthat::expect_identical(
       .ncbi_accession_record_from_esummary(out, "GSE2553")$title,
       "Example series"
     )
+  }
+)
+
+
+geo_gpl_record_json <- function() {
+  list(
+    result = list(
+      uids = "100000096",
+      `100000096` = list(
+        uid = "100000096",
+        accession = "GPL96",
+        title = "[HG-U133A] Affymetrix Human Genome U133A Array",
+        taxon = "Homo sapiens",
+        pdat = "2003/03/19"
+      )
+    )
+  )
+}
+
+
+testthat::test_that(
+  ".exists_geo_ncbi() resolves GPL platform accessions via entry-type ESearch",
+  {
+    mock <- geo_fetch_bindings(
+      search_ids = "100000096",
+      summary_result = geo_gpl_record_json()
+    )
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      mock$bindings
+    )
+
+    testthat::expect_true(
+      .exists_geo_ncbi("GPL96", quiet = TRUE)
+    )
+    testthat::expect_identical(
+      mock$calls$esearch$term,
+      "GPL96[Accession] AND GPL[Entry Type]"
+    )
+    testthat::expect_identical(mock$calls$esummary[[2L]]$id, "100000096")
   }
 )
 
