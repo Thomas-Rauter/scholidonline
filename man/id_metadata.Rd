@@ -59,6 +59,10 @@ protein name and organism for UniProt, organization name and country for
 ROR, or accession title and organism for NCBI accessions). Bibliographic
 link columns are \code{NA} when not applicable.
 
+For NCBI accession types such as BioProject, \code{title} is the registry's
+short project or record title from Entrez ESummary, not the full description
+shown on the NCBI website. Use \code{url} for the complete record.
+
 \code{type} must be a single value or \code{"auto"}. For mixed identifier columns,
 omit \code{type} or use \code{type = "auto"} so each element is classified
 separately.

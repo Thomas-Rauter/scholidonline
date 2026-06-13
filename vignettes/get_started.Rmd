@@ -154,7 +154,10 @@ out <- scholidonline::id_metadata(
 knitr::kable(out)
 ```
 
-Metadata completeness depends on the registry.
+Metadata completeness depends on the registry. For NCBI accession types such
+as BioProject, `title` is the short registry title from Entrez ESummary, not
+the full project description on the NCBI website; use `url` for the complete
+record.
 
 You can restrict returned fields:
 
