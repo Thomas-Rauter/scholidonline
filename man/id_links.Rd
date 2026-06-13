@@ -52,6 +52,10 @@ returned. \code{id_links()} does not retrieve general metadata or broader relate
 records unless the provider represents them as direct identifier links.
 
 Trivial self-links are excluded from the result.
+
+\code{type} must be a single value or \code{"auto"}. For mixed identifier columns,
+omit \code{type} or use \code{type = "auto"} so each element is classified
+separately.
 }
 \examples{
 \donttest{

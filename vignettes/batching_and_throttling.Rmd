@@ -165,6 +165,13 @@ NCBI requests use a shorter default interval:
 options(scholidonline.ncbi.min_interval = 0.34)
 ```
 
+NCBI accession types (GEO, BioProject, RefSeq, SRA, and genome assembly) may
+issue multiple Entrez requests per identifier. Under heavy burst usage you may
+still see occasional HTTP 429 responses. If that happens, increase
+`options(scholidonline.ncbi.min_interval = 0.5)` (or higher), add a short pause
+between large jobs, or retry later. Failed requests return `NA` or empty
+results rather than implying that an identifier does not exist.
+
 Europe PMC requests can also be controlled separately:
 
 ```{r PMC throttling, eval = TRUE}

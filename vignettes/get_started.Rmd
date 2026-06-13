@@ -222,7 +222,13 @@ for (i in seq_along(x)) {
 
 types
 x_norm
+```
 
+`id_exists(x)` below uses the default `type = "auto"`, so each element is
+classified and normalized automatically. You do not need to pass a vector
+`type` argument.
+
+```{r mixed data exists, eval = is_pkgdown}
 scholidonline::id_exists(x)
 ```
 

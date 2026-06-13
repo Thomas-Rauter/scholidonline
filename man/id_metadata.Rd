@@ -58,6 +58,10 @@ the same columns are reused with type-appropriate meaning (for example,
 protein name and organism for UniProt, organization name and country for
 ROR, or accession title and organism for NCBI accessions). Bibliographic
 link columns are \code{NA} when not applicable.
+
+\code{type} must be a single value or \code{"auto"}. For mixed identifier columns,
+omit \code{type} or use \code{type = "auto"} so each element is classified
+separately.
 }
 \examples{
 \donttest{
