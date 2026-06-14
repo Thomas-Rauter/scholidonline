@@ -47,10 +47,10 @@ caps <- scholidonline_capabilities()
 
 subset(caps, type == "pmid" & operation == "convert")
 #>    type operation target        providers default_provider
-#> 20 pmid   convert    doi auto, ncbi, epmc             ncbi
-#> 21 pmid   convert  pmcid auto, ncbi, epmc             ncbi
+#> 31 pmid   convert    doi auto, ncbi, epmc             ncbi
+#> 32 pmid   convert  pmcid auto, ncbi, epmc             ncbi
 
 subset(caps, type == "doi" & target == "pmcid")
-#>   type operation target        providers default_provider
-#> 8  doi   convert  pmcid auto, ncbi, epmc             ncbi
+#>    type operation target        providers default_provider
+#> 12  doi   convert  pmcid auto, ncbi, epmc             ncbi
 ```

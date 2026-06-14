@@ -54,6 +54,13 @@ id_convert(
 A character vector of converted identifiers. Elements that cannot be
 identified, normalized, or converted return `NA_character_`.
 
+## Details
+
+Only some source/target type pairs are supported. Use
+[`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+with `operation = "convert"` (or filter the returned table) to see which
+conversions are available and which providers implement them.
+
 ## Examples
 
 ``` r

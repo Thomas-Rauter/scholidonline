@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting started with scholidonline • scholidonline</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with scholidonline">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
       <h1>Getting started with scholidonline</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.1/vignettes/get_started.Rmd" class="external-link"><code>vignettes/get_started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.2.0/vignettes/get_started.Rmd" class="external-link"><code>vignettes/get_started.Rmd</code></a></small>
       <div class="d-none name"><code>get_started.Rmd</code></div>
     </div>
 
@@ -100,7 +100,9 @@ functions:</p>
 <p>You can inspect which identifier types are supported:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_types.html">scholidonline_types</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "arxiv" "doi"   "orcid" "pmcid" "pmid"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "arxiv"      "assembly"   "bioproject" "doi"        "geo"       </span></span>
+<span><span class="co">#&gt;  [6] "openalex"   "orcid"      "pmcid"      "pmid"       "refseq"    </span></span>
+<span><span class="co">#&gt; [11] "ror"        "sra"        "uniprot"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspecting-capabilities">Inspecting capabilities<a class="anchor" aria-label="anchor" href="#inspecting-capabilities"></a>
@@ -111,6 +113,13 @@ supported operations, conversions, and providers:</p>
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
+<colgroup>
+<col width="15%">
+<col width="14%">
+<col width="10%">
+<col width="34%">
+<col width="24%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">type</th>
 <th align="left">operation</th>
@@ -139,6 +148,34 @@ supported operations, conversions, and providers:</p>
 <td align="left">NA</td>
 <td align="left">auto, arxiv</td>
 <td align="left">arxiv</td>
+</tr>
+<tr class="even">
+<td align="left">assembly</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">assembly</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">bioproject</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">bioproject</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
 </tr>
 <tr class="even">
 <td align="left">doi</td>
@@ -176,95 +213,258 @@ supported operations, conversions, and providers:</p>
 <td align="left">ncbi</td>
 </tr>
 <tr class="odd">
+<td align="left">geo</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">geo</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">openalex</td>
+<td align="left">links</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">doi</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">pmid</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
 <td align="left">orcid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">orcid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">orcid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, orcid</td>
 <td align="left">orcid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmcid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmcid</td>
 <td align="left">convert</td>
 <td align="left">pmid</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmcid</td>
 <td align="left">convert</td>
 <td align="left">doi</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">exists</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmid</td>
 <td align="left">links</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">meta</td>
 <td align="left">NA</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pmid</td>
 <td align="left">convert</td>
 <td align="left">doi</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">pmid</td>
 <td align="left">convert</td>
 <td align="left">pmcid</td>
 <td align="left">auto, ncbi, epmc</td>
 <td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">refseq</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">refseq</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">ror</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ror</td>
+<td align="left">ror</td>
+</tr>
+<tr class="even">
+<td align="left">ror</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ror</td>
+<td align="left">ror</td>
+</tr>
+<tr class="odd">
+<td align="left">sra</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="even">
+<td align="left">sra</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, ncbi</td>
+<td align="left">ncbi</td>
+</tr>
+<tr class="odd">
+<td align="left">uniprot</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, uniprot</td>
+<td align="left">uniprot</td>
+</tr>
+<tr class="even">
+<td align="left">uniprot</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, uniprot</td>
+<td align="left">uniprot</td>
+</tr>
+</tbody>
+</table>
+<p>Not every supported type offers every operation. For example, ROR and
+UniProt support existence checks and metadata, while DOI and PMID also
+support linked identifiers and conversion. To inspect one type:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">out</span>, <span class="va">type</span> <span class="op">==</span> <span class="st">"openalex"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">type</th>
+<th align="left">operation</th>
+<th align="left">target</th>
+<th align="left">providers</th>
+<th align="left">default_provider</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">15</td>
+<td align="left">openalex</td>
+<td align="left">exists</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="left">openalex</td>
+<td align="left">links</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="left">openalex</td>
+<td align="left">meta</td>
+<td align="left">NA</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="even">
+<td align="left">18</td>
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">doi</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
+</tr>
+<tr class="odd">
+<td align="left">19</td>
+<td align="left">openalex</td>
+<td align="left">convert</td>
+<td align="left">pmid</td>
+<td align="left">auto, openalex</td>
+<td align="left">openalex</td>
 </tr>
 </tbody>
 </table>
@@ -274,14 +474,14 @@ supported operations, conversions, and providers:</p>
 </h2>
 <p><code><a href="../reference/id_exists.html">id_exists()</a></code> verifies whether identifiers exist in their
 respective registries.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If <code>type = NULL</code>, the type is inferred automatically:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"10.1000/182"</span>,</span>
@@ -306,7 +506,7 @@ respective registries.</p>
 <li>PMCID → PMID</li>
 <li>DOI → PMCID</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"12345678"</span>,</span>
 <span>  from <span class="op">=</span> <span class="st">"pmid"</span>,</span>
@@ -315,7 +515,7 @@ respective registries.</p>
 <span><span class="co">#&gt; [1] "10.1234/2013/999990"</span></span></code></pre></div>
 <p>If <code>from = NULL</code>, the source type is inferred per
 element:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_convert.html">id_convert</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12345678"</span>, <span class="st">"PMC1234567"</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="st">"doi"</span></span>
@@ -328,7 +528,7 @@ element:</p>
 </h2>
 <p><code><a href="../reference/id_metadata.html">id_metadata()</a></code> retrieves harmonized metadata from
 external registries.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"10.1038/nature12373"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span></span>
@@ -372,9 +572,12 @@ external registries.</p>
 <td align="left"><a href="https://doi.org/10.1038/nature12373" class="external-link uri">https://doi.org/10.1038/nature12373</a></td>
 </tr></tbody>
 </table>
-<p>Metadata completeness depends on the registry.</p>
+<p>Metadata completeness depends on the registry. For NCBI accession
+types such as BioProject, <code>title</code> is the short registry title
+from Entrez ESummary, not the full project description on the NCBI
+website; use <code>url</code> for the complete record.</p>
 <p>You can restrict returned fields:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="st">"10.1038/nature12373"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"doi"</span>,</span>
@@ -403,13 +606,13 @@ external registries.</p>
 <h2 id="linked-identifiers-id_links">Linked identifiers: <code>id_links()</code><a class="anchor" aria-label="anchor" href="#linked-identifiers-id_links"></a>
 </h2>
 <p><code><a href="../reference/id_links.html">id_links()</a></code> returns related identifiers discovered via
-registry queries.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+registry queries. Returns an empty table when the provider exposes no
+linked identifiers for that record.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_links.html">id_links</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"pmcid"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Waiting 0.01 seconds before NCBI request.</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
@@ -447,7 +650,8 @@ registry queries.</p>
 </tr>
 </tbody>
 </table>
-<p>The result is a long data.frame with one row per link.</p>
+<p>The result is a long data.frame with one row per link. When no links
+are found, the same columns are returned with zero rows.</p>
 </div>
 <div class="section level2">
 <h2 id="working-with-mixed-data">Working with mixed data<a class="anchor" aria-label="anchor" href="#working-with-mixed-data"></a>
@@ -459,7 +663,7 @@ registry queries.</p>
 <li>Check registry existence</li>
 </ol>
 <p>Example:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://doi.org/10.1000/182"</span>,</span>
 <span>  <span class="st">"PMCID: PMC1234567"</span>,</span>
@@ -484,16 +688,20 @@ registry queries.</p>
 <span><span class="va">types</span></span>
 <span><span class="co">#&gt; [1] "doi"   "pmcid" NA</span></span>
 <span><span class="va">x_norm</span></span>
-<span><span class="co">#&gt; [1] "10.1000/182" "PMC1234567"  NA</span></span>
-<span></span>
-<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "10.1000/182" "PMC1234567"  NA</span></span></code></pre></div>
+<p><code>id_exists(x)</code> below uses the default
+<code>type = "auto"</code>, so each element is classified and normalized
+automatically. You do not need to pass a vector <code>type</code>
+argument.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE   NA</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="provider-selection">Provider selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
 </h2>
 <p>Most functions accept a <code>provider</code> argument.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x        <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type     <span class="op">=</span> <span class="st">"doi"</span>,</span>
@@ -521,23 +729,29 @@ chosen automatically, potentially with fallback behavior.</p>
 <div class="section level2">
 <h2 id="scope-of-scholidonline">Scope of scholidonline<a class="anchor" aria-label="anchor" href="#scope-of-scholidonline"></a>
 </h2>
-<p><code>scholidonline</code> focuses on identifiers that have:</p>
+<p><code>scholidonline</code> focuses on identifier types with stable
+public registries and accessible APIs. The package supports online
+operations for:</p>
 <ul>
-<li>Stable public registries</li>
-<li>Accessible APIs</li>
-<li>Meaningful cross-system relationships</li>
+<li>
+<strong>Bibliographic core:</strong> DOI, PMID, PMCID, arXiv</li>
+<li>
+<strong>Graph and people:</strong> OpenAlex, ORCID</li>
+<li>
+<strong>Organizations:</strong> ROR</li>
+<li>
+<strong>Life science:</strong> UniProt; NCBI accessions (GEO,
+BioProject, RefSeq, SRA, genome assembly)</li>
 </ul>
-<p>Examples:</p>
-<ul>
-<li>DOI</li>
-<li>PMID</li>
-<li>PMCID</li>
-<li>ORCID</li>
-<li>arXiv</li>
-</ul>
-<p>Other identifiers (e.g., ISBN, ISSN) are structurally supported by
-<code>scholid</code>, but do not always have stable, open registry
-APIs.</p>
+<p>Not every type supports every operation. For example, ROR and UniProt
+support existence checks and metadata, while DOI and PMID additionally
+support linked identifiers and conversion. Use
+<code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> as the authoritative
+summary.</p>
+<p>Many other identifier types (e.g., ISBN, ISSN, bibcode, RRID) are
+structurally supported by <code>scholid</code>, but are not covered by
+<code>scholidonline</code> because they lack a stable, open registry API
+fit for this package.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -59,6 +59,11 @@ For example:
 - Does this DOI resolve via doi.org or Crossref?
 - Does this PMID exist in PubMed?
 - Is this ORCID iD present in the ORCID registry?
+- Does this OpenAlex work or ROR organization record resolve via its
+  API?
+- Does this UniProt accession exist in UniProtKB?
+- Do NCBI accessions such as GEO, BioProject, RefSeq, SRA, or genome
+  assembly records resolve via Entrez?
 
 Example:
 
@@ -79,3 +84,19 @@ Registry validation:
 - Can change over time
 
 A structurally valid identifier may still fail registry validation.
+
+------------------------------------------------------------------------
+
+## Relationship to scholid
+
+[`scholid`](https://thomas-rauter.github.io/scholid/) classifies and
+normalizes identifier strings offline. `scholidonline` then queries
+external registries for types that have online support.
+
+Identifiers must be classified and normalized with `scholid` before
+registry lookup in `scholidonline`. Structural validation in `scholid`
+does not imply registry support in `scholidonline`; use
+[`scholidonline_types()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_types.md)
+and
+[`scholidonline_capabilities()`](https://thomas-rauter.github.io/scholidonline/reference/scholidonline_capabilities.md)
+to see which types and operations are available online.

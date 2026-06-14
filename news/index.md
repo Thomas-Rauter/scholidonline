@@ -1,6 +1,24 @@
 # Changelog
 
+## scholidonline 0.2.0
+
+- Added OpenAlex support for existence checks, metadata, linked
+  identifiers, and conversion to DOI and PMID for work records.
+- Added ROR support for organization existence checks and metadata.
+- Added NCBI accession support for GEO, BioProject, RefSeq, SRA, and
+  genome assembly existence checks and metadata via Entrez ESummary.
+- Added UniProt support for protein accession existence checks and
+  metadata.
+- Introduced shared NCBI accession helpers for generic Entrez ESummary
+  querying, record resolution, and harmonized metadata frames.
+- Refactored internal provider infrastructure: shared HTTP helpers,
+  unified rate limiters, registry reader helpers, shared `id_*()` input
+  preparation, arXiv scalar-to-batch delegation, and consolidated engine
+  provider resolution.
+
 ## scholidonline 0.1.1
+
+CRAN release: 2026-05-14
 
 - Added provider-level batching for selected arXiv and NCBI operations
   to reduce unnecessary live-service requests while preserving existing

@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Online Resolution and Registry Validation • scholidonline</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Online Resolution and Registry Validation">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scholidonline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
       <h1>Online Resolution and Registry Validation</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.1.1/vignettes/online_resolution.Rmd" class="external-link"><code>vignettes/online_resolution.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Thomas-Rauter/scholidonline/blob/v0.2.0/vignettes/online_resolution.Rmd" class="external-link"><code>vignettes/online_resolution.Rmd</code></a></small>
       <div class="d-none name"><code>online_resolution.Rmd</code></div>
     </div>
 
@@ -116,6 +116,11 @@ checksum algorithms (e.g., ORCID).</p>
 <li>Does this DOI resolve via doi.org or Crossref?</li>
 <li>Does this PMID exist in PubMed?</li>
 <li>Is this ORCID iD present in the ORCID registry?</li>
+<li>Does this OpenAlex work or ROR organization record resolve via its
+API?</li>
+<li>Does this UniProt accession exist in UniProtKB?</li>
+<li>Do NCBI accessions such as GEO, BioProject, RefSeq, SRA, or genome
+assembly records resolve via Entrez?</li>
 </ul>
 <p>Example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -133,7 +138,23 @@ checksum algorithms (e.g., ORCID).</p>
 </ul>
 <p>A structurally valid identifier may still fail registry
 validation.</p>
+<hr>
 </div>
+</div>
+<div class="section level2">
+<h2 id="relationship-to-scholid">Relationship to scholid<a class="anchor" aria-label="anchor" href="#relationship-to-scholid"></a>
+</h2>
+<p><a href="https://thomas-rauter.github.io/scholid/" class="external-link"><code>scholid</code></a>
+classifies and normalizes identifier strings offline.
+<code>scholidonline</code> then queries external registries for types
+that have online support.</p>
+<p>Identifiers must be classified and normalized with
+<code>scholid</code> before registry lookup in
+<code>scholidonline</code>. Structural validation in
+<code>scholid</code> does not imply registry support in
+<code>scholidonline</code>; use <code><a href="../reference/scholidonline_types.html">scholidonline_types()</a></code> and
+<code><a href="../reference/scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to see which types and
+operations are available online.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
