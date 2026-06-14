@@ -49,8 +49,8 @@ vapply(
 )
 ```
 
-    ## Waiting 0 seconds before NCBI request.
-    ## Waiting 0.2 seconds before NCBI request.
+    ## Waiting 0.04 seconds before NCBI request.
+    ## Waiting 0.24 seconds before NCBI request.
 
     ##  31452104 999999999 
     ##      TRUE     FALSE
@@ -83,7 +83,7 @@ scholidonline::id_exists(
 )
 ```
 
-    ## Waiting 0.14 seconds before NCBI request.
+    ## Waiting 0.19 seconds before NCBI request.
 
     ## Warning: HTTP request failed (429):
     ## https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi
@@ -103,7 +103,7 @@ scholidonline::id_metadata(
 )
 ```
 
-    ## Waiting 0.16 seconds before NCBI request.
+    ## Waiting 0.19 seconds before NCBI request.
 
     ##       input type provider                               title year
     ## 1  31452104 pmid     ncbi Molegro Virtual Docker for Docking. 2019
@@ -149,6 +149,8 @@ scholidonline::id_convert(
   provider = "ncbi"
 )
 ```
+
+    ## Waiting 0.12 seconds before NCBI request.
 
     ## [1] "PMC6784763" NA           NA
 

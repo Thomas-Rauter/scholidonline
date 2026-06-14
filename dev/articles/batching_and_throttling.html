@@ -105,8 +105,8 @@ internally.</p>
 <span>  <span class="op">}</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0 seconds before NCBI request.</span></span>
-<span><span class="co">## Waiting 0.2 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.04 seconds before NCBI request.</span></span>
+<span><span class="co">## Waiting 0.24 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">##  31452104 999999999 </span></span>
 <span><span class="co">##      TRUE     FALSE</span></span></code></pre>
 <p>Vectorized calls give the package an opportunity to use
@@ -132,7 +132,7 @@ per input:</p>
 <span>  type <span class="op">=</span> <span class="st">"pmid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.14 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.19 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: HTTP request failed (429):</span></span>
 <span><span class="co">## https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi</span></span></code></pre>
 <pre><code><span><span class="co">## [1] NA NA NA</span></span></code></pre>
@@ -144,7 +144,7 @@ identifier:</p>
 <span>  type <span class="op">=</span> <span class="st">"pmid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Waiting 0.16 seconds before NCBI request.</span></span></code></pre>
+<pre><code><span><span class="co">## Waiting 0.19 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">##       input type provider                               title year</span></span>
 <span><span class="co">## 1  31452104 pmid     ncbi Molegro Virtual Docker for Docking. 2019</span></span>
 <span><span class="co">## 2 999999999 pmid     &lt;NA&gt;                                &lt;NA&gt;   NA</span></span>
@@ -178,6 +178,7 @@ per input:</p>
 <span>  to <span class="op">=</span> <span class="st">"pmcid"</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"ncbi"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Waiting 0.12 seconds before NCBI request.</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "PMC6784763" NA           NA</span></span></code></pre>
 <p>Batching is provider- and operation-specific. Some providers offer
 clean multi-identifier endpoints; others do not.
@@ -212,17 +213,17 @@ making a provider request. The first request to a provider usually runs
 immediately. Later requests may wait if they occur too soon after the
 previous request.</p>
 <p>Package-managed rate limiting is enabled by default:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.rate_limit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Users can disable package-managed waiting:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.rate_limit <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Provider-specific intervals can also be adjusted. For example, arXiv
 access is intentionally conservative:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.arxiv.min_interval <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p>NCBI requests use a shorter default interval:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.ncbi.min_interval <span class="op">=</span> <span class="fl">0.34</span><span class="op">)</span></span></code></pre></div>
 <p>NCBI accession types (GEO, BioProject, RefSeq, SRA, and genome
 assembly) may issue multiple Entrez requests per identifier. Under heavy
@@ -233,11 +234,11 @@ add a short pause between large jobs, or retry later. Failed requests
 return <code>NA</code> or empty results rather than implying that an
 identifier does not exist.</p>
 <p>Europe PMC requests can also be controlled separately:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.epmc.min_interval <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>OpenAlex recommends identifying your application in API requests. You
 can supply a contact address for the polite pool:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scholidonline.openalex.mailto <span class="op">=</span> <span class="st">"you@example.org"</span><span class="op">)</span></span></code></pre></div>
 <p>When set, this value is appended as a <code>mailto</code> query
 parameter on OpenAlex API requests made by
