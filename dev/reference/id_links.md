@@ -70,6 +70,10 @@ links.
 
 Trivial self-links are excluded from the result.
 
+`type` must be a single value or `"auto"`. For mixed identifier columns,
+omit `type` or use `type = "auto"` so each element is classified
+separately.
+
 ## Examples
 
 ``` r

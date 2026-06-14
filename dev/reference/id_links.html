@@ -101,6 +101,9 @@ work -&gt; DOI, PMID, or PMCID where present in the OpenAlex record.</p>
 returned. <code>id_links()</code> does not retrieve general metadata or broader related
 records unless the provider represents them as direct identifier links.</p>
 <p>Trivial self-links are excluded from the result.</p>
+<p><code>type</code> must be a single value or <code>"auto"</code>. For mixed identifier columns,
+omit <code>type</code> or use <code>type = "auto"</code> so each element is classified
+separately.</p>
     </div>
 
     <div class="section level2">

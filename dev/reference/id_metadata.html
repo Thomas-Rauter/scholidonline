@@ -111,6 +111,12 @@ the same columns are reused with type-appropriate meaning (for example,
 protein name and organism for UniProt, organization name and country for
 ROR, or accession title and organism for NCBI accessions). Bibliographic
 link columns are <code>NA</code> when not applicable.</p>
+<p>For NCBI accession types such as BioProject, <code>title</code> is the registry's
+short project or record title from Entrez ESummary, not the full description
+shown on the NCBI website. Use <code>url</code> for the complete record.</p>
+<p><code>type</code> must be a single value or <code>"auto"</code>. For mixed identifier columns,
+omit <code>type</code> or use <code>type = "auto"</code> so each element is classified
+separately.</p>
     </div>
 
     <div class="section level2">

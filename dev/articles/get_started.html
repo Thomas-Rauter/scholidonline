@@ -572,7 +572,10 @@ external registries.</p>
 <td align="left"><a href="https://doi.org/10.1038/nature12373" class="external-link uri">https://doi.org/10.1038/nature12373</a></td>
 </tr></tbody>
 </table>
-<p>Metadata completeness depends on the registry.</p>
+<p>Metadata completeness depends on the registry. For NCBI accession
+types such as BioProject, <code>title</code> is the short registry title
+from Entrez ESummary, not the full project description on the NCBI
+website; use <code>url</code> for the complete record.</p>
 <p>You can restrict returned fields:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_metadata.html">id_metadata</a></span><span class="op">(</span></span>
@@ -603,7 +606,8 @@ external registries.</p>
 <h2 id="linked-identifiers-id_links">Linked identifiers: <code>id_links()</code><a class="anchor" aria-label="anchor" href="#linked-identifiers-id_links"></a>
 </h2>
 <p><code><a href="../reference/id_links.html">id_links()</a></code> returns related identifiers discovered via
-registry queries.</p>
+registry queries. Returns an empty table when the provider exposes no
+linked identifiers for that record.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_links.html">id_links</a></span><span class="op">(</span></span>
 <span>  x    <span class="op">=</span> <span class="st">"PMC1234567"</span>,</span>
@@ -646,7 +650,8 @@ registry queries.</p>
 </tr>
 </tbody>
 </table>
-<p>The result is a long data.frame with one row per link.</p>
+<p>The result is a long data.frame with one row per link. When no links
+are found, the same columns are returned with zero rows.</p>
 </div>
 <div class="section level2">
 <h2 id="working-with-mixed-data">Working with mixed data<a class="anchor" aria-label="anchor" href="#working-with-mixed-data"></a>
@@ -683,16 +688,20 @@ registry queries.</p>
 <span><span class="va">types</span></span>
 <span><span class="co">#&gt; [1] "doi"   "pmcid" NA</span></span>
 <span><span class="va">x_norm</span></span>
-<span><span class="co">#&gt; [1] "10.1000/182" "PMC1234567"  NA</span></span>
-<span></span>
-<span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "10.1000/182" "PMC1234567"  NA</span></span></code></pre></div>
+<p><code>id_exists(x)</code> below uses the default
+<code>type = "auto"</code>, so each element is classified and normalized
+automatically. You do not need to pass a vector <code>type</code>
+argument.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE   NA</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="provider-selection">Provider selection<a class="anchor" aria-label="anchor" href="#provider-selection"></a>
 </h2>
 <p>Most functions accept a <code>provider</code> argument.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scholidonline</span><span class="fu">::</span><span class="fu"><a href="../reference/id_exists.html">id_exists</a></span><span class="op">(</span></span>
 <span>  x        <span class="op">=</span> <span class="st">"10.1000/182"</span>,</span>
 <span>  type     <span class="op">=</span> <span class="st">"doi"</span>,</span>

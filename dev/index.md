@@ -56,7 +56,7 @@ User-available functions:
 | [`id_exists()`](https://thomas-rauter.github.io/scholidonline/reference/id_exists.md) | Check whether identifiers exist in their registries |
 | [`id_convert()`](https://thomas-rauter.github.io/scholidonline/reference/id_convert.md) | Convert identifiers across systems (e.g., PMID → DOI) |
 | [`id_metadata()`](https://thomas-rauter.github.io/scholidonline/reference/id_metadata.md) | Retrieve basic structured metadata |
-| [`id_links()`](https://thomas-rauter.github.io/scholidonline/reference/id_links.md) | Discover identifiers linked to the same scholarly record |
+| [`id_links()`](https://thomas-rauter.github.io/scholidonline/reference/id_links.md) | Discover identifiers linked to the same scholarly record when exposed by the provider |
 
 ## Examples
 
@@ -167,24 +167,19 @@ knitr::kable(out)
 
 ``` r
 
-# Return identifiers linked to the same scholarly record
+# Return identifiers linked to the same scholarly record when the provider
+# exposes them. Returns an empty table when no linked identifiers are found.
 out <- scholidonline::id_links(
   "31452104",
   provider = "epmc"
   )
-```
-
-``` R
-## Warning: Europe PMC request returned HTTP 503.
-```
-
-``` r
 
 knitr::kable(out)
 ```
 
-| query | query_type | linked_type | linked_id | provider |
-|-------|------------|-------------|-----------|----------|
+|     | query    | query_type | linked_type | linked_id                    | provider |
+|:----|:---------|:-----------|:------------|:-----------------------------|:---------|
+| 2   | 31452104 | pmid       | doi         | 10.1007/978-1-4939-9752-7_10 | epmc     |
 
 ## Relationship to scholid
 

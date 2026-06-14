@@ -76,6 +76,15 @@ example, protein name and organism for UniProt, organization name and
 country for ROR, or accession title and organism for NCBI accessions).
 Bibliographic link columns are `NA` when not applicable.
 
+For NCBI accession types such as BioProject, `title` is the registry's
+short project or record title from Entrez ESummary, not the full
+description shown on the NCBI website. Use `url` for the complete
+record.
+
+`type` must be a single value or `"auto"`. For mixed identifier columns,
+omit `type` or use `type = "auto"` so each element is classified
+separately.
+
 ## Examples
 
 ``` r

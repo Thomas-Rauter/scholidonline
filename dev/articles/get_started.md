@@ -200,7 +200,10 @@ knitr::kable(out)
 |:---|:---|:---|:---|---:|:---|:---|:---|:---|:---|
 | 10.1038/nature12373 | doi | crossref | Nanometre-scale thermometry in a living cell | 2013 | Nature | 10.1038/nature12373 | NA | NA | <https://doi.org/10.1038/nature12373> |
 
-Metadata completeness depends on the registry.
+Metadata completeness depends on the registry. For NCBI accession types
+such as BioProject, `title` is the short registry title from Entrez
+ESummary, not the full project description on the NCBI website; use
+`url` for the complete record.
 
 You can restrict returned fields:
 
@@ -221,7 +224,9 @@ knitr::kable(out)
 ## Linked identifiers: `id_links()`
 
 [`id_links()`](https://thomas-rauter.github.io/scholidonline/reference/id_links.md)
-returns related identifiers discovered via registry queries.
+returns related identifiers discovered via registry queries. Returns an
+empty table when the provider exposes no linked identifiers for that
+record.
 
 ``` r
 
@@ -237,7 +242,8 @@ knitr::kable(out)
 | 1 | PMC1234567 | pmcid | pmid | 7717779 | ncbi |
 | 3 | PMC1234567 | pmcid | doi | 10.1097/00000658-199503000-00007 | ncbi |
 
-The result is a long data.frame with one row per link.
+The result is a long data.frame with one row per link. When no links are
+found, the same columns are returned with zero rows.
 
 ## Working with mixed data
 
@@ -276,6 +282,13 @@ types
 #> [1] "doi"   "pmcid" NA
 x_norm
 #> [1] "10.1000/182" "PMC1234567"  NA
+```
+
+`id_exists(x)` below uses the default `type = "auto"`, so each element
+is classified and normalized automatically. You do not need to pass a
+vector `type` argument.
+
+``` r
 
 scholidonline::id_exists(x)
 #> [1] TRUE TRUE   NA

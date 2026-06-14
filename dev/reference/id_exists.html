@@ -93,6 +93,9 @@ input could not be identified, normalized, or checked reliably.</p>
     <p>Existence checking is not available for every identifier type supported
 by <code>scholid</code>. Use <code><a href="scholidonline_capabilities.html">scholidonline_capabilities()</a></code> to see which types
 support the <code>exists</code> operation and which providers implement it.</p>
+<p><code>type</code> must be a single value or <code>"auto"</code>. For mixed identifier columns,
+omit <code>type</code> or use <code>type = "auto"</code> so each element is classified
+separately.</p>
     </div>
 
     <div class="section level2">
