@@ -13,3 +13,4 @@
 ^LICENSE\.md$
 ^tarball_storage$
 ^CONTEXT.md$
+^.release.txt$
