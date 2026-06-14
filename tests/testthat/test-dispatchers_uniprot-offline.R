@@ -98,3 +98,56 @@ testthat::test_that(
     testthat::expect_identical(out$container, "Homo sapiens")
   }
 )
+
+
+testthat::test_that(
+  ".meta_uniprot() errors on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    testthat::expect_error(
+      .meta_uniprot(
+        x = "P04637",
+        provider = "ncbi",
+        quiet = TRUE
+      ),
+      "Unknown provider: ncbi"
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".uniprot_protein_name() falls back to alternative and accession names",
+  {
+    testthat::expect_identical(
+      .uniprot_protein_name(
+        list(
+          proteinDescription = list(
+            alternativeNames = list(
+              list(
+                fullName = list(
+                  value = "Alternative protein name"
+                )
+              )
+            )
+          )
+        )
+      ),
+      "Alternative protein name"
+    )
+
+    testthat::expect_identical(
+      .uniprot_protein_name(
+        list(
+          uniProtkbId = "P53_HUMAN",
+          proteinDescription = list()
+        )
+      ),
+      "P53_HUMAN"
+    )
+  }
+)

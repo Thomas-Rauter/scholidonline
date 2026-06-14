@@ -104,3 +104,61 @@ testthat::test_that(
     )
   }
 )
+
+
+testthat::test_that(
+  "NCBI accession existence dispatchers error on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    cases <- list(
+      list(fn = .exists_bioproject, x = "PRJNA257197"),
+      list(fn = .exists_refseq, x = "NM_000546.6"),
+      list(fn = .exists_sra, x = "SRR1234567"),
+      list(fn = .exists_assembly, x = "GCF_000001405.40")
+    )
+
+    for (case in cases) {
+      testthat::expect_error(
+        case$fn(
+          x = case$x,
+          provider = "crossref",
+          quiet = TRUE
+        ),
+        "Unknown provider: crossref"
+      )
+    }
+  }
+)
+
+
+testthat::test_that(
+  "NCBI accession metadata dispatchers error on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    cases <- list(
+      list(fn = .meta_bioproject, x = "PRJNA257197"),
+      list(fn = .meta_refseq, x = "NM_000546.6"),
+      list(fn = .meta_sra, x = "SRR1234567"),
+      list(fn = .meta_assembly, x = "GCF_000001405.40")
+    )
+
+    for (case in cases) {
+      testthat::expect_error(
+        case$fn(
+          x = case$x,
+          provider = "crossref",
+          quiet = TRUE
+        ),
+        "Unknown provider: crossref"
+      )
+    }
+  }
+)

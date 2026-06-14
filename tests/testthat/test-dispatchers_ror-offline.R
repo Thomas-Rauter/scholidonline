@@ -98,3 +98,23 @@ testthat::test_that(
     testthat::expect_identical(out$container, "Switzerland")
   }
 )
+
+
+testthat::test_that(
+  ".meta_ror() errors on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    testthat::expect_error(
+      .meta_ror(
+        x = "01an7q238",
+        provider = "crossref",
+        quiet = TRUE
+      ),
+      "Unknown provider: crossref"
+    )
+  }
+)

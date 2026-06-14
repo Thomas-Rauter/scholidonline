@@ -456,6 +456,74 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".meta_sra_ncbi() derives title from expxml when title fields are empty",
+  {
+    sra_expxml_record_json <- function() {
+      list(
+        result = list(
+          uids = "SRR1234567",
+          SRR1234567 = list(
+            uid = "SRR1234567",
+            accession = "SRR1234567",
+            expxml = "<Summary><Title>Derived SRA title</Title></Summary>",
+            organism = "Mus musculus",
+            createdate = "2021/11/20"
+          )
+        )
+      )
+    }
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      accession_esummary_bindings(result = sra_expxml_record_json())$bindings
+    )
+
+    out <- .meta_sra_ncbi("SRR1234567", quiet = TRUE)
+
+    testthat::expect_identical(out$title, "Derived SRA title")
+  }
+)
+
+
+testthat::test_that(
+  ".meta_sra_ncbi() leaves title NA when expxml has no Title element",
+  {
+    sra_bad_expxml_record_json <- function() {
+      list(
+        result = list(
+          uids = "SRR1234567",
+          SRR1234567 = list(
+            uid = "SRR1234567",
+            accession = "SRR1234567",
+            expxml = "<Summary><NoTitle>nothing</NoTitle></Summary>",
+            organism = "Mus musculus",
+            createdate = "2021/11/20"
+          )
+        )
+      )
+    }
+
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+    do.call(
+      testthat::local_mocked_bindings,
+      accession_esummary_bindings(result = sra_bad_expxml_record_json())$bindings
+    )
+
+    out <- .meta_sra_ncbi("SRR1234567", quiet = TRUE)
+
+    testthat::expect_true(is.na(out$title))
+  }
+)
+
+
+testthat::test_that(
   ".meta_assembly_ncbi() returns harmonized metadata",
   {
     do.call(

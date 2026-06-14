@@ -108,3 +108,28 @@ testthat::test_that(
     )
   }
 )
+
+testthat::test_that(
+  ".scholidonline_http_string_from_response() returns NULL for missing responses",
+  {
+    warned <- FALSE
+
+    testthat::local_mocked_bindings(
+      .scholidonline_http_warn_failed = function(provider_label, quiet) {
+        warned <<- TRUE
+        testthat::expect_identical(provider_label, "Test provider")
+        testthat::expect_true(quiet)
+        invisible(NULL)
+      }
+    )
+
+    out <- .scholidonline_http_string_from_response(
+      resp = NULL,
+      quiet = TRUE,
+      provider_label = "Test provider"
+    )
+
+    testthat::expect_null(out)
+    testthat::expect_true(warned)
+  }
+)

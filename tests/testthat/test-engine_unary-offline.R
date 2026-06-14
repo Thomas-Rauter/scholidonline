@@ -229,6 +229,21 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".validate_unary_batch_result() rejects batch outputs with wrong length",
+  {
+    testthat::expect_error(
+      .validate_unary_batch_result(
+        x = list(TRUE),
+        operation = "exists",
+        n = 2L
+      ),
+      "Unary batch dispatcher output must have length `length\\(x\\)`\\."
+    )
+  }
+)
+
+
+testthat::test_that(
   ".scholidonline_run_unary_one() calls dispatcher and validates exists", {
   dispatcher <- function(x, provider, ..., quiet) {
     testthat::expect_identical(x, "12345")

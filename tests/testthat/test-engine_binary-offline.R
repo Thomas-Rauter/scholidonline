@@ -52,6 +52,39 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".scholidonline_get_binary_meta() errors when source type has no conversions",
+  {
+    testthat::local_mocked_bindings(
+      .scholidonline_registry = function() {
+        list(
+          geo = list(
+            exists = list(
+              providers = "ncbi",
+              default_provider = "ncbi",
+              dispatcher = ".exists_geo"
+            ),
+            meta = list(
+              providers = "ncbi",
+              default_provider = "ncbi",
+              dispatcher = ".meta_geo"
+            )
+          )
+        )
+      }
+    )
+
+    testthat::expect_error(
+      .scholidonline_get_binary_meta(
+        from = "geo",
+        to = "doi"
+      ),
+      "No binary operations supported for type `geo`\\."
+    )
+  }
+)
+
+
+testthat::test_that(
   ".scholidonline_get_binary_meta() errors on missing providers",
   {
     testthat::local_mocked_bindings(
@@ -567,5 +600,19 @@ testthat::test_that(
     )
     
     testthat::expect_identical(out, character())
+  }
+)
+
+
+testthat::test_that(
+  ".validate_binary_batch_result() rejects batch outputs with wrong length",
+  {
+    testthat::expect_error(
+      .validate_binary_batch_result(
+        x = c("a"),
+        n = 2L
+      ),
+      "Binary batch dispatcher output must have length `length\\(x\\)`\\."
+    )
   }
 )

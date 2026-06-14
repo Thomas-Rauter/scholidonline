@@ -80,6 +80,23 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".openalex_collection() maps supported OpenAlex key prefixes",
+  {
+    testthat::expect_identical(.openalex_collection("W2741809807"), "works")
+    testthat::expect_identical(.openalex_collection("A5023888391"), "authors")
+    testthat::expect_identical(.openalex_collection("S4210172580"), "sources")
+    testthat::expect_identical(.openalex_collection("I118347636"), "institutions")
+    testthat::expect_identical(.openalex_collection("T10001"), "topics")
+    testthat::expect_identical(.openalex_collection("K123"), "keywords")
+    testthat::expect_identical(.openalex_collection("P4310320990"), "publishers")
+    testthat::expect_identical(.openalex_collection("F4320306079"), "funders")
+    testthat::expect_identical(.openalex_collection("G1234567890"), "grants")
+    testthat::expect_null(.openalex_collection("X123"))
+  }
+)
+
+
+testthat::test_that(
   ".openalex_api_url() appends polite-pool mailto when configured",
   {
     old_mailto <- getOption("scholidonline.openalex.mailto")

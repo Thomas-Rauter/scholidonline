@@ -135,3 +135,52 @@ testthat::test_that("arXiv rate limiter waits between requests", {
   
   testthat::expect_gte(elapsed, 0.08)
 })
+
+testthat::test_that("arXiv query retries once after HTTP 429", {
+  attempts <- 0L
+
+  testthat::local_mocked_bindings(
+    Sys.sleep = function(time) {
+      invisible(NULL)
+    },
+    .package = "base"
+  )
+
+  testthat::local_mocked_bindings(
+    .scholidonline_http_get = function(url, quiet, before_request) {
+      before_request()
+      attempts <<- attempts + 1L
+      structure(
+        list(attempt = attempts),
+        class = "mock_arxiv_resp"
+      )
+    },
+    .scholidonline_resp_status = function(resp) {
+      if (resp$attempt == 1L) {
+        429L
+      } else {
+        200L
+      }
+    },
+    .scholidonline_http_string_from_response = function(
+        resp,
+        quiet,
+        provider_label
+    ) {
+      testthat::expect_identical(resp$attempt, 2L)
+      "<feed></feed>"
+    },
+    .arxiv_rate_limit = function(quiet = FALSE) {
+      invisible(NULL)
+    }
+  )
+
+  testthat::expect_warning(
+    out <- .arxiv_query_id_list("0706.0001", quiet = FALSE),
+    "arXiv request rate-limited (HTTP 429); retrying once.",
+    fixed = TRUE
+  )
+
+  testthat::expect_identical(out, "<feed></feed>")
+  testthat::expect_identical(attempts, 2L)
+})

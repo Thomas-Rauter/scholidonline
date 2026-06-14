@@ -75,3 +75,33 @@ testthat::test_that("NCBI rate limiter can be disabled", {
     0.5
   )
 })
+
+testthat::test_that(
+  "arXiv rate-limit interval normalization validates numeric input",
+  {
+    testthat::expect_error(
+      .scholidonline_rate_limit_normalize_interval(
+        min_interval = c(0.1, 0.2),
+        service = "arxiv",
+        default = 0.3
+      ),
+      "`min_interval` must be a single numeric value.",
+      fixed = TRUE
+    )
+    testthat::expect_null(
+      .scholidonline_rate_limit_normalize_interval(
+        min_interval = NA_real_,
+        service = "arxiv",
+        default = 0.3
+      )
+    )
+    testthat::expect_identical(
+      .scholidonline_rate_limit_normalize_interval(
+        min_interval = 0.2,
+        service = "arxiv",
+        default = 0.3
+      ),
+      0.2
+    )
+  }
+)

@@ -98,3 +98,23 @@ testthat::test_that(
     testthat::expect_identical(out$container, "Mus musculus")
   }
 )
+
+
+testthat::test_that(
+  ".meta_geo() errors on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    testthat::expect_error(
+      .meta_geo(
+        x = "GDS505",
+        provider = "crossref",
+        quiet = TRUE
+      ),
+      "Unknown provider: crossref"
+    )
+  }
+)

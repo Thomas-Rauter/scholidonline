@@ -135,6 +135,46 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".meta_openalex() errors on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    testthat::expect_error(
+      .meta_openalex(
+        x = "W2741809807",
+        provider = "crossref",
+        quiet = TRUE
+      ),
+      "Unknown provider: crossref"
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".links_openalex() errors on unknown provider",
+  {
+    do.call(
+      testthat::local_mocked_bindings,
+      scalar_check_bindings()
+    )
+
+    testthat::expect_error(
+      .links_openalex(
+        x = "W2741809807",
+        provider = "crossref",
+        quiet = TRUE
+      ),
+      "Unknown provider: crossref"
+    )
+  }
+)
+
+
+testthat::test_that(
   ".convert_openalex_to_doi() dispatches explicit openalex provider",
   {
     do.call(

@@ -93,6 +93,33 @@ testthat::test_that(
 )
 
 
+testthat::test_that(
+  "Entrez ESummary and ESearch helpers validate db and id arguments",
+  {
+    testthat::expect_error(
+      .scholidonline_esummary_entrez(db = character(), id = "SRR1"),
+      "`db` must be a single, non-missing character string.",
+      fixed = TRUE
+    )
+    testthat::expect_error(
+      .scholidonline_esummary_entrez(db = "sra", id = character()),
+      "`id` must be a character vector.",
+      fixed = TRUE
+    )
+    testthat::expect_error(
+      .scholidonline_esearch_entrez(db = NA_character_, term = "SRR1"),
+      "`db` must be a single, non-missing character string.",
+      fixed = TRUE
+    )
+    testthat::expect_error(
+      .scholidonline_esearch_entrez(db = "sra", term = character()),
+      "`term` must be a single, non-missing character string.",
+      fixed = TRUE
+    )
+  }
+)
+
+
 esearch_entrez_bindings <- function(result = list(ok = TRUE)) {
   calls <- new.env(parent = emptyenv())
   calls$url <- NULL
@@ -463,6 +490,22 @@ testthat::test_that(
     testthat::expect_identical(
       .ncbi_accession_exists_from_esummary(list(result = NULL), "SRR1234567"),
       NA
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".ncbi_accession_exists_from_esummary() returns FALSE when uids omit the accession",
+  {
+    js <- list(
+      result = list(
+        uids = "SRR9999999"
+      )
+    )
+
+    testthat::expect_false(
+      .ncbi_accession_exists_from_esummary(js, "SRR1234567")
     )
   }
 )

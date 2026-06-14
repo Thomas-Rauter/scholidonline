@@ -93,6 +93,50 @@ testthat::test_that(
 
 
 testthat::test_that(
+  ".ror_display_name() falls back to label names",
+  {
+    obj <- list(
+      names = list(
+        list(
+          types = "label",
+          value = "Label Organization"
+        ),
+        list(
+          types = "other",
+          value = "Other Name"
+        )
+      )
+    )
+
+    testthat::expect_identical(
+      .ror_display_name(obj),
+      "Label Organization"
+    )
+  }
+)
+
+
+testthat::test_that(
+  ".ror_display_name() falls back to the first available name value",
+  {
+    obj <- list(
+      names = list(
+        list(
+          types = "other",
+          value = "First Available Name"
+        )
+      )
+    )
+
+    testthat::expect_identical(
+      .ror_display_name(obj),
+      "First Available Name"
+    )
+  }
+)
+
+
+testthat::test_that(
   ".ror_country_name() extracts the first available country name",
   {
     testthat::expect_identical(
