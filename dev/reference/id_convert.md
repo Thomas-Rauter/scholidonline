@@ -31,8 +31,8 @@ id_convert(
 
 - from:
 
-  A single source identifier type string, or `NULL` to infer the source
-  type for each element of `x`.
+  A single source identifier type string, `"auto"`, or `NULL`. Use
+  `NULL` or `"auto"` to infer the source type for each element of `x`.
 
 - provider:
 

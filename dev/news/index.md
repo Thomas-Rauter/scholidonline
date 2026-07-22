@@ -2,6 +2,8 @@
 
 ## scholidonline 0.2.0
 
+CRAN release: 2026-06-14
+
 - Added OpenAlex support for existence checks, metadata, linked
   identifiers, and conversion to DOI and PMID for work records.
 - Added ROR support for organization existence checks and metadata.
