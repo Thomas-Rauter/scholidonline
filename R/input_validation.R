@@ -359,8 +359,7 @@
   n <- length(x)
 
   if (!is.null(to) && identical(type, "auto")) {
-    type_vec <- scholid::detect_scholid_type(x = x)
-    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
+    type_vec <- .scholidonline_detect_types(x = x)
 
     type_vec[!vapply(
       type_vec,
@@ -378,8 +377,7 @@
       FUN.VALUE = logical(1)
     )] <- NA_character_
   } else if (identical(type, "auto")) {
-    type_vec <- scholid::detect_scholid_type(x = x)
-    type_vec[!type_vec %in% scholidonline_types()] <- NA_character_
+    type_vec <- .scholidonline_detect_types(x = x)
   } else {
     type_vec <- rep(
       x = type,
@@ -411,4 +409,39 @@
     ok = ok,
     ok_idx = which(ok)
   )
+}
+
+
+#' Detect online-capable identifier types
+#'
+#' @description
+#' Internal helper for auto-mode type inference. Starts from
+#' `scholid::detect_scholid_type()`, then falls back to
+#' `scholid::classify_scholid()` for values that are missing or not among the
+#' online types supported by this package.
+#'
+#' This guards against cases where scholid detection prefers a non-online type
+#' (for example a checksum-valid compact ISSN) over an online-capable type
+#' such as PMID, which would otherwise make auto-mode lookups silently return
+#' `NA`.
+#'
+#' @param x A character vector of identifiers.
+#'
+#' @return A character vector of the same length as `x`, with online type names
+#'   or `NA_character_` when no supported online type can be inferred.
+#'
+#' @noRd
+.scholidonline_detect_types <- function(x) {
+  online <- scholidonline_types()
+  detected <- scholid::detect_scholid_type(x = x)
+
+  need_idx <- which(is.na(detected) | !detected %in% online)
+  if (length(need_idx)) {
+    classified <- scholid::classify_scholid(x = x[need_idx])
+    use <- !is.na(classified) & classified %in% online
+    detected[need_idx[use]] <- classified[use]
+  }
+
+  detected[!is.na(detected) & !detected %in% online] <- NA_character_
+  detected
 }

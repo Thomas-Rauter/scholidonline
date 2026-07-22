@@ -178,3 +178,100 @@ testthat::test_that(".scholidonline_check_scalar_chr validates scalar text", {
     "must be a single, non-missing character string"
   )
 })
+
+
+testthat::test_that(
+  paste(
+    ".scholidonline_detect_types falls back to classify",
+    "for non-online detections"
+  ),
+  {
+    testthat::local_mocked_bindings(
+      detect_scholid_type = function(x) {
+        c("issn", "doi", "isbn")
+      },
+      classify_scholid = function(x) {
+        c("pmid", "isbn")
+      },
+      .package = "scholid"
+    )
+
+    out <- .scholidonline_detect_types(
+      x = c("29456894", "10.1000/182", "9780306406157")
+    )
+
+    testthat::expect_identical(
+      out,
+      c("pmid", "doi", NA_character_)
+    )
+  }
+)
+
+
+testthat::test_that(
+  paste(
+    ".scholidonline_prepare_inputs keeps PMID when detect",
+    "returns a non-online type"
+  ),
+  {
+    testthat::local_mocked_bindings(
+      detect_scholid_type = function(x) {
+        rep("issn", length(x))
+      },
+      classify_scholid = function(x) {
+        rep("pmid", length(x))
+      },
+      normalize_scholid = function(x, type) {
+        x
+      },
+      .package = "scholid"
+    )
+
+    prepared <- .scholidonline_prepare_inputs(
+      x = c("29456894", "17170141"),
+      type = "auto"
+    )
+
+    testthat::expect_identical(
+      prepared$type_vec,
+      c("pmid", "pmid")
+    )
+    testthat::expect_identical(
+      prepared$x_norm,
+      c("29456894", "17170141")
+    )
+    testthat::expect_identical(prepared$ok, c(TRUE, TRUE))
+  }
+)
+
+
+testthat::test_that(
+  paste(
+    ".scholidonline_prepare_inputs auto-convert keeps PMID",
+    "when detect returns issn"
+  ),
+  {
+    testthat::local_mocked_bindings(
+      detect_scholid_type = function(x) {
+        "issn"
+      },
+      classify_scholid = function(x) {
+        "pmid"
+      },
+      normalize_scholid = function(x, type) {
+        x
+      },
+      .package = "scholid"
+    )
+
+    prepared <- .scholidonline_prepare_inputs(
+      x = "29456894",
+      type = "auto",
+      to = "doi"
+    )
+
+    testthat::expect_identical(prepared$type_vec, "pmid")
+    testthat::expect_identical(prepared$x_norm, "29456894")
+    testthat::expect_true(prepared$ok)
+  }
+)

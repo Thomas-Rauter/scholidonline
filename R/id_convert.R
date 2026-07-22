@@ -13,8 +13,8 @@
 #' @param x A character vector of scholarly identifiers.
 #' @param to A single target identifier type string, such as `"doi"` or
 #'   `"pmid"`. See `scholidonline_types()` for all supported values.
-#' @param from A single source identifier type string, or `NULL` to infer the
-#'   source type for each element of `x`.
+#' @param from A single source identifier type string, `"auto"`, or `NULL`.
+#'   Use `NULL` or `"auto"` to infer the source type for each element of `x`.
 #' @param provider A single provider string specifying which online service to
 #'   use for the conversion. Use `"auto"` to use the default provider for the
 #'   requested conversion. In most cases, `"auto"` is appropriate.
@@ -44,8 +44,8 @@ id_convert <- function(
   to <- match.arg(to)
   provider <- match.arg(provider)
   .scholidonline_check_quiet(quiet)
-  
-  if (is.null(from)) {
+
+  if (is.null(from) || identical(from, "auto")) {
     prepared <- .scholidonline_prepare_inputs(
       x = x,
       type = "auto",

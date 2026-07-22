@@ -22,6 +22,89 @@ testthat::test_that("id_convert() rejects invalid from", {
 })
 
 
+testthat::test_that(
+  "id_convert() accepts from = \"auto\" as alias for NULL",
+  {
+    seen <- new.env(parent = emptyenv())
+
+    testthat::local_mocked_bindings(
+      .scholidonline_run_binary = function(
+        x,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
+      ) {
+        seen$from <- from
+        seen$x <- x
+        "10.1000/a"
+      }
+    )
+
+    out <- id_convert(
+      x = "31452104",
+      to = "doi",
+      from = "auto",
+      quiet = TRUE
+    )
+
+    testthat::expect_equal(seen$from, "pmid")
+    testthat::expect_equal(seen$x, "31452104")
+    testthat::expect_equal(out, "10.1000/a")
+  }
+)
+
+
+testthat::test_that(
+  paste(
+    "id_convert() auto-detect keeps PMID when scholid detect",
+    "returns a non-online type"
+  ),
+  {
+    seen <- new.env(parent = emptyenv())
+
+    testthat::local_mocked_bindings(
+      .scholidonline_run_binary = function(
+        x,
+        from,
+        to,
+        provider,
+        ...,
+        quiet
+      ) {
+        seen$from <- from
+        seen$x <- x
+        "10.7717/peerj.4375"
+      }
+    )
+
+    testthat::local_mocked_bindings(
+      detect_scholid_type = function(x) {
+        "issn"
+      },
+      classify_scholid = function(x) {
+        "pmid"
+      },
+      normalize_scholid = function(x, type) {
+        x
+      },
+      .package = "scholid"
+    )
+
+    out <- id_convert(
+      x = "29456894",
+      to = "doi",
+      quiet = TRUE
+    )
+
+    testthat::expect_equal(seen$from, "pmid")
+    testthat::expect_equal(seen$x, "29456894")
+    testthat::expect_equal(out, "10.7717/peerj.4375")
+  }
+)
+
+
 testthat::test_that("id_convert() rejects invalid provider", {
   testthat::expect_error(
     id_convert("31452104", to = "doi", provider = "banana"),

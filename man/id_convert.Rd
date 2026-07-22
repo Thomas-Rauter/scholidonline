@@ -19,8 +19,8 @@ id_convert(
 \item{to}{A single target identifier type string, such as \code{"doi"} or
 \code{"pmid"}. See \code{scholidonline_types()} for all supported values.}
 
-\item{from}{A single source identifier type string, or \code{NULL} to infer the
-source type for each element of \code{x}.}
+\item{from}{A single source identifier type string, \code{"auto"}, or \code{NULL}.
+Use \code{NULL} or \code{"auto"} to infer the source type for each element of \code{x}.}
 
 \item{provider}{A single provider string specifying which online service to
 use for the conversion. Use \code{"auto"} to use the default provider for the
